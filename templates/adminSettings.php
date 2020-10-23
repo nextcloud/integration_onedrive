@@ -1,5 +1,5 @@
 <?php
-script(OCA\Github\AppInfo\Application::APP_ID, 'integration_github-adminSettings');
+script(OCA\Onedrive\AppInfo\Application::APP_ID, 'integration_onedrive-adminSettings');
 ?>
 
-<div id="github_prefs"></div>
+<div id="onedrive_prefs"></div>

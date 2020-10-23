@@ -1,7 +1,7 @@
 {
-  "name": "integration_github",
+  "name": "integration_onedrive",
   "version": "0.0.1",
-  "description": "GitHub integration",
+  "description": "OneDrive integration",
   "main": "index.js",
   "directories": {
     "test": "tests"
@@ -17,17 +17,17 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/nextcloud/integration_github"
+    "url": "https://github.com/nextcloud/integration_onedrive"
   },
   "keywords": [
-    "github"
+    "onedrive"
   ],
   "author": "Julien Veyssier",
   "license": "AGPL-3.0",
   "bugs": {
-    "url": "https://github.com/nextcloud/integration_github/issues"
+    "url": "https://github.com/nextcloud/integration_onedrive/issues"
   },
-  "homepage": "https://github.com/nextcloud/integration_github",
+  "homepage": "https://github.com/nextcloud/integration_onedrive",
   "browserslist": [
     "extends @nextcloud/browserslist-config"
   ],

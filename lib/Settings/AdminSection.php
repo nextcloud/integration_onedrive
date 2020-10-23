@@ -1,5 +1,5 @@
 <?php
-namespace OCA\Github\Settings;
+namespace OCA\Onedrive\Settings;
 
 use OCP\IURLGenerator;
 use OCP\IL10N;

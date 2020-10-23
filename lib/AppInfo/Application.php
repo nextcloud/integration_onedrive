@@ -1,13 +1,13 @@
 <?php
 /**
- * Nextcloud - Github
+ * Nextcloud - Onedrive
  *
  *
  * @author Julien Veyssier <eneiluj@posteo.net>
  * @copyright Julien Veyssier 2020
  */
 
-namespace OCA\Github\AppInfo;
+namespace OCA\Onedrive\AppInfo;
 
 use OCP\IContainer;
 use OCP\IUserSession;
@@ -18,18 +18,17 @@ use OCP\AppFramework\Bootstrap\IRegistrationContext;
 use OCP\AppFramework\Bootstrap\IBootContext;
 use OCP\AppFramework\Bootstrap\IBootstrap;
 
-use OCA\Github\Dashboard\GithubWidget;
-use OCA\Github\Search\GithubSearchReposProvider;
-use OCA\Github\Search\GithubSearchIssuesProvider;
+use OCA\Onedrive\Search\OnedriveSearchReposProvider;
+use OCA\Onedrive\Search\OnedriveSearchIssuesProvider;
 
 /**
  * Class Application
  *
- * @package OCA\Github\AppInfo
+ * @package OCA\Onedrive\AppInfo
  */
 class Application extends App implements IBootstrap {
 
-	public const APP_ID = 'integration_github';
+	public const APP_ID = 'integration_onedrive';
 
 	/**
 	 * Constructor
@@ -45,11 +44,6 @@ class Application extends App implements IBootstrap {
 	}
 
 	public function register(IRegistrationContext $context): void {
-		$context->registerDashboardWidget(GithubWidget::class);
-
-		$config = $this->getContainer()->query(\OCP\IConfig::class);
-		$context->registerSearchProvider(GithubSearchIssuesProvider::class);
-		$context->registerSearchProvider(GithubSearchReposProvider::class);
 	}
 
 	public function boot(IBootContext $context): void {
@@ -72,7 +66,7 @@ class Application extends App implements IBootstrap {
 						'order' => 10,
 
 						// the route that will be shown on startup
-						'href' => 'https://github.com',
+						'href' => 'https://onedrive.live.com',
 
 						// the icon that will be shown in the navigation
 						// this file needs to exist in img/
@@ -80,7 +74,7 @@ class Application extends App implements IBootstrap {
 
 						// the title of your application. This will be used in the
 						// navigation or on the settings page of your app
-						'name' => $l10n->t('GitHub'),
+						'name' => $l10n->t('Microsoft OneDrive'),
 					];
 				});
 			}

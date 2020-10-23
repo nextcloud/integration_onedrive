@@ -1,75 +1,44 @@
 <template>
-	<div id="github_prefs" class="section">
+	<div id="onedrive_prefs" class="section">
 		<h2>
-			<a class="icon icon-github-settings" />
-			{{ t('integration_github', 'GitHub integration') }}
+			<a class="icon icon-onedrive-settings" />
+			{{ t('integration_onedrive', 'Microsoft OneDrive integration') }}
 		</h2>
-		<div id="toggle-github-navigation-link">
+		<div id="toggle-onedrive-navigation-link">
 			<input
-				id="github-link"
+				id="onedrive-link"
 				type="checkbox"
 				class="checkbox"
 				:checked="state.navigation_enabled"
 				@input="onNavigationChange">
-			<label for="github-link">{{ t('integration_github', 'Enable navigation link') }}</label>
+			<label for="onedrive-link">{{ t('integration_onedrive', 'Enable navigation link') }}</label>
 		</div>
 		<br><br>
 		<p v-if="!showOAuth && !connected" class="settings-hint">
-			{{ t('integration_github', 'When you create a personal access token yourself, give it at least "read:user", "user:email" and "notifications" permissions.') }}
+			{{ t('integration_onedrive', 'Ask your Nextcloud administrator to configure OneDrive OAuth settings in order to use this integration.') }}
 		</p>
-		<div id="github-content">
-			<div class="github-grid-form">
-				<label v-show="!showOAuth"
-					for="github-token">
-					<a class="icon icon-category-auth" />
-					{{ t('integration_github', 'Personal access token') }}
-				</label>
-				<input v-show="!showOAuth"
-					id="github-token"
-					v-model="state.token"
-					type="password"
-					:disabled="connected === true"
-					:placeholder="t('integration_github', 'GitHub personal access token')"
-					@input="onInput"
-					@focus="readonly = false">
-			</div>
-			<button v-if="showOAuth && !connected" id="github-oauth" @click="onOAuthClick">
+		<div v-if="showOAuth" id="onedrive-content">
+			<button v-if="!connected"
+				id="onedrive-oauth"
+				@click="onOAuthClick">
 				<span class="icon icon-external" />
-				{{ t('integration_github', 'Connect to GitHub') }}
+				{{ t('integration_onedrive', 'Connect to OneDrive') }}
 			</button>
-			<div v-if="connected" class="github-grid-form">
-				<label class="github-connected">
+			<div v-else
+				class="onedrive-grid-form">
+				<label class="onedrive-connected">
 					<a class="icon icon-checkmark-color" />
-					{{ t('integration_github', 'Connected as {user}', { user: state.user_name }) }}
+					{{ t('integration_onedrive', 'Connected as {user}', { user: state.user_name }) }}
 				</label>
-				<button id="github-rm-cred" @click="onLogoutClick">
+				<button id="onedrive-rm-cred" @click="onLogoutClick">
 					<span class="icon icon-close" />
-					{{ t('integration_github', 'Disconnect from GitHub') }}
+					{{ t('integration_onedrive', 'Disconnect from OneDrive') }}
 				</button>
 				<span />
 			</div>
 			<br>
-			<div v-if="connected" id="github-search-block">
-				<input
-					id="search-github-repos"
-					type="checkbox"
-					class="checkbox"
-					:checked="state.search_repos_enabled"
-					@input="onSearchReposChange">
-				<label for="search-github-repos">{{ t('integration_github', 'Enable searching for repositories') }}</label>
-				<br><br>
-				<input
-					id="search-github-issues"
-					type="checkbox"
-					class="checkbox"
-					:checked="state.search_issues_enabled"
-					@input="onSearchIssuesChange">
-				<label for="search-github-issues">{{ t('integration_github', 'Enable searching for issues and pull requests') }}</label>
-				<br><br>
-				<p v-if="state.search_repos_enabled || state.search_issues_enabled" class="settings-hint">
-					<span class="icon icon-details" />
-					{{ t('integration_github', 'Warning, everything you type in the search bar will be sent to GitHub.') }}
-				</p>
+			<div v-if="connected" id="onedrive-import-block">
+				plop connected
 			</div>
 		</div>
 	</div>
@@ -79,7 +48,6 @@
 import { loadState } from '@nextcloud/initial-state'
 import { generateUrl } from '@nextcloud/router'
 import axios from '@nextcloud/axios'
-import { delay } from '../utils'
 import { showSuccess, showError } from '@nextcloud/dialogs'
 
 export default {
@@ -92,9 +60,9 @@ export default {
 
 	data() {
 		return {
-			state: loadState('integration_github', 'user-config'),
+			state: loadState('integration_onedrive', 'user-config'),
 			readonly: true,
-			redirect_uri: window.location.protocol + '//' + window.location.host + generateUrl('/apps/integration_github/oauth-redirect'),
+			redirect_uri: window.location.protocol + '//' + window.location.host + generateUrl('/apps/integration_onedrive/oauth-redirect'),
 		}
 	},
 
@@ -103,7 +71,7 @@ export default {
 			return this.state.client_id && this.state.client_secret
 		},
 		connected() {
-			return this.state.token && this.state.token !== '' && this.state.user_name && this.state.user_name !== ''
+			return this.state.user_name && this.state.user_name !== ''
 		},
 	},
 
@@ -114,54 +82,38 @@ export default {
 		const paramString = window.location.search.substr(1)
 		// eslint-disable-next-line
 		const urlParams = new URLSearchParams(paramString)
-		const ghToken = urlParams.get('githubToken')
+		const ghToken = urlParams.get('onedriveToken')
 		if (ghToken === 'success') {
-			showSuccess(t('integration_github', 'Connected to GitHub!'))
+			showSuccess(t('integration_onedrive', 'Connected to OneDrive!'))
 		} else if (ghToken === 'error') {
-			showError(t('integration_github', 'GitHub OAuth error:') + ' ' + urlParams.get('message'))
+			showError(t('integration_onedrive', 'OneDrive OAuth error:') + ' ' + urlParams.get('message'))
 		}
 	},
 
 	methods: {
 		onLogoutClick() {
-			this.state.token = ''
-			this.saveOptions({ token: this.state.token })
-		},
-		onSearchIssuesChange(e) {
-			this.state.search_issues_enabled = e.target.checked
-			this.saveOptions({ search_issues_enabled: this.state.search_issues_enabled ? '1' : '0' })
-		},
-		onSearchReposChange(e) {
-			this.state.search_repos_enabled = e.target.checked
-			this.saveOptions({ search_repos_enabled: this.state.search_repos_enabled ? '1' : '0' })
+			this.state.user_name = ''
+			this.saveOptions({ user_name: this.state.user_name })
 		},
 		onNavigationChange(e) {
 			this.state.navigation_enabled = e.target.checked
 			this.saveOptions({ navigation_enabled: this.state.navigation_enabled ? '1' : '0' })
 		},
-		onInput() {
-			delay(() => {
-				this.saveOptions({ token: this.state.token })
-			}, 2000)()
-		},
 		saveOptions(values) {
 			const req = {
 				values,
 			}
-			const url = generateUrl('/apps/integration_github/config')
+			const url = generateUrl('/apps/integration_onedrive/config')
 			axios.put(url, req)
 				.then((response) => {
-					showSuccess(t('integration_github', 'GitHub options saved'))
+					showSuccess(t('integration_onedrive', 'OneDrive options saved'))
 					if (response.data.user_name !== undefined) {
 						this.state.user_name = response.data.user_name
-						if (this.state.token && response.data.user_name === '') {
-							showError(t('integration_github', 'Incorrect access token'))
-						}
 					}
 				})
 				.catch((error) => {
 					showError(
-						t('integration_github', 'Failed to save GitHub options')
+						t('integration_onedrive', 'Failed to save OneDrive options')
 						+ ': ' + error.response?.request?.responseText
 					)
 				})
@@ -169,27 +121,28 @@ export default {
 				})
 		},
 		onOAuthClick() {
-			const oauthState = Math.random().toString(36).substring(3)
-			const requestUrl = 'https://github.com/login/oauth/authorize'
+			// const oauthState = Math.random().toString(36).substring(3)
+			const requestUrl = 'https://login.live.com/oauth20_authorize.srf'
 				+ '?client_id=' + encodeURIComponent(this.state.client_id)
+				+ '&response_type=code'
 				+ '&redirect_uri=' + encodeURIComponent(this.redirect_uri)
-				+ '&state=' + encodeURIComponent(oauthState)
-				+ '&scope=' + encodeURIComponent('user repo notifications')
+				// + '&state=' + encodeURIComponent(oauthState)
+				+ '&scope=' + encodeURIComponent('onedrive.readwrite offline_access')
 
 			const req = {
 				values: {
-					oauth_state: oauthState,
+					// oauth_state: oauthState,
 					redirect_uri: this.redirect_uri,
 				},
 			}
-			const url = generateUrl('/apps/integration_github/config')
+			const url = generateUrl('/apps/integration_onedrive/config')
 			axios.put(url, req)
 				.then((response) => {
 					window.location.replace(requestUrl)
 				})
 				.catch((error) => {
 					showError(
-						t('integration_github', 'Failed to save GitHub OAuth state')
+						t('integration_onedrive', 'Failed to save OneDrive OAuth state')
 						+ ': ' + error.response?.request?.responseText
 					)
 				})
@@ -201,15 +154,15 @@ export default {
 </script>
 
 <style scoped lang="scss">
-.github-grid-form label {
+.onedrive-grid-form label {
 	line-height: 38px;
 }
 
-.github-grid-form input {
+.onedrive-grid-form input {
 	width: 100%;
 }
 
-.github-grid-form {
+.onedrive-grid-form {
 	max-width: 600px;
 	display: grid;
 	grid-template: 1fr / 1fr 1fr;
@@ -218,35 +171,35 @@ export default {
 	}
 }
 
-#github_prefs .icon {
+#onedrive_prefs .icon {
 	display: inline-block;
 	width: 32px;
 }
 
-#github_prefs .grid-form .icon {
+#onedrive_prefs .grid-form .icon {
 	margin-bottom: -3px;
 }
 
-.icon-github-settings {
+.icon-onedrive-settings {
 	background-image: url('./../../img/app-dark.svg');
 	background-size: 23px 23px;
 	height: 23px;
 	margin-bottom: -4px;
 }
 
-body.theme--dark .icon-github-settings {
+body.theme--dark .icon-onedrive-settings {
 	background-image: url('./../../img/app.svg');
 }
 
-#github-content {
+#onedrive-content {
 	margin-left: 40px;
 }
 
-#github-search-block .icon {
+#onedrive-search-block .icon {
 	width: 22px;
 }
 
-#toggle-github-navigation-link {
+#toggle-onedrive-navigation-link {
 	margin-left: 40px;
 }
 

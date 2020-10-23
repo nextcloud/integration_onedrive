@@ -1,5 +1,5 @@
 <?php
-namespace OCA\Github\Settings;
+namespace OCA\Onedrive\Settings;
 
 use OCP\AppFramework\Http\TemplateResponse;
 use OCP\IRequest;
@@ -9,7 +9,7 @@ use OCP\Settings\ISettings;
 use OCP\Util;
 use OCP\IURLGenerator;
 use OCP\IInitialStateService;
-use OCA\Github\AppInfo\Application;
+use OCA\Onedrive\AppInfo\Application;
 
 class Personal implements ISettings {
 
@@ -40,8 +40,6 @@ class Personal implements ISettings {
 	 */
 	public function getForm(): TemplateResponse {
 		$token = $this->config->getUserValue($this->userId, Application::APP_ID, 'token', '');
-		$searchIssuesEnabled = $this->config->getUserValue($this->userId, Application::APP_ID, 'search_issues_enabled', '0');
-		$searchReposEnabled = $this->config->getUserValue($this->userId, Application::APP_ID, 'search_repos_enabled', '0');
 		$navigationEnabled = $this->config->getUserValue($this->userId, Application::APP_ID, 'navigation_enabled', '0');
 		$userName = $this->config->getUserValue($this->userId, Application::APP_ID, 'user_name', '');
 
@@ -53,8 +51,6 @@ class Personal implements ISettings {
 			'token' => $token,
 			'client_id' => $clientID,
 			'client_secret' => $clientSecret,
-			'search_issues_enabled' => ($searchIssuesEnabled === '1'),
-			'search_repos_enabled' => ($searchReposEnabled === '1'),
 			'navigation_enabled' => ($navigationEnabled === '1'),
 			'user_name' => $userName,
 		];
@@ -64,7 +60,7 @@ class Personal implements ISettings {
 	}
 
 	public function getSection(): string {
-		return 'connected-accounts';
+		return 'migration';
 	}
 
 	public function getPriority(): int {

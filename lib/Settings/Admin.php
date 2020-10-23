@@ -1,5 +1,5 @@
 <?php
-namespace OCA\Github\Settings;
+namespace OCA\Onedrive\Settings;
 
 use OCP\AppFramework\Http\TemplateResponse;
 use OCP\IRequest;
@@ -9,7 +9,7 @@ use OCP\Settings\ISettings;
 use OCP\Util;
 use OCP\IURLGenerator;
 use OCP\IInitialStateService;
-use OCA\Github\AppInfo\Application;
+use OCA\Onedrive\AppInfo\Application;
 
 class Admin implements ISettings {
 

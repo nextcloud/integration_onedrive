@@ -1,22 +1,21 @@
 <?xml version="1.0"?>
 <info>
-    <id>integration_github</id>
-    <name>GitHub integration</name>
-    <summary>Integration of GitHub software development management service</summary>
-    <description><![CDATA[GitHub integration provides a dashboard widget displaying your most important notifications
-    and a unified search provider for repositories, issues and pull requests.]]></description>
-    <version>0.0.8</version>
+    <id>integration_onedrive</id>
+    <name>OneDrive integration</name>
+    <summary>Integration of Microsoft OneDrive</summary>
+    <description><![CDATA[Microsoft OneDrive integration...]]></description>
+    <version>0.0.1</version>
     <licence>agpl</licence>
     <author>Julien Veyssier</author>
-    <namespace>Github</namespace>
+    <namespace>Onedrive</namespace>
     <documentation>
-        <developer>https://github.com/nextcloud/integration_github</developer>
+        <developer>https://github.com/eneiluj/integration_onedrive</developer>
     </documentation>
     <category>integration</category>
     <category>dashboard</category>
-    <website>https://github.com/nextcloud/integration_github</website>
-    <bugs>https://github.com/nextcloud/integration_github/issues</bugs>
-    <screenshot>https://github.com/nextcloud/integration_github/raw/master/img/screenshot1.jpg</screenshot>
+    <website>https://github.com/eneiluj/integration_onedrive</website>
+    <bugs>https://github.com/eneiluj/integration_onedrive/issues</bugs>
+    <screenshot>https://github.com/eneiluj/integration_onedrive/raw/master/img/screenshot1.jpg</screenshot>
     <dependencies>
         <database min-version="9.4">pgsql</database>
         <database>sqlite</database>
@@ -24,9 +23,9 @@
         <nextcloud min-version="20" max-version="21"/>
     </dependencies>
     <settings>
-        <admin>OCA\Github\Settings\Admin</admin>
-        <admin-section>OCA\Github\Settings\AdminSection</admin-section>
-        <personal>OCA\Github\Settings\Personal</personal>
-        <personal-section>OCA\Github\Settings\PersonalSection</personal-section>
+        <admin>OCA\Onedrive\Settings\Admin</admin>
+        <admin-section>OCA\Onedrive\Settings\AdminSection</admin-section>
+        <personal>OCA\Onedrive\Settings\Personal</personal>
+        <personal-section>OCA\Onedrive\Settings\PersonalSection</personal-section>
     </settings>
 </info>
