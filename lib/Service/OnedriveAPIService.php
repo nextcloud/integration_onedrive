@@ -16,6 +16,8 @@ use OCP\IConfig;
 use Psr\Log\LoggerInterface;
 use OCP\Http\Client\IClientService;
 
+use OCA\Onedrive\AppInfo\Application;
+
 class OnedriveAPIService {
 
 	private $l10n;
@@ -47,10 +49,10 @@ class OnedriveAPIService {
 	 */
 	public function request(string $accessToken, string $userId, string $endPoint, array $params = [], string $method = 'GET'): array {
 		try {
-			$url = '' . $endPoint;
+			$url = 'https://graph.microsoft.com/v1.0/' . $endPoint;
 			$options = [
 				'headers' => [
-					'Authorization' => 'Bearer ' . $accessToken,
+					'Authorization' => 'bearer ' . $accessToken,
 					'User-Agent' => 'Nextcloud OneDrive integration'
 				],
 			];
@@ -86,6 +88,10 @@ class OnedriveAPIService {
             if ($response->getStatusCode() === 401) {
                 $this->logger->info('Trying to REFRESH the access token', ['app' => $this->appName]);
                 // try to refresh the token
+				$clientId = $this->config->getAppValue(Application::APP_ID, 'client_id', '');
+				$clientSecret = $this->config->getAppValue(Application::APP_ID, 'client_secret', '');
+				$redirectUri = $this->config->getUserValue($userId, Application::APP_ID, 'redirect_uri', '');
+				$refreshToken = $this->config->getUserValue($userId, Application::APP_ID, 'refresh_token', '');
                 $result = $this->requestOAuthAccessToken([
 					'client_id' => $clientId,
 					'client_secret' => $clientSecret,
@@ -104,7 +110,6 @@ class OnedriveAPIService {
                     return ['error' => $this->l10n->t('Token is not valid anymore. Impossible to refresh it.') . ' ' . $result['error']];
                 }
             }
-
 			$this->logger->warning('OneDrive API error : '.$e->getMessage(), ['app' => $this->appName]);
 			return ['error' => $e->getMessage()];
 		}

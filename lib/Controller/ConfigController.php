@@ -132,10 +132,12 @@ class ConfigController extends Controller {
 				$this->config->setUserValue($this->userId, Application::APP_ID, 'token', $accessToken);
 				$refreshToken = $result['refresh_token'];
 				$this->config->setUserValue($this->userId, Application::APP_ID, 'refresh_token', $refreshToken);
+				$this->config->setUserValue($this->userId, Application::APP_ID, 'scope', $result['scope'] ?? '');
 
 				//$this->storeUserInfo($accessToken);
 				$this->config->setUserValue($this->userId, Application::APP_ID, 'user_id', $result['user_id'] ?? '');
-				$this->config->setUserValue($this->userId, Application::APP_ID, 'user_name', 'UNAME');
+				$info = $this->onedriveAPIService->request($accessToken, $this->userId, 'me');
+				$this->config->setUserValue($this->userId, Application::APP_ID, 'user_name', $info['displayName'] ?? '??');
 				return new RedirectResponse(
 					$this->urlGenerator->linkToRoute('settings.PersonalSettings.index', ['section' => 'migration']) .
 					'?onedriveToken=success'

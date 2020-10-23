@@ -9,6 +9,7 @@ use OCP\Settings\ISettings;
 use OCP\Util;
 use OCP\IURLGenerator;
 use OCP\IInitialStateService;
+use OCP\Files\IRootFolder;
 use OCA\Onedrive\AppInfo\Application;
 
 class Personal implements ISettings {
@@ -24,12 +25,14 @@ class Personal implements ISettings {
 								IRequest $request,
 								IConfig $config,
 								IURLGenerator $urlGenerator,
+								IRootFolder $root,
 								IInitialStateService $initialStateService,
 								string $userId) {
 		$this->appName = $appName;
 		$this->urlGenerator = $urlGenerator;
 		$this->request = $request;
 		$this->l = $l;
+		$this->root = $root;
 		$this->config = $config;
 		$this->initialStateService = $initialStateService;
 		$this->userId = $userId;
@@ -47,12 +50,17 @@ class Personal implements ISettings {
 		$clientID = $this->config->getAppValue(Application::APP_ID, 'client_id', '');
 		$clientSecret = $this->config->getAppValue(Application::APP_ID, 'client_secret', '') !== '';
 
+		// get free space
+		$userFolder = $this->root->getUserFolder($this->userId);
+		$freeSpace = $userFolder->getStorage()->free_space('/');
+
 		$userConfig = [
 			'token' => $token,
 			'client_id' => $clientID,
 			'client_secret' => $clientSecret,
 			'navigation_enabled' => ($navigationEnabled === '1'),
 			'user_name' => $userName,
+			'free_space' => $freeSpace,
 		];
 		$this->initialStateService->provideInitialState($this->appName, 'user-config', $userConfig);
 		$response = new TemplateResponse(Application::APP_ID, 'personalSettings');

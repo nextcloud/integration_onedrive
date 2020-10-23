@@ -30,7 +30,7 @@ use OCP\IRequest;
 use OCP\AppFramework\Http\DataResponse;
 use OCP\AppFramework\Controller;
 
-use OCA\Onedrive\Service\OnedriveAPIService;
+use OCA\Onedrive\Service\OnedriveStorageAPIService;
 use OCA\Onedrive\AppInfo\Application;
 
 class OnedriveAPIController extends Controller {
@@ -49,7 +49,7 @@ class OnedriveAPIController extends Controller {
 								IAppManager $appManager,
 								IAppData $appData,
 								LoggerInterface $logger,
-								OnedriveAPIService $onedriveAPIService,
+								OnedriveStorageAPIService $onedriveStorageApiService,
 								$userId) {
 		parent::__construct($AppName, $request);
 		$this->userId = $userId;
@@ -59,8 +59,60 @@ class OnedriveAPIController extends Controller {
 		$this->serverContainer = $serverContainer;
 		$this->config = $config;
 		$this->logger = $logger;
-		$this->onedriveAPIService = $onedriveAPIService;
+		$this->onedriveStorageApiService = $onedriveStorageApiService;
 		$this->accessToken = $this->config->getUserValue($this->userId, Application::APP_ID, 'token', '');
 	}
 
+	/**
+     * @NoAdminRequired
+     *
+     * @return DataResponse
+     */
+    public function getStorageSize(): DataResponse {
+        if ($this->accessToken === '') {
+            return new DataResponse(null, 400);
+        }
+        $result = $this->onedriveStorageApiService->getStorageSize($this->accessToken, $this->userId);
+        if (isset($result['error'])) {
+            $response = new DataResponse($result['error'], 401);
+        } else {
+            $response = new DataResponse($result);
+        }
+        return $response;
+    }
+
+    /**
+     * @NoAdminRequired
+     *
+     * @return DataResponse
+     */
+    public function importOnedrive(): DataResponse {
+        if ($this->accessToken === '') {
+            return new DataResponse(null, 400);
+        }
+        $result = $this->onedriveStorageApiService->startImportOnedrive($this->accessToken, $this->userId);
+        if (isset($result['error'])) {
+            $response = new DataResponse($result['error'], 401);
+        } else {
+            $response = new DataResponse($result);
+        }
+        return $response;
+	}
+
+	/**
+     * @NoAdminRequired
+     *
+     * @return DataResponse
+     */
+    public function getImportOnedriveInformation(): DataResponse {
+        if ($this->accessToken === '') {
+            return new DataResponse(null, 400);
+        }
+        $response = new DataResponse([
+            'importing_onedrive' => $this->config->getUserValue($this->userId, Application::APP_ID, 'importing_onedrive', '') === '1',
+            'last_onedrive_import_timestamp' => (int) $this->config->getUserValue($this->userId, Application::APP_ID, 'last_onedrive_import_timestamp', '0'),
+            'nb_imported_files' => (int) $this->config->getUserValue($this->userId, Application::APP_ID, 'nb_imported_files', '0'),
+        ]);
+        return $response;
+    }
 }

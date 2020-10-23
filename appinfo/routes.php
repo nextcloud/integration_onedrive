@@ -14,5 +14,8 @@ return [
         ['name' => 'config#oauthRedirect', 'url' => '/oauth-redirect', 'verb' => 'GET'],
         ['name' => 'config#setConfig', 'url' => '/config', 'verb' => 'PUT'],
         ['name' => 'config#setAdminConfig', 'url' => '/admin-config', 'verb' => 'PUT'],
+        ['name' => 'onedriveAPI#getStorageSize', 'url' => '/storage-size', 'verb' => 'GET'],
+        ['name' => 'onedriveAPI#importOnedrive', 'url' => '/import-files', 'verb' => 'GET'],
+        ['name' => 'onedriveAPI#getImportOnedriveInformation', 'url' => '/import-files-info', 'verb' => 'GET'],
     ]
 ];
