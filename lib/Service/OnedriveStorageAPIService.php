@@ -68,40 +68,6 @@ class OnedriveStorageAPIService {
 			'usageInStorage' => $result['quota']['used'],
 		];
 		$driveId = $result['id'] ?? '';
-
-		// count files
-		$nbFiles = 10;
-		//$params = [
-		//	'limit' => 2000,
-		//	'path' => '',
-		//	'recursive' => true,
-		//	'include_media_info' => false,
-		//	'include_deleted' => false,
-		//	'include_has_explicit_shared_members' => false,
-		//	'include_mounted_folders' => true,
-		//	'include_non_downloadable_files' => false,
-		//];
-		//do {
-		//	$suffix = isset($params['cursor']) ? '/continue' : '';
-		//	$result = $this->onedriveApiService->request(
-		//		$accessToken, $refreshToken, $clientID, $clientSecret, $userId, 'files/list_folder' . $suffix, $params, 'POST'
-		//	);
-		//	if (isset($result['error'])) {
-		//		return $result;
-		//	}
-		//	if (isset($result['entries']) && is_array($result['entries'])) {
-		//		foreach ($result['entries'] as $entry) {
-		//			if (isset($entry['.tag']) && $entry['.tag'] === 'file') {
-		//				$nbFiles++;
-		//			}
-		//		}
-		//	}
-		//	$params = [
-		//		'cursor' => $result['cursor'] ?? '',
-		//	];
-		//} while (isset($result['has_more'], $result['cursor']) && $result['has_more']);
-		$info['nbFiles'] = $nbFiles;
-
 		return $info;
 	}
 
@@ -123,7 +89,7 @@ class OnedriveStorageAPIService {
 			}
 		}
 		$this->config->setUserValue($userId, Application::APP_ID, 'importing_onedrive', '1');
-		$this->config->setUserValue($userId, Application::APP_ID, 'nb_imported_files', '0');
+		$this->config->setUserValue($userId, Application::APP_ID, 'imported_size', '0');
 		$this->config->setUserValue($userId, Application::APP_ID, 'last_onedrive_import_timestamp', '0');
 
 		$this->jobList->add(ImportOnedriveJob::class, ['user_id' => $userId]);
@@ -150,12 +116,12 @@ class OnedriveStorageAPIService {
 		// import batch of files
 		$targetPath = $this->l10n->t('Onedrive import');
 		// import by batch of 500 Mo
-		$alreadyImported = $this->config->getUserValue($userId, Application::APP_ID, 'nb_imported_files', '0');
+		$alreadyImported = $this->config->getUserValue($userId, Application::APP_ID, 'imported_size', '0');
 		$alreadyImported = (int) $alreadyImported;
 		$result = $this->importFiles($accessToken, $refreshToken, $clientID, $clientSecret, $userId, $targetPath, 500000000, $alreadyImported);
 		if (isset($result['error']) || (isset($result['finished']) && $result['finished'])) {
 			$this->config->setUserValue($userId, Application::APP_ID, 'importing_onedrive', '0');
-			$this->config->setUserValue($userId, Application::APP_ID, 'nb_imported_files', '0');
+			$this->config->setUserValue($userId, Application::APP_ID, 'imported_size', '0');
 			$this->config->setUserValue($userId, Application::APP_ID, 'last_onedrive_import_timestamp', '0');
 			if (isset($result['finished']) && $result['finished']) {
 				$this->onedriveApiService->sendNCNotification($userId, 'import_onedrive_finished', [
@@ -195,14 +161,13 @@ class OnedriveStorageAPIService {
 			}
 		}
 
-		$info = $this->getStorageSize($accessToken, $refreshToken, $clientID, $clientSecret, $userId);
+		$info = $this->getStorageSize($accessToken, $userId);
 		if (isset($info['error'])) {
 			return $info;
 		}
-		$nbFilesOnOnedrive = $info['nbFiles'];
+		$onedriveStorageSize = $info['usageInStorage'];
 		$downloadedSize = 0;
-		$nbDownloaded = 0;
-		$totalSeenNumber = 0;
+		$totalSeenSize = 0;
 
 		$params = [
 			'limit' => 2000,
@@ -228,14 +193,12 @@ class OnedriveStorageAPIService {
 						$totalSeenNumber++;
 						$size = $this->getFile($accessToken, $refreshToken, $clientID, $clientSecret, $userId, $entry, $folder);
 						if (!is_null($size)) {
-							$nbDownloaded++;
-							$this->config->setUserValue($userId, Application::APP_ID, 'nb_imported_files', $alreadyImported + $nbDownloaded);
 							$downloadedSize += $size;
+							$this->config->setUserValue($userId, Application::APP_ID, 'imported_size', $alreadyImported + $downloadedSize);
 							if ($maxDownloadSize && $downloadedSize > $maxDownloadSize) {
 								return [
-									'nbDownloaded' => $nbDownloaded,
 									'targetPath' => $targetPath,
-									'finished' => ($totalSeenNumber >= $nbFilesOnOnedrive),
+									'finished' => ($totalSeenSize >= $onedriveStorageSize),
 									'totalSeen' => $totalSeenNumber,
 								];
 							}
@@ -249,7 +212,6 @@ class OnedriveStorageAPIService {
 		} while (isset($result['has_more'], $result['cursor']) && $result['has_more']);
 
 		return [
-			'nbDownloaded' => $nbDownloaded,
 			'targetPath' => $targetPath,
 			'finished' => true,
 			'totalSeen' => $totalSeenNumber,

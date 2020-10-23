@@ -36,11 +36,11 @@
 					</button>
 				</div>
 				<br>
-				<div v-if="nbFiles > 0" id="import-storage">
+				<div v-if="storageSize > 0" id="import-storage">
 					<h3>{{ t('integration_onedrive', 'Onedrive storage') }}</h3>
 					<label>
 						<span class="icon icon-folder" />
-						{{ n('integration_onedrive', '{nbFiles} file in your Onedrive storage ({formSize})', '{nbFiles} files in your Onedrive storage ({formSize})', nbFiles, { nbFiles, formSize: myHumanFileSize(storageSize, true) }) }}
+						{{ t('integration_onedrive', 'Onedrive storage ({formSize})', { formSize: myHumanFileSize(storageSize, true) }) }}
 					</label>
 					<button v-if="enoughSpaceForOnedrive && !importingOnedrive"
 						id="onedrive-import-files"
@@ -53,7 +53,7 @@
 					</span>
 					<div v-else>
 						<br>
-						{{ n('integration_onedrive', '{amount} file imported ({progress}%)', '{amount} files imported ({progress}%)', nbImportedFiles, { amount: nbImportedFiles, progress: onedriveImportProgress }) }}
+						{{ t('integration_onedrive', '{formImported} imported ({progress}%)', { formImported: myHumanFileSize(importedSize), progress: onedriveImportProgress }) }}
 						<br>
 						{{ lastOnedriveImportDate }}
 						<br>
@@ -90,11 +90,10 @@ export default {
 			readonly: true,
 			redirect_uri: window.location.protocol + '//' + window.location.host + generateUrl('/apps/integration_onedrive/oauth-redirect'),
 			// onedrive import stuff
-			nbFiles: 0,
 			storageSize: 0,
 			importingOnedrive: false,
 			lastOnedriveImportTimestamp: 0,
-			nbImportedFiles: 0,
+			importedSize: 0,
 			onedriveImportLoop: null,
 		}
 	},
@@ -115,8 +114,8 @@ export default {
 				: t('integration_onedrive', 'Onedrive import process will begin soon')
 		},
 		onedriveImportProgress() {
-			return this.storageSize > 0 && this.nbImportedFiles > 0
-				? parseInt(this.nbImportedFiles / this.nbFiles * 100)
+			return this.storageSize > 0 && this.importedSize > 0
+				? parseInt(this.importedSize / this.storageSize * 100)
 				: 0
 		},
 	},
@@ -203,9 +202,8 @@ export default {
 			const url = generateUrl('/apps/integration_onedrive/storage-size')
 			axios.get(url)
 				.then((response) => {
-					if (response.data?.usageInStorage && response.data?.nbFiles) {
+					if (response.data?.usageInStorage) {
 						this.storageSize = response.data.usageInStorage
-						this.nbFiles = response.data.nbFiles
 					}
 				})
 				.catch((error) => {
@@ -223,7 +221,7 @@ export default {
 				.then((response) => {
 					if (response.data && Object.keys(response.data).length > 0) {
 						this.lastOnedriveImportTimestamp = response.data.last_onedrive_import_timestamp
-						this.nbImportedFiles = response.data.nb_imported_files
+						this.importedSize = response.data.imported_size
 						this.importingOnedrive = response.data.importing_onedrive
 						if (!this.importingOnedrive) {
 							clearInterval(this.onedriveImportLoop)
@@ -269,7 +267,7 @@ export default {
 				values: {
 					importing_onedrive: '0',
 					last_onedrive_import_timestamp: '0',
-					nb_imported_files: '0',
+					imported_size: '0',
 				},
 			}
 			const url = generateUrl('/apps/integration_onedrive/config')
