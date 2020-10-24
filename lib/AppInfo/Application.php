@@ -17,9 +17,11 @@ use OCP\AppFramework\IAppContainer;
 use OCP\AppFramework\Bootstrap\IRegistrationContext;
 use OCP\AppFramework\Bootstrap\IBootContext;
 use OCP\AppFramework\Bootstrap\IBootstrap;
+use OCP\Notification\IManager as INotificationManager;
 
 use OCA\Onedrive\Search\OnedriveSearchReposProvider;
 use OCA\Onedrive\Search\OnedriveSearchIssuesProvider;
+use OCA\Onedrive\Notification\Notifier;
 
 /**
  * Class Application
@@ -41,6 +43,9 @@ class Application extends App implements IBootstrap {
 		$container = $this->getContainer();
 		$this->container = $container;
 		$this->config = $container->query(\OCP\IConfig::class);
+
+		$manager = $container->query(INotificationManager::class);
+        $manager->registerNotifierService(Notifier::class);
 	}
 
 	public function register(IRegistrationContext $context): void {

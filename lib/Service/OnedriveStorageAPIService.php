@@ -108,17 +108,15 @@ class OnedriveStorageAPIService {
 		}
 
 		$accessToken = $this->config->getUserValue($userId, Application::APP_ID, 'token', '');
-		$refreshToken = $this->config->getUserValue($userId, Application::APP_ID, 'refresh_token', '');
-		$clientID = $this->config->getAppValue(Application::APP_ID, 'client_id', DEFAULT_DROPBOX_CLIENT_ID);
-		$clientID = $clientID ?: DEFAULT_DROPBOX_CLIENT_ID;
-		$clientSecret = $this->config->getAppValue(Application::APP_ID, 'client_secret', DEFAULT_DROPBOX_CLIENT_SECRET);
-		$clientSecret = $clientSecret ?: DEFAULT_DROPBOX_CLIENT_SECRET;
+		//$refreshToken = $this->config->getUserValue($userId, Application::APP_ID, 'refresh_token', '');
+		//$clientID = $this->config->getAppValue(Application::APP_ID, 'client_id', '');
+		//$clientSecret = $this->config->getAppValue(Application::APP_ID, 'client_secret', '');
 		// import batch of files
 		$targetPath = $this->l10n->t('Onedrive import');
 		// import by batch of 500 Mo
 		$alreadyImported = $this->config->getUserValue($userId, Application::APP_ID, 'imported_size', '0');
 		$alreadyImported = (int) $alreadyImported;
-		$result = $this->importFiles($accessToken, $refreshToken, $clientID, $clientSecret, $userId, $targetPath, 500000000, $alreadyImported);
+		$result = $this->importFiles($accessToken, $userId, $targetPath, 500000000, $alreadyImported);
 		if (isset($result['error']) || (isset($result['finished']) && $result['finished'])) {
 			$this->config->setUserValue($userId, Application::APP_ID, 'importing_onedrive', '0');
 			$this->config->setUserValue($userId, Application::APP_ID, 'imported_size', '0');
@@ -138,17 +136,13 @@ class OnedriveStorageAPIService {
 
 	/**
 	 * @param string $accessToken
-	 * @param string $refreshToken
-	 * @param string $clientID
-	 * @param string $clientSecret
 	 * @param string $userId
 	 * @param string $targetPath
 	 * @param ?int $maxDownloadSize
 	 * @param int $alreadyImported
 	 * @return array
 	 */
-	public function importFiles(string $accessToken, string $refreshToken, string $clientID, string $clientSecret,
-								string $userId, string $targetPath,
+	public function importFiles(string $accessToken, string $userId, string $targetPath,
 								?int $maxDownloadSize = null, int $alreadyImported): array {
 		// create root folder
 		$userFolder = $this->root->getUserFolder($userId);
@@ -169,47 +163,7 @@ class OnedriveStorageAPIService {
 		$downloadedSize = 0;
 		$totalSeenSize = 0;
 
-		$params = [
-			'limit' => 2000,
-			'path' => '',
-			'recursive' => true,
-			'include_media_info' => false,
-			'include_deleted' => false,
-			'include_has_explicit_shared_members' => false,
-			'include_mounted_folders' => true,
-			'include_non_downloadable_files' => false,
-		];
-		do {
-			$suffix = isset($params['cursor']) ? '/continue' : '';
-			$result = $this->onedriveApiService->request(
-				$accessToken, $refreshToken, $clientID, $clientSecret, $userId, 'files/list_folder' . $suffix, $params, 'POST'
-			);
-			if (isset($result['error'])) {
-				return $result;
-			}
-			if (isset($result['entries']) && is_array($result['entries'])) {
-				foreach ($result['entries'] as $entry) {
-					if (isset($entry['.tag']) && $entry['.tag'] === 'file') {
-						$totalSeenNumber++;
-						$size = $this->getFile($accessToken, $refreshToken, $clientID, $clientSecret, $userId, $entry, $folder);
-						if (!is_null($size)) {
-							$downloadedSize += $size;
-							$this->config->setUserValue($userId, Application::APP_ID, 'imported_size', $alreadyImported + $downloadedSize);
-							if ($maxDownloadSize && $downloadedSize > $maxDownloadSize) {
-								return [
-									'targetPath' => $targetPath,
-									'finished' => ($totalSeenSize >= $onedriveStorageSize),
-									'totalSeen' => $totalSeenNumber,
-								];
-							}
-						}
-					}
-				}
-			}
-			$params = [
-				'cursor' => $result['cursor'] ?? '',
-			];
-		} while (isset($result['has_more'], $result['cursor']) && $result['has_more']);
+		$downloadResult = $this->downloadDir($accessToken, $userId, $folder, $maxDownloadSize, 0, '');
 
 		return [
 			'targetPath' => $targetPath,
@@ -218,56 +172,57 @@ class OnedriveStorageAPIService {
 		];
 	}
 
-	/**
-	 * @param string $accessToken
-	 * @param string $refreshToken
-	 * @param string $clientID
-	 * @param string $clientSecret
-	 * @param string $userId
-	 * @param array $fileItem
-	 * @param Node $topFolder
-	 * @return ?int downloaded size, null if already existing or network error
-	 */
-	private function getFile(string $accessToken, string $refreshToken, string $clientID, string $clientSecret,
-							string $userId, array $fileItem, Node $topFolder): ?int {
-		$fileName = $fileItem['name'];
-		$path = preg_replace('/^\//', '', $fileItem['path_display']);
-		$pathParts = pathinfo($path);
-		$dirName = $pathParts['dirname'];
-		if ($dirname === '.') {
-			$saveFolder = $topFolder;
-		} else {
-			$saveFolder = $this->createAndGetFolder($dirName, $topFolder);
+	private function downloadDir(string $accessToken, string $userId, Node $folder,
+								?int $maxDownloadSize, int $downloadedSize, string $path): array {
+									error_log('DOWN '.$path);
+		$newDownloadedSize = $downloadedSize;
+		$reqPath = $path === ''
+			? ''
+			: ':/' . $path . ':';
+		$endPoint = 'me/drive/root' . $reqPath . '/children';
+		$result = $this->onedriveApiService->request($accessToken, $userId, $endPoint);
+		if (isset($result['error']) || !isset($result['value']) || !is_array($result['value'])) {
+			return [
+				'downloadedSize' => $newDownloadedSize,
+			];
 		}
-		if (!is_null($saveFolder) && !$saveFolder->nodeExists($fileName)) {
-			$res = $this->onedriveApiService->fileRequest($accessToken, $refreshToken, $clientID, $clientSecret, $userId, $fileItem['id']);
-			if (!isset($res['error'])) {
-				$savedFile = $saveFolder->newFile($fileName, $res['content']);
-				return $savedFile->getSize();
+		foreach ($result['value'] as $item) {
+			if (isset($item['file'])) {
+				$newDownloadedSize += $this->getFile($accessToken, $userId, $folder, $item);
+			} elseif (isset($item['folder'])) {
+				// create folder if needed
+				if (!$folder->nodeExists($item['name'])) {
+					$subFolder = $folder->newFolder($item['name']);
+				} else {
+					$subFolder = $folder->get($item['name']);
+				}
+				$subDownloadResult = $this->downloadDir(
+					$accessToken, $userId, $subFolder, $maxDownloadSize, $newDownloadedSize, $path . '/' . $item['name']
+				);
+				$newDownloadedSize += $subDownloadResult['downloadedSize'];
 			}
 		}
-		return null;
+		return [
+			'downloadedSize' => $newDownloadedSize,
+		];
 	}
 
 	/**
-	 * @param string $dirName
-	 * @param Node $topFolder
-	 * @return ?Node
+	 * @param string $accessToken
+	 * @param string $userId
+	 * @param array $fileItem
+	 * @param Node $folder
+	 * @return ?int downloaded size, null if already existing or network error
 	 */
-	private function createAndGetFolder(string $dirName, Node $topFolder): ?Node {
-		$dirs = explode('/', $dirName);
-		$seenDirs = [];
-		$dirNode = $topFolder;
-		foreach ($dirs as $dir) {
-			if (!$dirNode->nodeExists($dir)) {
-				$dirNode = $dirNode->newFolder($dir);
-			} else {
-				$dirNode = $dirNode->get($dir);
-				if ($dirNode->getType() !== FileInfo::TYPE_FOLDER) {
-					return null;
-				}
+	private function getFile(string $accessToken, string $userId, Node $folder, array $fileItem): int {
+		$fileName = $fileItem['name'];
+		if (!$folder->nodeExists($fileName)) {
+			$res = $this->onedriveApiService->fileRequest($fileItem['@microsoft.graph.downloadUrl']);
+			if (!isset($res['error'])) {
+				$savedFile = $folder->newFile($fileName, $res['content']);
+				return $savedFile->getSize();
 			}
 		}
-		return $dirNode;
+		return 0;
 	}
 }

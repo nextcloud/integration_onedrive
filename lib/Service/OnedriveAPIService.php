@@ -15,6 +15,9 @@ use OCP\IL10N;
 use OCP\IConfig;
 use Psr\Log\LoggerInterface;
 use OCP\Http\Client\IClientService;
+use GuzzleHttp\Exception\ClientException;
+use GuzzleHttp\Exception\ServerException;
+use OCP\Notification\IManager as INotificationManager;
 
 use OCA\Onedrive\AppInfo\Application;
 
@@ -30,14 +33,63 @@ class OnedriveAPIService {
 								LoggerInterface $logger,
 								IL10N $l10n,
 								IConfig $config,
+								INotificationManager $notificationManager,
 								IClientService $clientService) {
 		$this->appName = $appName;
 		$this->l10n = $l10n;
 		$this->logger = $logger;
 		$this->config = $config;
+		$this->notificationManager = $notificationManager;
 		$this->clientService = $clientService;
 		$this->client = $clientService->newClient();
 	}
+
+	/**
+     * @param string $userId
+     * @param string $subject
+     * @param string $params
+     * @return void
+     */
+    public function sendNCNotification(string $userId, string $subject, array $params): void {
+        $manager = $this->notificationManager;
+        $notification = $manager->createNotification();
+
+        $notification->setApp(Application::APP_ID)
+            ->setUser($userId)
+            ->setDateTime(new \DateTime())
+            ->setObject('dum', 'dum')
+            ->setSubject($subject, $params);
+
+        $manager->notify($notification);
+    }
+
+	/**
+     * @param string $url
+     * @return array
+     */
+    public function fileRequest(string $url): array {
+        try {
+            $options = [
+                'headers' => [
+                    'User-Agent' => 'Nextcloud Dropbox integration',
+                ],
+            ];
+
+            $response = $this->client->get($url, $options);
+            $body = $response->getBody();
+            $respCode = $response->getStatusCode();
+
+            if ($respCode >= 400) {
+                return ['error' => $this->l10n->t('Bad credentials')];
+            } else {
+                return ['content' => $body];
+            }
+        } catch (ServerException | ClientException $e) {
+            $response = $e->getResponse();
+            $this->logger->warning('OneDrive API error : '.$e->getMessage(), ['app' => $this->appName]);
+            return ['error' => $e->getMessage()];
+        }
+    }
 
 	/**
 	 * Make the HTTP request
