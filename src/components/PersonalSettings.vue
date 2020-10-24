@@ -53,7 +53,7 @@
 					</span>
 					<div v-else>
 						<br>
-						{{ t('integration_onedrive', '{formImported} imported ({progress}%)', { formImported: myHumanFileSize(importedSize), progress: onedriveImportProgress }) }}
+						{{ n('integration_onedrive', '{amount} file imported ({formImported}) ({progress}%)', '{amount} files imported ({formImported}) ({progress}%)', nbImportedFiles, { amount: nbImportedFiles, formImported: myHumanFileSize(importedSize), progress: onedriveImportProgress }) }}
 						<br>
 						{{ lastOnedriveImportDate }}
 						<br>
@@ -94,6 +94,7 @@ export default {
 			importingOnedrive: false,
 			lastOnedriveImportTimestamp: 0,
 			importedSize: 0,
+			nbImportedFiles: 0,
 			onedriveImportLoop: null,
 		}
 	},
@@ -136,7 +137,7 @@ export default {
 
 		if (this.connected) {
 			this.getStorageInfo()
-			// this.getOnedriveImportValues(true)
+			this.getOnedriveImportValues(true)
 		}
 	},
 
@@ -222,6 +223,7 @@ export default {
 					if (response.data && Object.keys(response.data).length > 0) {
 						this.lastOnedriveImportTimestamp = response.data.last_onedrive_import_timestamp
 						this.importedSize = response.data.imported_size
+						this.nbImportedFiles = response.data.nb_imported_files
 						this.importingOnedrive = response.data.importing_onedrive
 						if (!this.importingOnedrive) {
 							clearInterval(this.onedriveImportLoop)
