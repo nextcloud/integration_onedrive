@@ -3,7 +3,7 @@
     <id>integration_onedrive</id>
     <name>OneDrive integration</name>
     <summary>Integration of Microsoft OneDrive</summary>
-    <description><![CDATA[Microsoft OneDrive integration...]]></description>
+    <description><![CDATA[Microsoft OneDrive integration allows you to automatically import your OneDrive files into Nextcloud.]]></description>
     <version>0.0.1</version>
     <licence>agpl</licence>
     <author>Julien Veyssier</author>
