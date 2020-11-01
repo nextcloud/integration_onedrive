@@ -45,51 +45,73 @@ class OnedriveAPIService {
 	}
 
 	/**
-     * @param string $userId
-     * @param string $subject
-     * @param string $params
-     * @return void
-     */
-    public function sendNCNotification(string $userId, string $subject, array $params): void {
-        $manager = $this->notificationManager;
-        $notification = $manager->createNotification();
+	 * @param string $userId
+	 * @param string $subject
+	 * @param string $params
+	 * @return void
+	 */
+	public function sendNCNotification(string $userId, string $subject, array $params): void {
+		$manager = $this->notificationManager;
+		$notification = $manager->createNotification();
 
-        $notification->setApp(Application::APP_ID)
-            ->setUser($userId)
-            ->setDateTime(new \DateTime())
-            ->setObject('dum', 'dum')
-            ->setSubject($subject, $params);
+		$notification->setApp(Application::APP_ID)
+			->setUser($userId)
+			->setDateTime(new \DateTime())
+			->setObject('dum', 'dum')
+			->setSubject($subject, $params);
 
-        $manager->notify($notification);
-    }
+		$manager->notify($notification);
+	}
 
 	/**
-     * @param string $url
-     * @return array
-     */
-    public function fileRequest(string $url): array {
-        try {
-            $options = [
-                'headers' => [
-                    'User-Agent' => 'Nextcloud Dropbox integration',
-                ],
-            ];
+	 * @param string $url
+	 * @return array
+	 */
+	public function fileRequest(string $url, string $tmpFilePath): array {
+		try {
+			$options = [
+				'save_to' => $tmpFilePath,
+				'headers' => [
+					'User-Agent' => 'Nextcloud Dropbox integration',
+				],
+			];
 
-            $response = $this->client->get($url, $options);
-            $body = $response->getBody();
-            $respCode = $response->getStatusCode();
+			$response = $this->client->get($url, $options);
+			//$body = $response->getBody();
+			$respCode = $response->getStatusCode();
 
-            if ($respCode >= 400) {
-                return ['error' => $this->l10n->t('Bad credentials')];
-            } else {
-                return ['content' => $body];
-            }
-        } catch (ServerException | ClientException $e) {
-            $response = $e->getResponse();
-            $this->logger->warning('OneDrive API error : '.$e->getMessage(), ['app' => $this->appName]);
-            return ['error' => $e->getMessage()];
-        }
-    }
+			if ($respCode >= 400) {
+				return ['error' => $this->l10n->t('Bad credentials')];
+			} else {
+				return ['success' => true];
+			}
+		} catch (ServerException | ClientException $e) {
+			$response = $e->getResponse();
+			$this->logger->warning('OneDrive API error : '.$e->getMessage(), ['app' => $this->appName]);
+			return ['error' => $e->getMessage()];
+		}
+	}
+
+	public function chunkedCopy(string $fromPath, $outResource): int {
+		if (!is_resource($outResource)) {
+			throw new \InvalidArgumentException(
+				sprintf(
+					'Argument must be a valid resource type. %s given.',
+					gettype($resource)
+				)
+			);
+		}
+		// 10 Mo at a time
+		$buffer_size = 10000000;
+		$ret = 0;
+		$fin = fopen($fromPath, 'rb');
+		while(!feof($fin)) {
+			$ret += fwrite($outResource, fread($fin, $buffer_size));
+		}
+		fclose($fin);
+		fclose($outResource);
+		return $ret;
+	}
 
 	/**
 	 * Make the HTTP request
@@ -137,31 +159,31 @@ class OnedriveAPIService {
 			}
 		} catch (\Exception $e) {
 			$response = $e->getResponse();
-            if ($response->getStatusCode() === 401) {
-                $this->logger->info('Trying to REFRESH the access token', ['app' => $this->appName]);
-                // try to refresh the token
+			if ($response->getStatusCode() === 401) {
+				$this->logger->info('Trying to REFRESH the access token', ['app' => $this->appName]);
+				// try to refresh the token
 				$clientId = $this->config->getAppValue(Application::APP_ID, 'client_id', '');
 				$clientSecret = $this->config->getAppValue(Application::APP_ID, 'client_secret', '');
 				$redirectUri = $this->config->getUserValue($userId, Application::APP_ID, 'redirect_uri', '');
 				$refreshToken = $this->config->getUserValue($userId, Application::APP_ID, 'refresh_token', '');
-                $result = $this->requestOAuthAccessToken([
+				$result = $this->requestOAuthAccessToken([
 					'client_id' => $clientId,
 					'client_secret' => $clientSecret,
 					'grant_type' => 'refresh_token',
 					'redirect_uri' => $redirectUri,
-                    'refresh_token' => $refreshToken,
-                ], 'POST');
-                if (isset($result['access_token'])) {
-                    $this->logger->info('OneDrive access token successfully refreshed', ['app' => $this->appName]);
-                    $accessToken = $result['access_token'];
-                    $this->config->setUserValue($userId, Application::APP_ID, 'token', $accessToken);
-                    // retry the request with new access token
-                    return $this->request($accessToken, $userId, $endPoint, $params, $method);
-                } else {
-                    // impossible to refresh the token
-                    return ['error' => $this->l10n->t('Token is not valid anymore. Impossible to refresh it.') . ' ' . $result['error']];
-                }
-            }
+					'refresh_token' => $refreshToken,
+				], 'POST');
+				if (isset($result['access_token'])) {
+					$this->logger->info('OneDrive access token successfully refreshed', ['app' => $this->appName]);
+					$accessToken = $result['access_token'];
+					$this->config->setUserValue($userId, Application::APP_ID, 'token', $accessToken);
+					// retry the request with new access token
+					return $this->request($accessToken, $userId, $endPoint, $params, $method);
+				} else {
+					// impossible to refresh the token
+					return ['error' => $this->l10n->t('Token is not valid anymore. Impossible to refresh it.') . ' ' . $result['error']];
+				}
+			}
 			$this->logger->warning('OneDrive API error : '.$e->getMessage(), ['app' => $this->appName]);
 			return ['error' => $e->getMessage()];
 		}

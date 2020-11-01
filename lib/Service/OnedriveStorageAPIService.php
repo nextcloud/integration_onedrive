@@ -14,6 +14,7 @@ namespace OCA\Onedrive\Service;
 use OCP\IL10N;
 use Psr\Log\LoggerInterface;
 use OCP\IConfig;
+use OCP\ITempManager;
 use OCP\Files\IRootFolder;
 use OCP\Files\FileInfo;
 use OCP\Files\Node;
@@ -39,6 +40,7 @@ class OnedriveStorageAPIService {
 								IRootFolder $root,
 								IConfig $config,
 								IJobList $jobList,
+								ITempManager $tempManager,
 								OnedriveAPIService $onedriveApiService) {
 		$this->appName = $appName;
 		$this->l10n = $l10n;
@@ -46,6 +48,7 @@ class OnedriveStorageAPIService {
 		$this->config = $config;
 		$this->root = $root;
 		$this->jobList = $jobList;
+		$this->tempManager = $tempManager;
 		$this->onedriveApiService = $onedriveApiService;
 	}
 
@@ -248,10 +251,14 @@ class OnedriveStorageAPIService {
 	private function getFile(string $accessToken, string $userId, Node $folder, array $fileItem): int {
 		$fileName = $fileItem['name'];
 		if (!$folder->nodeExists($fileName)) {
-			$res = $this->onedriveApiService->fileRequest($fileItem['@microsoft.graph.downloadUrl']);
+			$tmpFilePath = $this->tempManager->getTemporaryFile();
+			$res = $this->onedriveApiService->fileRequest($fileItem['@microsoft.graph.downloadUrl'], $tmpFilePath);
 			if (!isset($res['error'])) {
-				$savedFile = $folder->newFile($fileName, $res['content']);
-				return $savedFile->getSize();
+				$savedFile = $folder->newFile($fileName);
+				$resource = $savedFile->fopen('w');
+                $copied = $this->onedriveApiService->chunkedCopy($tmpFilePath, $resource);
+                $savedFile->touch();
+                return $copied;
 			}
 		}
 		return 0;
