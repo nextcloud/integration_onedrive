@@ -256,9 +256,13 @@ class OnedriveStorageAPIService {
 			if (!isset($res['error'])) {
 				$savedFile = $folder->newFile($fileName);
 				$resource = $savedFile->fopen('w');
-                $copied = $this->onedriveApiService->chunkedCopy($tmpFilePath, $resource);
-                $savedFile->touch();
-                return $copied;
+				$copied = $this->onedriveApiService->chunkedCopy($tmpFilePath, $resource);
+				$savedFile->touch();
+				unlink($tmpFilePath);
+				return $copied;
+			}
+			if (file_exists($tmpFilePath)) {
+				unlink($tmpFilePath);
 			}
 		}
 		return 0;
