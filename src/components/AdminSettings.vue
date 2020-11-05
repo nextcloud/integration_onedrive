@@ -5,7 +5,7 @@
 			{{ t('integration_onedrive', 'Microsoft OneDrive integration') }}
 		</h2>
 		<p class="settings-hint">
-			{{ t('integration_onedrive', 'If you want to allow your Nextcloud users to use OAuth to authenticate to https://onedrive.com, create an OAuth application in your Azure settings.') }}
+			{{ t('integration_onedrive', 'If you want to allow your Nextcloud users to use OAuth to authenticate to https://onedrive.live.com, create an OAuth application in your Azure settings.') }}
 			<a href="https://aka.ms/AppRegistrations/?referrer=https%3A%2F%2Fdev.onedrive.com" class="external">{{ t('integration_onedrive', 'Azure App registrations page') }}</a>
 			<br>
 			{{ t('integration_onedrive', 'Set "Application name" to a value that will make sense to your Nextcloud users as they will see it when connecting to OneDrive using your OAuth app.') }}
