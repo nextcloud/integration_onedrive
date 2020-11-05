@@ -162,7 +162,7 @@ class OnedriveAPIService {
 			} else {
 				return json_decode($body, true) ?: [];
 			}
-		} catch (\Exception $e) {
+		} catch (ServerException | ClientException $e) {
 			$response = $e->getResponse();
 			if ($response->getStatusCode() === 401) {
 				$this->logger->info('Trying to REFRESH the access token', ['app' => $this->appName]);
@@ -190,6 +190,9 @@ class OnedriveAPIService {
 				}
 			}
 			$this->logger->warning('OneDrive API error : '.$e->getMessage(), ['app' => $this->appName]);
+			return ['error' => $e->getMessage()];
+		} catch (ConnectException $e) {
+			$this->logger->warning('OneDrive API connection error : '.$e->getMessage(), ['app' => $this->appName]);
 			return ['error' => $e->getMessage()];
 		}
 	}
@@ -235,7 +238,7 @@ class OnedriveAPIService {
 			} else {
 				return json_decode($body, true);
 			}
-		} catch (\Exception $e) {
+		} catch (ConnectException | ServerException | ClientException $e) {
 			$this->logger->warning('OneDrive OAuth error : '.$e->getMessage(), ['app' => $this->appName]);
 			return ['error' => $e->getMessage()];
 		}
