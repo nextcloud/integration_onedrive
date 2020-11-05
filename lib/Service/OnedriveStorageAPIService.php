@@ -214,6 +214,8 @@ class OnedriveStorageAPIService {
 					$newNbDownloaded++;
 					$this->config->setUserValue($userId, Application::APP_ID, 'imported_size', $alreadyImportedSize + $newDownloadedSize);
 					$this->config->setUserValue($userId, Application::APP_ID, 'nb_imported_files', $alreadyImportedNumber + $newNbDownloaded);
+					$ts = (new \Datetime())->getTimestamp();
+					$this->config->setUserValue($userId, Application::APP_ID, 'last_onedrive_import_timestamp', $ts);
 				}
 				if (!is_null($maxDownloadSize) && $newDownloadedSize >= $maxDownloadSize) {
 					throw new MaxDownloadSizeReachedException('Yep');
