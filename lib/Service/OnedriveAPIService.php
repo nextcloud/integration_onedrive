@@ -17,6 +17,7 @@ use Psr\Log\LoggerInterface;
 use OCP\Http\Client\IClientService;
 use GuzzleHttp\Exception\ClientException;
 use GuzzleHttp\Exception\ServerException;
+use GuzzleHttp\Exception\ConnectException;
 use OCP\Notification\IManager as INotificationManager;
 
 use OCA\Onedrive\AppInfo\Application;
@@ -71,6 +72,7 @@ class OnedriveAPIService {
 		try {
 			$options = [
 				'save_to' => $tmpFilePath,
+				'timeout' => 0,
 				'headers' => [
 					'User-Agent' => 'Nextcloud Dropbox integration',
 				],
@@ -88,6 +90,9 @@ class OnedriveAPIService {
 		} catch (ServerException | ClientException $e) {
 			$response = $e->getResponse();
 			$this->logger->warning('OneDrive API error : '.$e->getMessage(), ['app' => $this->appName]);
+			return ['error' => $e->getMessage()];
+		} catch (ConnectException $e) {
+			$this->logger->error('OneDrive API request connection error: ' . $e->getMessage(), ['app' => $this->appName]);
 			return ['error' => $e->getMessage()];
 		}
 	}
