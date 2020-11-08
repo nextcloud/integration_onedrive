@@ -253,19 +253,17 @@ class OnedriveStorageAPIService {
 	private function getFile(string $accessToken, string $userId, Node $folder, array $fileItem): int {
 		$fileName = $fileItem['name'];
 		if (!$folder->nodeExists($fileName)) {
-			$tmpFilePath = $this->tempManager->getTemporaryFile();
-			$res = $this->onedriveApiService->fileRequest($fileItem['@microsoft.graph.downloadUrl'], $tmpFilePath);
+			$savedFile = $folder->newFile($fileName);
+			$resource = $savedFile->fopen('w');
+			$res = $this->onedriveApiService->fileRequest($fileItem['@microsoft.graph.downloadUrl'], $resource);
 			if (!isset($res['error'])) {
-				$savedFile = $folder->newFile($fileName);
-				$resource = $savedFile->fopen('w');
-				$copied = $this->onedriveApiService->chunkedCopy($tmpFilePath, $resource);
+				fclose($resource);
 				$savedFile->touch();
-				unlink($tmpFilePath);
-				return $copied;
+				$stat = $savedFile->stat();
+				return $stat['size'] ?? 0;
 			}
-			if (file_exists($tmpFilePath)) {
-				unlink($tmpFilePath);
-			}
+			fclose($resource);
+			$savedFile->delete();
 		}
 		return 0;
 	}

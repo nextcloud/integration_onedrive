@@ -68,10 +68,10 @@ class OnedriveAPIService {
 	 * @param string $url
 	 * @return array
 	 */
-	public function fileRequest(string $url, string $tmpFilePath): array {
+	public function fileRequest(string $url, $resource): array {
 		try {
 			$options = [
-				'save_to' => $tmpFilePath,
+				'sink' => $resource,
 				'timeout' => 0,
 				'headers' => [
 					'User-Agent' => 'Nextcloud Dropbox integration',
@@ -94,28 +94,10 @@ class OnedriveAPIService {
 		} catch (ConnectException $e) {
 			$this->logger->error('OneDrive API request connection error: ' . $e->getMessage(), ['app' => $this->appName]);
 			return ['error' => $e->getMessage()];
+		} catch (\Exception | \Throwable $e) {
+			$this->logger->error('OneDrive API request connection error: ' . $e->getMessage(), ['app' => $this->appName]);
+			return ['error' => $e->getMessage()];
 		}
-	}
-
-	public function chunkedCopy(string $fromPath, $outResource): int {
-		if (!is_resource($outResource)) {
-			throw new \InvalidArgumentException(
-				sprintf(
-					'Argument must be a valid resource type. %s given.',
-					gettype($resource)
-				)
-			);
-		}
-		// 10 Mo at a time
-		$buffer_size = 10000000;
-		$ret = 0;
-		$fin = fopen($fromPath, 'rb');
-		while(!feof($fin)) {
-			$ret += fwrite($outResource, fread($fin, $buffer_size));
-		}
-		fclose($fin);
-		fclose($outResource);
-		return $ret;
 	}
 
 	/**
