@@ -257,13 +257,15 @@ class OnedriveStorageAPIService {
 			$resource = $savedFile->fopen('w');
 			$res = $this->onedriveApiService->fileRequest($fileItem['@microsoft.graph.downloadUrl'], $resource);
 			if (!isset($res['error'])) {
-				fclose($resource);
 				$savedFile->touch();
 				$stat = $savedFile->stat();
 				return $stat['size'] ?? 0;
+			} else {
+				$this->logger->warning('OneDrive error downloading file ' . $fileName . ' : ' . $res['error'], ['app' => $this->appName]);
+				if ($savedFile->isDeletable()) {
+					$savedFile->delete();
+				}
 			}
-			fclose($resource);
-			$savedFile->delete();
 		}
 		return 0;
 	}
