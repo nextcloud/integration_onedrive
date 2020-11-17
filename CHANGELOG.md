@@ -6,14 +6,19 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
 
-## 0.0.3 – 2020-09-11
+## 0.0.4 – 2020-11-17
+### Fixed
+- handle paginated results
+[#3](https://github.com/nextcloud/integration_onedrive/issues/3) @shr3k
+
+## 0.0.3 – 2020-11-11
 ### Fixed
 - don't close already closed resource when downloading
 
-## 0.0.2 – 2020-09-08
+## 0.0.2 – 2020-11-08
 ### Changed
 - no more temp files, directly download to target file (in a stream)
 
-## 0.0.1 – 2020-09-02
+## 0.0.1 – 2020-11-02
 ### Added
 * the app
