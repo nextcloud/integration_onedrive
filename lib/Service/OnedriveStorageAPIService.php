@@ -197,45 +197,53 @@ class OnedriveStorageAPIService {
 			? ''
 			: ':/' . $path . ':';
 		$endPoint = 'me/drive/root' . $reqPath . '/children';
-		$result = $this->onedriveApiService->request($accessToken, $userId, $endPoint);
-		if (isset($result['error']) || !isset($result['value']) || !is_array($result['value'])) {
-			return [
-				'downloadedSize' => $newDownloadedSize,
-				'totalSeenNumber' => $newTotalSeenNumber,
-				'nbDownloaded' => $newNbDownloaded,
-			];
-		}
-		foreach ($result['value'] as $item) {
-			if (isset($item['file'])) {
-				$newTotalSeenNumber++;
-				$size = $this->getFile($accessToken, $userId, $folder, $item);
-				$newDownloadedSize += $size;
-				if ($size > 0) {
-					$newNbDownloaded++;
-					$this->config->setUserValue($userId, Application::APP_ID, 'imported_size', $alreadyImportedSize + $newDownloadedSize);
-					$this->config->setUserValue($userId, Application::APP_ID, 'nb_imported_files', $alreadyImportedNumber + $newNbDownloaded);
-					$ts = (new \Datetime())->getTimestamp();
-					$this->config->setUserValue($userId, Application::APP_ID, 'last_onedrive_import_timestamp', $ts);
-				}
-				if (!is_null($maxDownloadSize) && $newDownloadedSize >= $maxDownloadSize) {
-					throw new MaxDownloadSizeReachedException('Yep');
-				}
-			} elseif (isset($item['folder'])) {
-				// create folder if needed
-				if (!$folder->nodeExists($item['name'])) {
-					$subFolder = $folder->newFolder($item['name']);
-				} else {
-					$subFolder = $folder->get($item['name']);
-				}
-				$subDownloadResult = $this->downloadDir(
-					$accessToken, $userId, $subFolder, $maxDownloadSize, $newDownloadedSize, $newTotalSeenNumber, $newNbDownloaded,
-					$path . '/' . $item['name'], $alreadyImportedSize, $alreadyImportedNumber
-				);
-				$newDownloadedSize = $subDownloadResult['downloadedSize'];
-				$newTotalSeenNumber = $subDownloadResult['totalSeenNumber'];
-				$newNbDownloaded = $subDownloadResult['nbDownloaded'];
+		$params = [];
+		do {
+			$result = $this->onedriveApiService->request($accessToken, $userId, $endPoint, $params);
+			if (isset($result['error']) || !isset($result['value']) || !is_array($result['value'])) {
+				return [
+					'downloadedSize' => $newDownloadedSize,
+					'totalSeenNumber' => $newTotalSeenNumber,
+					'nbDownloaded' => $newNbDownloaded,
+				];
 			}
-		}
+			foreach ($result['value'] as $item) {
+				if (isset($item['file'])) {
+					$newTotalSeenNumber++;
+					$size = $this->getFile($accessToken, $userId, $folder, $item);
+					$newDownloadedSize += $size;
+					if ($size > 0) {
+						$newNbDownloaded++;
+						$this->config->setUserValue($userId, Application::APP_ID, 'imported_size', $alreadyImportedSize + $newDownloadedSize);
+						$this->config->setUserValue($userId, Application::APP_ID, 'nb_imported_files', $alreadyImportedNumber + $newNbDownloaded);
+						$ts = (new \Datetime())->getTimestamp();
+						$this->config->setUserValue($userId, Application::APP_ID, 'last_onedrive_import_timestamp', $ts);
+					}
+					if (!is_null($maxDownloadSize) && $newDownloadedSize >= $maxDownloadSize) {
+						throw new MaxDownloadSizeReachedException('Yep');
+					}
+				} elseif (isset($item['folder'])) {
+					// create folder if needed
+					if (!$folder->nodeExists($item['name'])) {
+						$subFolder = $folder->newFolder($item['name']);
+					} else {
+						$subFolder = $folder->get($item['name']);
+					}
+					$subDownloadResult = $this->downloadDir(
+						$accessToken, $userId, $subFolder, $maxDownloadSize, $newDownloadedSize, $newTotalSeenNumber, $newNbDownloaded,
+						$path . '/' . $item['name'], $alreadyImportedSize, $alreadyImportedNumber
+					);
+					$newDownloadedSize = $subDownloadResult['downloadedSize'];
+					$newTotalSeenNumber = $subDownloadResult['totalSeenNumber'];
+					$newNbDownloaded = $subDownloadResult['nbDownloaded'];
+				}
+			}
+			if (isset($result['@odata.nextLink'])
+				&& $result['@odata.nextLink']
+				&& preg_match('/\$skiptoken=/i', $result['@odata.nextLink'])) {
+				$params['$skiptoken'] = preg_replace('/.*\$skiptoken=/', '', $result['@odata.nextLink']);
+			}
+		} while (isset($result['@odata.nextLink']) && $result['@odata.nextLink']);
 		return [
 			'downloadedSize' => $newDownloadedSize,
 			'totalSeenNumber' => $newTotalSeenNumber,
