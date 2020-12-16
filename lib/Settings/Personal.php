@@ -10,6 +10,7 @@ use OCP\Util;
 use OCP\IURLGenerator;
 use OCP\IInitialStateService;
 use OCP\Files\IRootFolder;
+use OCP\IUserManager;
 use OCA\Onedrive\AppInfo\Application;
 
 class Personal implements ISettings {
@@ -26,6 +27,7 @@ class Personal implements ISettings {
 								IConfig $config,
 								IURLGenerator $urlGenerator,
 								IRootFolder $root,
+								IUserManager $userManager,
 								IInitialStateService $initialStateService,
 								string $userId) {
 		$this->appName = $appName;
@@ -33,6 +35,7 @@ class Personal implements ISettings {
 		$this->request = $request;
 		$this->l = $l;
 		$this->root = $root;
+		$this->userManager = $userManager;
 		$this->config = $config;
 		$this->initialStateService = $initialStateService;
 		$this->userId = $userId;
@@ -53,6 +56,7 @@ class Personal implements ISettings {
 		// get free space
 		$userFolder = $this->root->getUserFolder($this->userId);
 		$freeSpace = $userFolder->getStorage()->free_space('/');
+		$user = $this->userManager->get($this->userId);
 
 		$userConfig = [
 			'token' => $token,
@@ -61,6 +65,7 @@ class Personal implements ISettings {
 			'navigation_enabled' => ($navigationEnabled === '1'),
 			'user_name' => $userName,
 			'free_space' => $freeSpace,
+			'user_quota' => $user->getQuota(),
 		];
 		$this->initialStateService->provideInitialState($this->appName, 'user-config', $userConfig);
 		$response = new TemplateResponse(Application::APP_ID, 'personalSettings');

@@ -174,7 +174,7 @@ export default {
 			return this.state.user_name && this.state.user_name !== ''
 		},
 		enoughSpaceForOnedrive() {
-			return this.storageSize === 0 || this.storageSize < this.state.free_space
+			return this.storageSize === 0 || this.state.user_quota === 'none' || this.storageSize < this.state.free_space
 		},
 		lastOnedriveImportDate() {
 			return this.lastOnedriveImportTimestamp !== 0
