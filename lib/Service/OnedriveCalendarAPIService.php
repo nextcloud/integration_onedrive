@@ -90,82 +90,74 @@ class OnedriveCalendarAPIService {
 				. 'PRODID:NextCloud Calendar' . "\n"
 				. 'BEGIN:VEVENT' . "\n";
 
-			$objectUri = $e['id'] . '-' . $e['etag'];
+			$objectUri = $e['id'] . '-' . $e['changeKey'];
 			$calData .= 'UID:' . $ncCalId . '-' . $objectUri . "\n";
-			$calData .= isset($e['summary'])
-				? ('SUMMARY:' . substr(str_replace("\n", '\n', $e['summary']), 0, 250) . "\n")
-				: ($e['visibility'] ?? '' === 'private'
-					? ('SUMMARY:' . $this->l10n->t('Private event') . "\n")
-					: '');
-			$calData .= isset($e['sequence']) ? ('SEQUENCE:' . $e['sequence'] . "\n") : '';
-			$calData .= isset($e['location'])
-				? ('LOCATION:' . substr(str_replace("\n", '\n', $e['location']), 0, 250) . "\n")
+			$calData .= isset($e['subject'])
+				? 'SUMMARY:' . substr(str_replace("\n", '\n', $e['subject']), 0, 250) . "\n"
 				: '';
-			$calData .= isset($e['description'])
-				? ('DESCRIPTION:' . substr(str_replace("\n", '\n', $e['description']), 0, 250) . "\n")
+			// $calData .= isset($e['sequence']) ? ('SEQUENCE:' . $e['sequence'] . "\n") : '';
+			$calData .= isset($e['location'], $e['location']['displayName'])
+				? ('LOCATION:' . substr(str_replace("\n", '\n', $e['location']['displayName']), 0, 250) . "\n")
 				: '';
-			$calData .= isset($e['status']) ? ('STATUS:' . strtoupper(str_replace("\n", '\n', $e['status'])) . "\n") : '';
+			$calData .= isset($e['body'], $e['body']['content'])
+				? ('DESCRIPTION:' . substr(str_replace("\n", '\n', strip_tags($e['body']['content'])), 0, 250) . "\n")
+				: '';
+			// $calData .= isset($e['status']) ? ('STATUS:' . strtoupper(str_replace("\n", '\n', $e['status'])) . "\n") : '';
 
-			if (isset($e['created'])) {
-				$created = new \Datetime($e['created']);
+			if (isset($e['createdDateTime'])) {
+				$created = new \Datetime($e['createdDateTime']);
 				$created->setTimezone($utcTimezone);
 				$calData .= 'CREATED:' . $created->format('Ymd\THis\Z') . "\n";
 			}
 
-			if (isset($e['updated'])) {
-				$updated = new \Datetime($e['updated']);
+			if (isset($e['lastModifiedDateTime'])) {
+				$updated = new \Datetime($e['lastModifiedDateTime']);
 				$updated->setTimezone($utcTimezone);
 				$calData .= 'LAST-MODIFIED:' . $updated->format('Ymd\THis\Z') . "\n";
 			}
 
-			if (isset($e['reminders'], $e['reminders']['useDefault']) && $e['reminders']['useDefault']) {
-				// 15 min before, default alarm
+			if (isset($e['reminderMinutesBeforeStart'])) {
 				$calData .= 'BEGIN:VALARM' . "\n"
 					. 'ACTION:DISPLAY' . "\n"
-					. 'TRIGGER;RELATED=START:-PT15M' . "\n"
+					. 'TRIGGER;RELATED=START:-PT' . $e['reminderMinutesBeforeStart'] . 'M' . "\n"
 					. 'END:VALARM' . "\n";
-			}
-			if (isset($e['reminders'], $e['reminders']['overrides'])) {
-				foreach ($e['reminders']['overrides'] as $o) {
-					$nbMin = 0;
-					if (isset($o['minutes'])) {
-						$nbMin += (int) $o['minutes'];
-					}
-					if (isset($o['hours'])) {
-						$nbMin += ((int) $o['hours']) * 60;
-					}
-					if (isset($o['days'])) {
-						$nbMin += ((int) $o['days']) * 60 * 24;
-					}
-					if (isset($o['weeks'])) {
-						$nbMin += ((int) $o['weeks']) * 60 * 24 * 7;
-					}
-					$calData .= 'BEGIN:VALARM' . "\n"
-						. 'ACTION:DISPLAY' . "\n"
-						. 'TRIGGER;RELATED=START:-PT' . $nbMin . 'M' . "\n"
-						. 'END:VALARM' . "\n";
-				}
 			}
 
 			if (isset($e['recurrence']) && is_array($e['recurrence'])) {
-				foreach ($e['recurrence'] as $r) {
-					$calData .= $r . "\n";
+				$parts = [];
+				if (isset($e['recurrence']['pattern']['type'])) {
+					$freq = 'FREQ=' . strtoupper($e['recurrence']['pattern']['type']);
+					$parts[] = $freq;
 				}
+				if (isset($e['recurrence']['pattern']['interval'])) {
+					$interval = 'INTERVAL=' . $e['recurrence']['pattern']['interval'];
+					$parts[] = $interval;
+				}
+				if (isset($e['recurrence']['pattern']['daysOfWeek']) && count($e['recurrence']['pattern']['daysOfWeek']) > 0) {
+					$days = [];
+					foreach ($e['recurrence']['pattern']['daysOfWeek'] as $day) {
+						$days[] = strtoupper(substr($day, 0, 2));
+					}
+					$parts[] = 'BYDAY=' . implode(',', $days);
+				}
+				$calData .= 'RRULE:' . implode(';', $parts);
 			}
 
-			if (isset($e['start'], $e['start']['date'], $e['end'], $e['end']['date'])) {
-				// whole days
-				$start = new \Datetime($e['start']['date']);
-				$calData .= 'DTSTART;VALUE=DATE:' . $start->format('Ymd') . "\n";
-				$end = new \Datetime($e['end']['date']);
-				$calData .= 'DTEND;VALUE=DATE:' . $end->format('Ymd') . "\n";
-			} elseif (isset($e['start']['dateTime']) && isset($e['end']['dateTime'])) {
-				$start = new \Datetime($e['start']['dateTime']);
-				$start->setTimezone($utcTimezone);
-				$calData .= 'DTSTART;VALUE=DATE-TIME:' . $start->format('Ymd\THis\Z') . "\n";
-				$end = new \Datetime($e['end']['dateTime']);
-				$end->setTimezone($utcTimezone);
-				$calData .= 'DTEND;VALUE=DATE-TIME:' . $end->format('Ymd\THis\Z') . "\n";
+			if (isset($e['start'], $e['start']['dateTime'], $e['end'], $e['end']['dateTime'])) {
+				if ($e['isAllDay']) {
+					// whole days
+					$start = new \Datetime($e['start']['dateTime']);
+					$calData .= 'DTSTART;VALUE=DATE:' . $start->format('Ymd') . "\n";
+					$end = new \Datetime($e['end']['dateTime']);
+					$calData .= 'DTEND;VALUE=DATE:' . $end->format('Ymd') . "\n";
+				} else {
+					$start = new \Datetime($e['start']['dateTime']);
+					$start->setTimezone($utcTimezone);
+					$calData .= 'DTSTART;VALUE=DATE-TIME:' . $start->format('Ymd\THis\Z') . "\n";
+					$end = new \Datetime($e['end']['dateTime']);
+					$end->setTimezone($utcTimezone);
+					$calData .= 'DTEND;VALUE=DATE-TIME:' . $end->format('Ymd\THis\Z') . "\n";
+				}
 			} else {
 				// skip entries without any date
 				continue;
@@ -180,12 +172,12 @@ class OnedriveCalendarAPIService {
 				$nbAdded++;
 			} catch (BadRequest $ex) {
 				if (strpos($ex->getMessage(), 'uid already exists') !== false) {
-					$this->logger->info('Skip existing event "' . ($e['summary'] ?? 'no title') . '"', ['app' => $this->appName]);
+					$this->logger->info('Skip existing event "' . ($e['subject'] ?? 'no title') . '"', ['app' => $this->appName]);
 				} else {
-					$this->logger->warning('Error when creating calendar event "' . ($e['summary'] ?? 'no title') . '" ' . $ex->getMessage(), ['app' => $this->appName]);
+					$this->logger->warning('Error when creating calendar event "' . ($e['subject'] ?? 'no title') . '" ' . $ex->getMessage(), ['app' => $this->appName]);
 				}
 			} catch (\Exception | \Throwable $ex) {
-				$this->logger->warning('Error when creating calendar event "' . ($e['summary'] ?? 'no title') . '" ' . $ex->getMessage(), ['app' => $this->appName]);
+				$this->logger->warning('Error when creating calendar event "' . ($e['subject'] ?? 'no title') . '" ' . $ex->getMessage(), ['app' => $this->appName]);
 			}
 		}
 
@@ -206,19 +198,21 @@ class OnedriveCalendarAPIService {
 	 * @return \Generator
 	 */
 	private function getCalendarEvents(string $accessToken, string $userId, string $calId): \Generator {
-		$params = [
-			'maxResults' => 100,
-		];
+		$params = [];
 		do {
-			$result = $this->onedriveApiService->request($accessToken, $userId, 'calendar/v3/calendars/'.$calId.'/events', $params);
-			if (isset($result['error'])) {
+			$result = $this->onedriveApiService->request($accessToken, $userId, 'me/calendars/'.$calId.'/events', $params);
+			if (isset($result['error']) || !isset($result['value'])) {
 				return $result;
 			}
-			foreach ($result['items'] as $event) {
+			foreach ($result['value'] as $event) {
 				yield $event;
 			}
-			$params['pageToken'] = $result['nextPageToken'] ?? '';
-		} while (isset($result['nextPageToken']));
+			if (isset($result['@odata.nextLink'])
+				&& $result['@odata.nextLink']
+				&& preg_match('/\$skiptoken=/i', $result['@odata.nextLink'])) {
+				$params['$skiptoken'] = preg_replace('/.*\$skiptoken=/', '', $result['@odata.nextLink']);
+			}
+		} while (isset($result['@odata.nextLink']) && $result['@odata.nextLink']);
 		return [];
 	}
 }

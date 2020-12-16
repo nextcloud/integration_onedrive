@@ -187,15 +187,15 @@ export default {
 				: 0
 		},
 		selectedAddressBookName() {
-            return this.selectedAddressBook === 0
-                ? this.newAddressBookName
-                : this.addressbooks[this.selectedAddressBook].name
-        },
-        selectedAddressBookUri() {
-            return this.selectedAddressBook === 0
-                ? null
-                : this.addressbooks[this.selectedAddressBook].uri
-        },
+			return this.selectedAddressBook === 0
+				? this.newAddressBookName
+				: this.addressbooks[this.selectedAddressBook].name
+		},
+		selectedAddressBookUri() {
+			return this.selectedAddressBook === 0
+				? null
+				: this.addressbooks[this.selectedAddressBook].uri
+		},
 	},
 
 	watch: {
@@ -559,8 +559,8 @@ body.theme--dark .icon-onedrive-settings {
 	}
 
 	.contact-input {
-        width: 200px;
-    }
+		width: 200px;
+	}
 }
 
 #onedrive-search-block .icon {
