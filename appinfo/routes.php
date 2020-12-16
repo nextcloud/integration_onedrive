@@ -17,5 +17,7 @@ return [
         ['name' => 'onedriveAPI#getStorageSize', 'url' => '/storage-size', 'verb' => 'GET'],
         ['name' => 'onedriveAPI#importOnedrive', 'url' => '/import-files', 'verb' => 'GET'],
         ['name' => 'onedriveAPI#getImportOnedriveInformation', 'url' => '/import-files-info', 'verb' => 'GET'],
+        ['name' => 'onedriveAPI#getCalendarList', 'url' => '/calendars', 'verb' => 'GET'],
+        ['name' => 'onedriveAPI#importCalendar', 'url' => '/import-calendar', 'verb' => 'GET'],
     ]
 ];

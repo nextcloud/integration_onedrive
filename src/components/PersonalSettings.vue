@@ -63,6 +63,23 @@
 						</button>
 					</div>
 				</div>
+				<div v-if="calendars.length > 0"
+					id="onedrive-calendars">
+					<h3>{{ t('integration_onedrive', 'Calendars') }}</h3>
+					<div v-for="cal in calendars" :key="cal.id" class="onedrive-grid-form">
+						<label>
+							<AppNavigationIconBullet slot="icon" :color="getCalendarColor(cal)" />
+							{{ getCalendarLabel(cal) }}
+						</label>
+						<button
+							:class="{ loading: importingCalendar[cal.id] }"
+							@click="onCalendarImport(cal)">
+							<span class="icon icon-calendar-dark" />
+							{{ t('integration_onedrive', 'Import calendar') }}
+						</button>
+					</div>
+					<br>
+				</div>
 			</div>
 		</div>
 	</div>
@@ -74,12 +91,14 @@ import { generateUrl } from '@nextcloud/router'
 import axios from '@nextcloud/axios'
 import { humanFileSize } from '../utils'
 import { showSuccess, showError } from '@nextcloud/dialogs'
+import AppNavigationIconBullet from '@nextcloud/vue/dist/Components/AppNavigationIconBullet'
 import moment from '@nextcloud/moment'
 
 export default {
 	name: 'PersonalSettings',
 
 	components: {
+		AppNavigationIconBullet,
 	},
 
 	props: [],
@@ -96,6 +115,9 @@ export default {
 			importedSize: 0,
 			nbImportedFiles: 0,
 			onedriveImportLoop: null,
+			// calendars
+			calendars: [],
+			importingCalendar: {},
 		}
 	},
 
@@ -138,6 +160,7 @@ export default {
 		if (this.connected) {
 			this.getStorageInfo()
 			this.getOnedriveImportValues(true)
+			this.getCalendarList()
 		}
 	},
 
@@ -172,12 +195,19 @@ export default {
 				})
 		},
 		onOAuthClick() {
+			const scopes = [
+				'Files.Read',
+				'User.Read',
+				'Calendars.Read',
+				'Contacts.Read',
+				'offline_access',
+			]
 			const requestUrl = 'https://login.live.com/oauth20_authorize.srf'
 				+ '?client_id=' + encodeURIComponent(this.state.client_id)
 				+ '&response_type=code'
 				+ '&redirect_uri=' + encodeURIComponent(this.redirect_uri)
 				// doc mentions onedrive.readwrite, i fought quite some time to find those working scopes
-				+ '&scope=' + encodeURIComponent('Files.Read User.Read offline_access')
+				+ '&scope=' + encodeURIComponent(scopes.join(' '))
 
 			const req = {
 				values: {
@@ -285,6 +315,61 @@ export default {
 		myHumanFileSize(bytes, approx = false, si = false, dp = 1) {
 			return humanFileSize(bytes, approx, si, dp)
 		},
+		// ########## calendars ##########
+		getCalendarList() {
+			const url = generateUrl('/apps/integration_onedrive/calendars')
+			axios.get(url)
+				.then((response) => {
+					if (response.data && response.data.length && response.data.length > 0) {
+						this.calendars = response.data
+					}
+				})
+				.catch((error) => {
+					showError(
+						t('integration_onedrive', 'Failed to get calendar list')
+						+ ': ' + error.response?.request?.responseText
+					)
+				})
+				.then(() => {
+				})
+		},
+		getCalendarLabel(cal) {
+			return cal.name
+		},
+		getCalendarColor(cal) {
+			return cal.hexColor
+				? cal.hexColor.replace('#', '')
+				: '0082c9'
+		},
+		onCalendarImport(cal) {
+			const calId = cal.id
+			this.$set(this.importingCalendar, calId, true)
+			const req = {
+				params: {
+					calId,
+					calName: this.getCalendarLabel(cal),
+					color: cal.hexColor || '#0082c9',
+				},
+			}
+			const url = generateUrl('/apps/integration_onedrive/import-calendar')
+			axios.get(url, req)
+				.then((response) => {
+					const nbAdded = response.data.nbAdded
+					const calName = response.data.calName
+					showSuccess(
+						this.n('integration_onedrive', '{number} event successfully imported in {name}', '{number} events successfully imported in {name}', nbAdded, { number: nbAdded, name: calName })
+					)
+				})
+				.catch((error) => {
+					showError(
+						t('integration_onedrive', 'Failed to import calendar')
+						+ ': ' + error.response?.request?.responseText
+					)
+				})
+				.then(() => {
+					this.$set(this.importingCalendar, calId, false)
+				})
+		},
 	},
 }
 </script>
@@ -356,4 +441,10 @@ body.theme--dark .icon-onedrive-settings {
 	margin-left: 40px;
 }
 
+::v-deep .app-navigation-entry__icon-bullet {
+    display: inline-block;
+    padding: 0;
+    height: 12px;
+    margin: 0 8px 0 10px;
+}
 </style>
