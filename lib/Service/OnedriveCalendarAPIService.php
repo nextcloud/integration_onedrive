@@ -69,6 +69,15 @@ class OnedriveCalendarAPIService {
 	 * @return array
 	 */
 	public function importCalendar(string $accessToken, string $userId, string $calId, string $calName, ?string $color = null): array {
+		$setPositions = [
+			'first' => 1,
+			'second' => 2,
+			'third' => 3,
+			'fourth' => 4,
+			'fifth' => 5,
+			'penultimate' => -2,
+			'last' => -1,
+		];
 		$params = [];
 		if ($color) {
 			$params['{http://apple.com/ns/ical/}calendar-color'] = $color;
@@ -90,7 +99,7 @@ class OnedriveCalendarAPIService {
 				. 'PRODID:NextCloud Calendar' . "\n"
 				. 'BEGIN:VEVENT' . "\n";
 
-			$objectUri = $e['id'] . '-' . $e['changeKey'];
+			$objectUri = $e['iCalUId'];
 			$calData .= 'UID:' . $ncCalId . '-' . $objectUri . "\n";
 			$calData .= isset($e['subject'])
 				? 'SUMMARY:' . substr(str_replace("\n", '\n', $e['subject']), 0, 250) . "\n"
@@ -100,7 +109,7 @@ class OnedriveCalendarAPIService {
 				? ('LOCATION:' . substr(str_replace("\n", '\n', $e['location']['displayName']), 0, 250) . "\n")
 				: '';
 			$calData .= isset($e['body'], $e['body']['content'])
-				? ('DESCRIPTION:' . substr(str_replace("\n", '\n', strip_tags($e['body']['content'])), 0, 250) . "\n")
+				? ('DESCRIPTION:' . substr(str_replace("\n", '\n', trim(strip_tags($e['body']['content']))), 0, 250) . "\n")
 				: '';
 			// $calData .= isset($e['status']) ? ('STATUS:' . strtoupper(str_replace("\n", '\n', $e['status'])) . "\n") : '';
 
@@ -123,24 +132,80 @@ class OnedriveCalendarAPIService {
 					. 'END:VALARM' . "\n";
 			}
 
-			if (isset($e['recurrence']) && is_array($e['recurrence'])) {
+			if (isset($e['recurrence'], $e['recurrence']['pattern'], $e['recurrence']['pattern']['type'])) {
 				$parts = [];
-				if (isset($e['recurrence']['pattern']['type'])) {
-					$freq = 'FREQ=' . strtoupper($e['recurrence']['pattern']['type']);
-					$parts[] = $freq;
+				$type = $e['recurrence']['pattern']['type'];
+				if ($type === 'daily') {
+					$parts[] = 'FREQ=' . strtoupper($type);
+				} elseif ($type === 'weekly') {
+					$parts[] = 'FREQ=' . strtoupper($type);
+					if (isset($e['recurrence']['pattern']['daysOfWeek']) && count($e['recurrence']['pattern']['daysOfWeek']) > 0) {
+						$days = [];
+						foreach ($e['recurrence']['pattern']['daysOfWeek'] as $day) {
+							$days[] = strtoupper(substr($day, 0, 2));
+						}
+						$parts[] = 'BYDAY=' . implode(',', $days);
+					}
+				} elseif ($type === 'relativeMonthly') {
+					$parts[] = 'FREQ=MONTHLY';
+					if (isset($e['recurrence']['pattern']['daysOfWeek']) && count($e['recurrence']['pattern']['daysOfWeek']) > 0) {
+						$days = [];
+						foreach ($e['recurrence']['pattern']['daysOfWeek'] as $day) {
+							$days[] = strtoupper(substr($day, 0, 2));
+						}
+						$parts[] = 'BYDAY=' . implode(',', $days);
+					}
+					if (isset($e['recurrence']['pattern']['index'])) {
+						$index = $e['recurrence']['pattern']['index'];
+						$parts[] = 'BYSETPOS=' . $setPositions[$index];
+					}
+				} elseif ($type === 'absoluteMonthly') {
+					$parts[] = 'FREQ=MONTHLY';
+					if (isset($e['recurrence']['pattern']['dayOfMonth'])) {
+						$parts[] = 'BYMONTHDAY=' . $e['recurrence']['pattern']['dayOfMonth'];
+					}
+				} elseif ($type === 'relativeYearly') {
+					$parts[] = 'FREQ=YEARLY';
+					if (isset($e['recurrence']['pattern']['daysOfWeek']) && count($e['recurrence']['pattern']['daysOfWeek']) > 0) {
+						$days = [];
+						foreach ($e['recurrence']['pattern']['daysOfWeek'] as $day) {
+							$days[] = strtoupper(substr($day, 0, 2));
+						}
+						$parts[] = 'BYDAY=' . implode(',', $days);
+					}
+					if (isset($e['recurrence']['pattern']['month'])) {
+						$parts[] = 'BYMONTH=' . $e['recurrence']['pattern']['month'];
+					}
+					if (isset($e['recurrence']['pattern']['dayOfMonth']) && $e['recurrence']['pattern']['dayOfMonth'] > 0) {
+						$parts[] = 'BYMONTHDAY=' . $e['recurrence']['pattern']['dayOfMonth'];
+					}
+					if (isset($e['recurrence']['pattern']['index'])) {
+						$index = $e['recurrence']['pattern']['index'];
+						$parts[] = 'BYSETPOS=' . $setPositions[$index];
+					}
+				} elseif ($type === 'absoluteYearly') {
+					$parts[] = 'FREQ=YEARLY';
+					if (isset($e['recurrence']['pattern']['month'])) {
+						$parts[] = 'BYMONTH=' . $e['recurrence']['pattern']['month'];
+					}
+					if (isset($e['recurrence']['pattern']['dayOfMonth']) && $e['recurrence']['pattern']['dayOfMonth'] > 0) {
+						$parts[] = 'BYMONTHDAY=' . $e['recurrence']['pattern']['dayOfMonth'];
+					}
 				}
 				if (isset($e['recurrence']['pattern']['interval'])) {
-					$interval = 'INTERVAL=' . $e['recurrence']['pattern']['interval'];
-					$parts[] = $interval;
+					$parts[] = 'INTERVAL=' . $e['recurrence']['pattern']['interval'];
 				}
-				if (isset($e['recurrence']['pattern']['daysOfWeek']) && count($e['recurrence']['pattern']['daysOfWeek']) > 0) {
-					$days = [];
-					foreach ($e['recurrence']['pattern']['daysOfWeek'] as $day) {
-						$days[] = strtoupper(substr($day, 0, 2));
-					}
-					$parts[] = 'BYDAY=' . implode(',', $days);
+				if (isset($e['recurrence']['range']['endDate'])) {
+					$endDate = new \Datetime($e['recurrence']['range']['endDate']);
+					$endDate->setTimezone($utcTimezone);
+					$parts[] = 'UNTIL=' . $endDate->format('Ymd\THis\Z');
+				} elseif (isset($e['recurrence']['range']['numberOfOccurrences']) && $e['recurrence']['range']['numberOfOccurrences'] > 0) {
+					$parts[] = 'COUNT=' . $e['recurrence']['range']['numberOfOccurrences'];
 				}
-				$calData .= 'RRULE:' . implode(';', $parts);
+				if (isset($e['recurrence']['pattern']['firstDayOfWeek'])) {
+					$parts[] = 'WKST=' . strtoupper(substr($e['recurrence']['pattern']['firstDayOfWeek'], 0, 2));
+				}
+				$calData .= 'RRULE:' . implode(';', $parts) . "\n";
 			}
 
 			if (isset($e['start'], $e['start']['dateTime'], $e['end'], $e['end']['dateTime'])) {
