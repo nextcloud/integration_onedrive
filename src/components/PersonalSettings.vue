@@ -63,6 +63,44 @@
 						</button>
 					</div>
 				</div>
+				<div v-if="nbContacts > 0"
+					id="onedrive-contacts">
+					<h3>{{ t('integration_onedrive', 'Contacts') }}</h3>
+					<label>
+						<span class="icon icon-menu-sidebar" />
+						{{ t('integration_onedrive', '{amount} contacts', { amount: nbContacts }) }}
+					</label>
+					<button id="onedrive-import-contacts" @click="onImportContacts">
+						<span class="icon icon-contacts-dark" />
+						{{ t('integration_onedrive', 'Import Contacts in Nextcloud') }}
+					</button>
+					<br>
+					<select v-if="showAddressBooks"
+						v-model.number="selectedAddressBook">
+						<option :value="-1">
+							{{ t('integration_onedrive', 'Choose where to import the contacts') }}
+						</option>
+						<option :value="0">
+							➕ {{ t('integration_onedrive', 'New address book') }}
+						</option>
+						<option v-for="(ab, k) in addressbooks" :key="k" :value="k">
+							📕 {{ ab.name }}
+						</option>
+					</select>
+					<input v-if="showAddressBooks && selectedAddressBook === 0"
+						v-model="newAddressBookName"
+						type="text"
+						class="contact-input"
+						:placeholder="t('integration_onedrive', 'address book name')">
+					<button v-if="showAddressBooks && selectedAddressBook > -1 && (selectedAddressBook > 0 || newAddressBookName)"
+						id="onedrive-import-contacts-in-book"
+						:class="{ loading: importingContacts }"
+						@click="onFinalImportContacts">
+						<span class="icon icon-download" />
+						{{ t('integration_onedrive', 'Import in {name} address book', { name: selectedAddressBookName }) }}
+					</button>
+					<br>
+				</div>
 				<div v-if="calendars.length > 0"
 					id="onedrive-calendars">
 					<h3>{{ t('integration_onedrive', 'Calendars') }}</h3>
@@ -118,6 +156,13 @@ export default {
 			// calendars
 			calendars: [],
 			importingCalendar: {},
+			// contacts
+			addressbooks: [],
+			nbContacts: 0,
+			showAddressBooks: false,
+			selectedAddressBook: 0,
+			newAddressBookName: 'Outlook Contacts import',
+			importingContacts: false,
 		}
 	},
 
@@ -141,6 +186,16 @@ export default {
 				? parseInt(this.importedSize / this.storageSize * 100)
 				: 0
 		},
+		selectedAddressBookName() {
+            return this.selectedAddressBook === 0
+                ? this.newAddressBookName
+                : this.addressbooks[this.selectedAddressBook].name
+        },
+        selectedAddressBookUri() {
+            return this.selectedAddressBook === 0
+                ? null
+                : this.addressbooks[this.selectedAddressBook].uri
+        },
 	},
 
 	watch: {
@@ -161,6 +216,8 @@ export default {
 			this.getStorageInfo()
 			this.getOnedriveImportValues(true)
 			this.getCalendarList()
+			this.getLocalAddressBooks()
+			this.getNbContacts()
 		}
 	},
 
@@ -370,6 +427,73 @@ export default {
 					this.$set(this.importingCalendar, calId, false)
 				})
 		},
+		// ########## contacts ##########
+		getNbContacts() {
+			const url = generateUrl('/apps/integration_onedrive/contact-number')
+			axios.get(url)
+				.then((response) => {
+					if (response.data && Object.keys(response.data).length > 0) {
+						this.nbContacts = response.data.nbContacts
+					}
+				})
+				.catch((error) => {
+					showError(
+						t('integration_onedrive', 'Failed to get number of contacts')
+						+ ': ' + error.response?.request?.responseText
+					)
+				})
+				.then(() => {
+				})
+		},
+		getLocalAddressBooks() {
+			const url = generateUrl('/apps/integration_onedrive/local-addressbooks')
+			axios.get(url)
+				.then((response) => {
+					if (response.data && Object.keys(response.data).length > 0) {
+						this.addressbooks = response.data
+					}
+				})
+				.catch((error) => {
+					showError(
+						t('integration_onedrive', 'Failed to get address book list')
+						+ ': ' + error.response?.request?.responseText
+					)
+				})
+				.then(() => {
+				})
+		},
+		onImportContacts() {
+			this.selectedAddressBook = 0
+			this.showAddressBooks = !this.showAddressBooks
+		},
+		onFinalImportContacts() {
+			this.importingContacts = true
+			const req = {
+				params: {
+					uri: this.selectedAddressBookUri,
+					key: this.selectedAddressBook,
+					newAddressBookName: this.selectedAddressBook > 0 ? null : this.newAddressBookName,
+				},
+			}
+			const url = generateUrl('/apps/integration_onedrive/import-contacts')
+			axios.get(url, req)
+				.then((response) => {
+					const nbAdded = response.data.nbAdded
+					showSuccess(
+						this.n('integration_onedrive', '{number} contact successfully imported in {name}', '{number} contacts successfully imported in {name}', nbAdded, { number: nbAdded, name: this.selectedAddressBookName })
+					)
+					this.showAddressBooks = false
+				})
+				.catch((error) => {
+					showError(
+						t('integration_onedrive', 'Failed to get address book list')
+						+ ': ' + error.response?.request?.responseText
+					)
+				})
+				.then(() => {
+					this.importingContacts = false
+				})
+		},
 	},
 }
 </script>
@@ -419,10 +543,12 @@ body.theme--dark .icon-onedrive-settings {
 		font-weight: bold;
 	}
 
+	#onedrive-contacts > button,
 	#import-storage > button {
 		width: 300px;
 	}
 
+	#onedrive-contacts > label,
 	#import-storage > label {
 		width: 300px;
 		display: inline-block;
@@ -431,6 +557,10 @@ body.theme--dark .icon-onedrive-settings {
 			margin-bottom: -2px;
 		}
 	}
+
+	.contact-input {
+        width: 200px;
+    }
 }
 
 #onedrive-search-block .icon {
@@ -442,9 +572,9 @@ body.theme--dark .icon-onedrive-settings {
 }
 
 ::v-deep .app-navigation-entry__icon-bullet {
-    display: inline-block;
-    padding: 0;
-    height: 12px;
-    margin: 0 8px 0 10px;
+	display: inline-block;
+	padding: 0;
+	height: 12px;
+	margin: 0 8px 0 10px;
 }
 </style>

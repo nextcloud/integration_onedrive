@@ -32,6 +32,7 @@ use OCP\AppFramework\Controller;
 
 use OCA\Onedrive\Service\OnedriveStorageAPIService;
 use OCA\Onedrive\Service\OnedriveCalendarAPIService;
+use OCA\Onedrive\Service\OnedriveContactAPIService;
 use OCA\Onedrive\AppInfo\Application;
 
 class OnedriveAPIController extends Controller {
@@ -52,6 +53,7 @@ class OnedriveAPIController extends Controller {
 								LoggerInterface $logger,
 								OnedriveStorageAPIService $onedriveStorageApiService,
 								OnedriveCalendarAPIService $onedriveCalendarApiService,
+								OnedriveContactAPIService $onedriveContactApiService,
 								$userId) {
 		parent::__construct($AppName, $request);
 		$this->userId = $userId;
@@ -63,6 +65,7 @@ class OnedriveAPIController extends Controller {
 		$this->logger = $logger;
 		$this->onedriveStorageApiService = $onedriveStorageApiService;
 		$this->onedriveCalendarApiService = $onedriveCalendarApiService;
+		$this->onedriveContactApiService = $onedriveContactApiService;
 		$this->accessToken = $this->config->getUserValue($this->userId, Application::APP_ID, 'token', '');
 	}
 
@@ -151,6 +154,45 @@ class OnedriveAPIController extends Controller {
 			return new DataResponse('', 400);
 		}
 		$result = $this->onedriveCalendarApiService->importCalendar($this->accessToken, $this->userId, $calId, $calName, $color);
+		if (isset($result['error'])) {
+			$response = new DataResponse($result['error'], 401);
+		} else {
+			$response = new DataResponse($result);
+		}
+		return $response;
+	}
+
+	/**
+	 * @NoAdminRequired
+	 *
+	 * @return DataResponse
+	 */
+	public function getContactNumber(): DataResponse {
+		if ($this->accessToken === '') {
+			return new DataResponse(null, 400);
+		}
+		$result = $this->onedriveContactApiService->getContactNumber($this->accessToken, $this->userId);
+		if (isset($result['error'])) {
+			$response = new DataResponse($result['error'], 401);
+		} else {
+			$response = new DataResponse($result);
+		}
+		return $response;
+	}
+
+	/**
+	 * @NoAdminRequired
+	 *
+	 * @param ?string $uri
+	 * @param int $key
+	 * @param ?string $newAddressBookName
+	 * @return DataResponse
+	 */
+	public function importContacts(?string $uri = '', int $key, ?string $newAddressBookName = ''): DataResponse {
+		if ($this->accessToken === '') {
+			return new DataResponse(null, 400);
+		}
+		$result = $this->onedriveContactApiService->importContacts($this->accessToken, $this->userId, $uri, $key, $newAddressBookName);
 		if (isset($result['error'])) {
 			$response = new DataResponse($result['error'], 401);
 		} else {

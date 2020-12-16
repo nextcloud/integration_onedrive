@@ -18,6 +18,8 @@ use OCP\IURLGenerator;
 use OCP\IConfig;
 use OCP\IServerContainer;
 use OCP\IL10N;
+use OCP\Contacts\IManager as IContactManager;
+use OCP\Constants;
 use Psr\Log\LoggerInterface;
 
 use OCP\IRequest;
@@ -47,6 +49,7 @@ class ConfigController extends Controller {
 								IDBConnection $dbconnection,
 								IURLGenerator $urlGenerator,
 								IL10N $l,
+								IContactManager $contactsManager,
 								LoggerInterface $logger,
 								OnedriveAPIService $onedriveAPIService,
 								$userId) {
@@ -57,6 +60,7 @@ class ConfigController extends Controller {
 		$this->appData = $appData;
 		$this->serverContainer = $serverContainer;
 		$this->config = $config;
+		$this->contactsManager = $contactsManager;
 		$this->dbconnection = $dbconnection;
 		$this->urlGenerator = $urlGenerator;
 		$this->logger = $logger;
@@ -170,5 +174,25 @@ class ConfigController extends Controller {
 			$this->config->setUserValue($this->userId, Application::APP_ID, 'user_name', '');
 			return '';
 		}
+	}
+
+	/**
+	 * Get local address book list
+	 *
+	 * @return DataResponse
+	 */
+	public function getLocalAddressBooks(): DataResponse {
+		$addressBooks = $this->contactsManager->getUserAddressBooks();
+		$result = [];
+		foreach ($addressBooks as $k => $ab) {
+			if ($ab->getUri() !== 'system') {
+				$result[$ab->getKey()] = [
+					'uri' => $ab->getUri(),
+					'name' => $ab->getDisplayName(),
+					'canEdit' => ($ab->getPermissions() & Constants::PERMISSION_CREATE) ? true : false,
+				];
+			}
+		}
+		return new DataResponse($result);
 	}
 }
