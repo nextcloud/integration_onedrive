@@ -183,16 +183,13 @@ class OnedriveAPIController extends Controller {
 	/**
 	 * @NoAdminRequired
 	 *
-	 * @param ?string $uri
-	 * @param int $key
-	 * @param ?string $newAddressBookName
 	 * @return DataResponse
 	 */
-	public function importContacts(?string $uri = '', int $key, ?string $newAddressBookName = ''): DataResponse {
+	public function importContacts(): DataResponse {
 		if ($this->accessToken === '') {
 			return new DataResponse(null, 400);
 		}
-		$result = $this->onedriveContactApiService->importContacts($this->accessToken, $this->userId, $uri, $key, $newAddressBookName);
+		$result = $this->onedriveContactApiService->importContacts($this->accessToken, $this->userId);
 		if (isset($result['error'])) {
 			$response = new DataResponse($result['error'], 401);
 		} else {
