@@ -153,7 +153,7 @@ class OnedriveContactAPIService {
 				}
 			}
 			if ($key === 0) {
-				$key = $this->cdBackend->createAddressBook('principals/users/' . $userId, $folder['displayName'], []);
+				$key = $this->cdBackend->createAddressBook('principals/users/' . $userId, $folder['displayName'] . ' (Microsoft calendar)', []);
 			}
 
 			$result = $this->getContactsInFolder($accessToken, $userId, $folder['id']);

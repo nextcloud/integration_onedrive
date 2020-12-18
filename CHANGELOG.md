@@ -6,6 +6,13 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
 
+### Added
+- contact import
+- calendar import
+
+### Changed
+- bump js libs
+
 ## 0.0.4 – 2020-11-17
 ### Fixed
 - handle paginated results
