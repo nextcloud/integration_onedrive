@@ -6,12 +6,16 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
 
+## 0.0.5 – 2020-11-21
 ### Added
 - contact import
 - calendar import
 
 ### Changed
 - bump js libs
+
+### Fixed
+- issue with unlimited user quota
 
 ## 0.0.4 – 2020-11-17
 ### Fixed
