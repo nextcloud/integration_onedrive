@@ -265,7 +265,13 @@ class OnedriveStorageAPIService {
 			$resource = $savedFile->fopen('w');
 			$res = $this->onedriveApiService->fileRequest($fileItem['@microsoft.graph.downloadUrl'], $resource);
 			if (!isset($res['error'])) {
-				$savedFile->touch();
+				if (isset($fileItem['lastModifiedDateTime'])) {
+					$d = new \Datetime($fileItem['lastModifiedDateTime']);
+					$ts = $d->getTimestamp();
+					$savedFile->touch($ts);
+				} else {
+					$savedFile->touch();
+				}
 				$stat = $savedFile->stat();
 				return $stat['size'] ?? 0;
 			} else {
