@@ -58,6 +58,8 @@ class Personal implements ISettings {
 		$freeSpace = $userFolder->getStorage()->free_space('/');
 		$user = $this->userManager->get($this->userId);
 
+		$onedriveOutputDir = $this->config->getUserValue($this->userId, Application::APP_ID, 'onedrive_output_dir', '/OneDrive import');
+
 		$userConfig = [
 			'token' => $token,
 			'client_id' => $clientID,
@@ -66,6 +68,7 @@ class Personal implements ISettings {
 			'user_name' => $userName,
 			'free_space' => $freeSpace,
 			'user_quota' => $user->getQuota(),
+			'onedrive_output_dir' => $onedriveOutputDir,
 		];
 		$this->initialStateService->provideInitialState($this->appName, 'user-config', $userConfig);
 		$response = new TemplateResponse(Application::APP_ID, 'personalSettings');

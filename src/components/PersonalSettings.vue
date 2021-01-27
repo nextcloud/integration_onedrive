@@ -38,6 +38,20 @@
 				<br>
 				<div v-if="storageSize > 0" id="import-storage">
 					<h3>{{ t('integration_onedrive', 'Onedrive storage') }}</h3>
+					<div v-if="!importingOnedrive" class="output-selection">
+						<label for="onedrive-output">
+							<span class="icon icon-folder" />
+							{{ t('integration_onedrive', 'Import directory') }}
+						</label>
+						<input id="onedrive-output"
+							:readonly="true"
+							:value="state.onedrive_output_dir">
+						<button
+							@click="onOnedriveOutputChange">
+							<span class="icon-rename" />
+						</button>
+						<br><br>
+					</div>
 					<label>
 						<span class="icon icon-folder" />
 						{{ t('integration_onedrive', 'Onedrive storage ({formSize})', { formSize: myHumanFileSize(storageSize, true) }) }}
@@ -427,6 +441,21 @@ export default {
 					this.importingContacts = false
 				})
 		},
+		onOnedriveOutputChange() {
+			OC.dialogs.filepicker(
+				t('integration_onedrive', 'Choose where to write imported files'),
+				(targetPath) => {
+					if (targetPath === '') {
+						targetPath = '/'
+					}
+					this.state.onedrive_output_dir = targetPath
+					this.saveOptions({ onedrive_output_dir: this.state.onedrive_output_dir })
+				},
+				false,
+				'httpd/unix-directory',
+				true
+			)
+		},
 	},
 }
 </script>
@@ -493,6 +522,18 @@ body.theme--dark .icon-onedrive-settings {
 
 	.contact-input {
 		width: 200px;
+	}
+
+	.output-selection {
+		display: flex;
+
+		label,
+		input {
+			width: 300px;
+		}
+		button {
+			width: 44px !important;
+		}
 	}
 }
 

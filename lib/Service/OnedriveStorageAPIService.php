@@ -81,7 +81,8 @@ class OnedriveStorageAPIService {
 	 * @return array
 	 */
 	public function startImportOnedrive(string $accessToken, string $userId): array {
-		$targetPath = $this->l10n->t('Onedrive import');
+		$targetPath = $this->config->getUserValue($userId, Application::APP_ID, 'onedrive_output_dir', '/OneDrive import');
+		$targetPath = $targetPath ?: '/OneDrive import';
 		// create root folder
 		$userFolder = $this->root->getUserFolder($userId);
 		if (!$userFolder->nodeExists($targetPath)) {
@@ -116,7 +117,8 @@ class OnedriveStorageAPIService {
 		//$clientID = $this->config->getAppValue(Application::APP_ID, 'client_id', '');
 		//$clientSecret = $this->config->getAppValue(Application::APP_ID, 'client_secret', '');
 		// import batch of files
-		$targetPath = $this->l10n->t('Onedrive import');
+		$targetPath = $this->config->getUserValue($userId, Application::APP_ID, 'onedrive_output_dir', '/OneDrive import');
+		$targetPath = $targetPath ?: '/OneDrive import';
 		// import by batch of 500 Mo
 		$alreadyImportedSize = $this->config->getUserValue($userId, Application::APP_ID, 'imported_size', '0');
 		$alreadyImportedSize = (int) $alreadyImportedSize;
