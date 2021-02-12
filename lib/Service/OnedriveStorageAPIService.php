@@ -195,9 +195,9 @@ class OnedriveStorageAPIService {
 		$newTotalSeenNumber = $totalSeenNumber;
 		$newNbDownloaded = $nbDownloaded;
 
-		$reqPath = $path === ''
+		$reqPath = ($path === '')
 			? ''
-			: ':/' . $path . ':';
+			: ':' . $path . ':';
 		$endPoint = 'me/drive/root' . $reqPath . '/children';
 		$params = [];
 		do {
