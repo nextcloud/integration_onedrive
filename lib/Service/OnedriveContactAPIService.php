@@ -50,18 +50,49 @@ class OnedriveContactAPIService {
 	 * @return array
 	 */
 	public function getContactNumber(string $accessToken, string $userId): array {
-		$folders = $this->getContactFolders($accessToken, $userId);
-		if (isset($folders['error'])) {
-			return $folders;
-		}
-		$folders[] = ['id' => null, 'displayName' => 'Outlook contacts'];
+		// first get nb contacts on top level
 		$nbContacts = 0;
-		foreach ($folders as $folder) {
-			$number = $this->getContactNumberInFolder($accessToken, $userId, $folder['id']);
-			if (!is_null($number)) {
-				$nbContacts += $number;
+		$endPoint = 'me/contacts';
+		$params = [
+			'$select' => 'displayName',
+			'$top' => 1000,
+		];
+		do {
+			$result = $this->onedriveApiService->request($accessToken, $userId, $endPoint, $params);
+			if (isset($result['error']) || !isset($result['value']) || !is_array($result['value'])) {
+				return $result;
 			}
-		}
+			$nbContacts += count($result['value']);
+			if (isset($result['@odata.nextLink'])
+				&& $result['@odata.nextLink']
+				&& preg_match('/\$skip=\d+/i', $result['@odata.nextLink'])) {
+				$params['$skip'] = preg_replace('/.*\$skip=/', '', $result['@odata.nextLink']);
+			}
+		} while (isset($result['@odata.nextLink']) && $result['@odata.nextLink']);
+
+		// then get all the rest in one request
+		$endPoint = 'me/contactFolders';
+		$params = [
+			'$expand' => 'contacts($select=displayName)',
+			'$top' => 100,
+		];
+		do {
+			$result = $this->onedriveApiService->request($accessToken, $userId, 'me/contactfolders', $params);
+			if (isset($result['error']) || !isset($result['value']) || !is_array($result['value'])) {
+				return $result;
+			}
+			foreach ($result['value'] as $folder) {
+				if (isset($folder['contacts']) && is_array($folder['contacts'])) {
+					$nbContacts += count($folder['contacts']);
+				}
+			}
+			if (isset($result['@odata.nextLink'])
+				&& $result['@odata.nextLink']
+				&& preg_match('/\$skip=\d+/i', $result['@odata.nextLink'])) {
+				$params['$skip'] = preg_replace('/.*\$skip=/', '', $result['@odata.nextLink']);
+			}
+		} while (isset($result['@odata.nextLink']) && $result['@odata.nextLink']);
+
 		return ['nbContacts' => $nbContacts];
 	}
 
@@ -70,51 +101,12 @@ class OnedriveContactAPIService {
 	 * @param string $userId
 	 * @return array
 	 */
-	public function getContactFolders(string $accessToken, string $userId): array {
-		$folders = [];
-		$params = [];
-		do {
-			$result = $this->onedriveApiService->request($accessToken, $userId, 'me/contactfolders', $params);
-			if (isset($result['error']) || !isset($result['value']) || !is_array($result['value'])) {
-				return $result;
-			}
-			foreach ($result['value'] as $folder) {
-				$folders[] = $folder;
-			}
-			if (isset($result['@odata.nextLink'])
-				&& $result['@odata.nextLink']
-				&& preg_match('/\$skiptoken=/i', $result['@odata.nextLink'])) {
-				$params['$skiptoken'] = preg_replace('/.*\$skiptoken=/', '', $result['@odata.nextLink']);
-			}
-		} while (isset($result['@odata.nextLink']) && $result['@odata.nextLink']);
-		return $folders;
-	}
-
-	/**
-	 * @param string $accessToken
-	 * @param string $userId
-	 * @return array
-	 */
-	public function getContactNumberInFolder(string $accessToken, string $userId, ?string $folderId = null): ?int {
-		$result = $this->getContactsInFolder($accessToken, $userId, $folderId);
-		if (isset($result['error'])) {
-			return null;
-		}
-		$nbContacts = count($result['contacts'] ?? []);
-		return $nbContacts;
-	}
-
-	/**
-	 * @param string $accessToken
-	 * @param string $userId
-	 * @return array
-	 */
-	public function getContactsInFolder(string $accessToken, string $userId, ?string $folderId = null): array {
-		$endPoint = is_null($folderId)
-			? 'me/contacts'
-			: 'me/contactfolders/' . $folderId . '/contacts';
+	public function getContactsInTopFolder(string $accessToken, string $userId): array {
+		$endPoint = 'me/contacts';
 		$contacts = [];
-		$params = [];
+		$params = [
+			'$top' => 1000,
+		];
 		do {
 			$result = $this->onedriveApiService->request($accessToken, $userId, $endPoint, $params);
 			if (isset($result['error'])) {
@@ -123,11 +115,11 @@ class OnedriveContactAPIService {
 			$contacts = array_merge($contacts, $result['value'] ?? []);
 			if (isset($result['@odata.nextLink'])
 				&& $result['@odata.nextLink']
-				&& preg_match('/\$skiptoken=/i', $result['@odata.nextLink'])) {
-				$params['$skiptoken'] = preg_replace('/.*\$skiptoken=/', '', $result['@odata.nextLink']);
+				&& preg_match('/\$skip=\d/i', $result['@odata.nextLink'])) {
+				$params['$skip'] = preg_replace('/.*\$skip=/', '', $result['@odata.nextLink']);
 			}
 		} while (isset($result['@odata.nextLink']) && $result['@odata.nextLink']);
-		return ['contacts' => $contacts];
+		return $contacts;
 	}
 
 	/**
@@ -138,35 +130,58 @@ class OnedriveContactAPIService {
 	public function importContacts(string $accessToken, string $userId): array {
 		$nbAdded = 0;
 
-		$folders = $this->getContactFolders($accessToken, $userId);
-		if (isset($folders['error'])) {
-			return $folders;
-		}
-		$folders[] = ['id' => null, 'displayName' => 'Outlook contacts'];
-		foreach ($folders as $folder) {
-			$key = 0;
-			$addressBooks = $this->contactsManager->getUserAddressBooks();
-			foreach ($addressBooks as $k => $ab) {
-				if ($ab->getDisplayName() === $folder['displayName']) {
-					$key = intval($ab->getKey());
-					break;
-				}
-			}
-			if ($key === 0) {
-				$key = $this->cdBackend->createAddressBook('principals/users/' . $userId, $folder['displayName'] . ' (Microsoft calendar)', []);
-			}
+		// top folder
+		$topFolderContacts = $this->getContactsInTopFolder($accessToken, $userId);
+		$topFolderName = 'Outlook contacts';
+		$nbAdded += $this->importFolder($userId, $topFolderName, $topFolderContacts);
 
-			$result = $this->getContactsInFolder($accessToken, $userId, $folder['id']);
-			if (isset($result['error'])) {
+		// all the ones in folders in one request
+		$endPoint = 'me/contactFolders';
+		$params = [
+			'$expand' => 'contacts',
+			'$top' => 100,
+		];
+		do {
+			$result = $this->onedriveApiService->request($accessToken, $userId, $endPoint, $params);
+			if (isset($result['error']) || !isset($result['value']) || !is_array($result['value'])) {
 				return $result;
 			}
-			foreach ($result['contacts'] as $k => $c) {
-				if ($this->importContact($c, $key)) {
-					$nbAdded++;
+			foreach ($result['value'] as $folder) {
+				if (isset($folder['displayName'], $folder['contacts']) && is_array($folder['contacts'])) {
+					$count= $this->importFolder($userId, $folder['displayName'], $folder['contacts']);
+					$nbAdded += $count;
 				}
 			}
-		}
+			if (isset($result['@odata.nextLink'])
+				&& $result['@odata.nextLink']
+				&& preg_match('/\$skip=\d+/i', $result['@odata.nextLink'])) {
+				$params['$skip'] = preg_replace('/.*\$skip=/', '', $result['@odata.nextLink']);
+			}
+		} while (isset($result['@odata.nextLink']) && $result['@odata.nextLink']);
 		return ['nbAdded' => $nbAdded];
+	}
+
+	private function importFolder(string $userId, string $folderName, array $folderContacts): int {
+		$nbAdded = 0;
+		$key = 0;
+		$addressBooks = $this->contactsManager->getUserAddressBooks();
+		$folderNameInNC = $folderName . ' (Microsoft calendar)';
+		foreach ($addressBooks as $k => $ab) {
+			if ($ab->getDisplayName() === $folderNameInNC) {
+				$key = intval($ab->getKey());
+				break;
+			}
+		}
+		if ($key === 0) {
+			$key = $this->cdBackend->createAddressBook('principals/users/' . $userId, $folderNameInNC, []);
+		}
+
+		foreach ($folderContacts as $c) {
+			if ($this->importContact($c, $key)) {
+				$nbAdded++;
+			}
+		}
+		return $nbAdded;
 	}
 
 	private function importContact(array $c, $key): bool {
@@ -266,7 +281,7 @@ class OnedriveContactAPIService {
 		}
 
 		try {
-			$this->cdBackend->createCard($key, 'outlook' . $k, $vCard->serialize());
+			$this->cdBackend->createCard($key, 'outlook' . substr($c['id'], 0, 255), $vCard->serialize());
 			return true;
 		} catch (\Throwable | \Exception $e) {
 			$this->logger->warning('Error when creating contact "' . ($displayName ?? 'no name') . '" ' . json_encode($c), ['app' => $this->appName]);
