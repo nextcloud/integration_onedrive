@@ -26,12 +26,14 @@ class OnedriveCalendarAPIService {
 								LoggerInterface $logger,
 								IL10N $l10n,
 								CalDavBackend $caldavBackend,
+								OnedriveColorService $colorService,
 								OnedriveAPIService $onedriveApiService) {
 		$this->appName = $appName;
 		$this->l10n = $l10n;
 		$this->logger = $logger;
 		$this->caldavBackend = $caldavBackend;
 		$this->onedriveApiService = $onedriveApiService;
+		$this->colorService = $colorService;
 	}
 
 	/**
@@ -60,6 +62,48 @@ class OnedriveCalendarAPIService {
 			: $res['id'];
 	}
 
+	private function getCategories(string $accessToken, string $userId): array {
+		$result = $this->onedriveApiService->request($accessToken, $userId, 'me/outlook/masterCategories');
+		if (isset($result['error']) || !isset($result['value']) || !is_array($result['value'])) {
+			return [];
+		}
+		$categoryColors = [];
+		$convColors = [
+			'preset0' => '#ff0000',
+			'preset1' => '#ff8c00',
+			'preset2' => '#ffab45',
+			'preset3' => '#fff100',
+			'preset4' => '#47d041',
+			'preset5' => '#30c6cc',
+			'preset6' => '#73aa24',
+			'preset7' => '#00bcf2',
+			'preset8' => '#8764b8',
+			'preset9' => '#f495bf',
+			'preset10' => '#a0aeb2',
+			'preset11' => '#004b60',
+			'preset12' => '#b1adab',
+			'preset13' => '#5d5a58',
+			'preset14' => '#000000',
+			'preset15' => '#750b1c',
+			'preset16' => '#ca5010',
+			'preset17' => '#ab620d',
+			'preset18' => '#c19c00',
+			'preset19' => '#004b1c',
+			'preset20' => '#004b50',
+			'preset21' => '#0b6a0b',
+			'preset22' => '#002050',
+			'preset23' => '#32145a',
+			'preset24' => '#5c005c',
+		];
+		foreach ($result['value'] as $k => $v) {
+			$preset = $v['color'];
+			if (array_key_exists($preset, $convColors)) {
+				$categoryColors[$v['displayName']] = $this->colorService->getClosestCssColor($convColors[$preset]);
+			}
+		}
+		return $categoryColors;
+	}
+
 	/**
 	 * @param string $accessToken
 	 * @param string $userId
@@ -82,6 +126,8 @@ class OnedriveCalendarAPIService {
 		if ($color) {
 			$params['{http://apple.com/ns/ical/}calendar-color'] = $color;
 		}
+
+		$categories = $this->getCategories($accessToken, $userId);
 
 		$newCalName = trim($calName) . ' (' . $this->l10n->t('Microsoft Calendar import') .')';
 		$ncCalId = $this->calendarExists($userId, $newCalName);
@@ -112,6 +158,12 @@ class OnedriveCalendarAPIService {
 				? ('DESCRIPTION:' . substr(str_replace("\n", '\n', trim(strip_tags($e['body']['content']))), 0, 250) . "\n")
 				: '';
 			// $calData .= isset($e['status']) ? ('STATUS:' . strtoupper(str_replace("\n", '\n', $e['status'])) . "\n") : '';
+
+			// color
+			if (isset($e['categories']) && is_array($e['categories']) && count($e['categories']) > 0
+				&& array_key_exists($e['categories'][0], $categories)) {
+				$calData .= 'COLOR:' . $categories[$e['categories'][0]] . "\n";
+			}
 
 			if (isset($e['createdDateTime'])) {
 				$created = new \Datetime($e['createdDateTime']);

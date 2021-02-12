@@ -234,6 +234,7 @@ export default {
 				'User.Read',
 				'Calendars.Read',
 				'Contacts.Read',
+				'MailboxSettings.Read',
 				'offline_access',
 			]
 			const requestUrl = 'https://login.live.com/oauth20_authorize.srf'
