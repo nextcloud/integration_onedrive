@@ -35,7 +35,7 @@ jobs:
           echo "###### install dependencies"
           export DEBIAN_FRONTEND=noninteractive
           sudo apt update -y
-          sudo apt upgrade -y
+          # sudo apt upgrade -y
           sudo apt-get install php-mbstring php-sqlite3 npm make openssl -y
           echo "###### installing nextcloud"
           mkdir ~/html
@@ -46,10 +46,8 @@ jobs:
           php ~/html/nextcloud/occ app:enable ${APP_ID}
           php ~/html/nextcloud/occ maintenance:mode --off
           cd ~/html/nextcloud/apps/${APP_ID}
-          echo "###### npm install"
-          npm ci
-          echo "###### npm run build"
-          npm run build
+          echo "###### build app"
+          make
           echo "###### make appstore"
           tag=${{ steps.tag.outputs.currenttag }}
           version=${tag/v/}
