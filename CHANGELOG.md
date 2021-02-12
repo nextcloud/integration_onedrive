@@ -6,6 +6,11 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
 
+## 0.0.9 – 2021-02-12
+### Fixed
+- remove extra slash in drive request URL
+- reduce number of requests when getting contacts number and importing contacts
+
 ## 0.0.8 – 2021-02-12
 ### Changed
 - bump js libs
