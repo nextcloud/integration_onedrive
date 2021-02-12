@@ -170,16 +170,19 @@ class OnedriveStorageAPIService {
 		}
 		$onedriveStorageSize = $info['usageInStorage'];
 
+		// TODO iterate on unfinished directory list retrieved with getUserValue
 		try {
 			$downloadResult = $this->downloadDir(
 				$accessToken, $userId, $folder, $maxDownloadSize, 0, 0, 0, '', $alreadyImportedSize, $alreadyImportedNumber
 			);
 		} catch (MaxDownloadSizeReachedException $e) {
+			// TODO save new unfinished list
 			return [
 				'targetPath' => $targetPath,
 				'finished' => false,
 			];
 		}
+		// TODO save new unfinished list
 
 		return [
 			'targetPath' => $targetPath,
@@ -209,11 +212,16 @@ class OnedriveStorageAPIService {
 					'nbDownloaded' => $newNbDownloaded,
 				];
 			}
+			// first get all files
+			$allFine = true;
 			foreach ($result['value'] as $item) {
 				if (isset($item['file'])) {
 					$newTotalSeenNumber++;
 					$size = $this->getFile($accessToken, $userId, $folder, $item);
-					$newDownloadedSize += $size;
+					if (is_null($size)) {
+						$allFine = false;
+					}
+					$newDownloadedSize += ($size ?? 0);
 					if ($size > 0) {
 						$newNbDownloaded++;
 						$this->config->setUserValue($userId, Application::APP_ID, 'imported_size', $alreadyImportedSize + $newDownloadedSize);
@@ -224,13 +232,20 @@ class OnedriveStorageAPIService {
 					if (!is_null($maxDownloadSize) && $newDownloadedSize >= $maxDownloadSize) {
 						throw new MaxDownloadSizeReachedException('Yep');
 					}
-				} elseif (isset($item['folder'])) {
+				}
+			}
+			// TODO REMOVE this directory from unfinished list IF we got them all ($allFine is true)
+
+			// then explore sub directories
+			foreach ($result['value'] as $item) {
+				if (isset($item['folder'])) {
 					// create folder if needed
 					if (!$folder->nodeExists($item['name'])) {
 						$subFolder = $folder->newFolder($item['name']);
 					} else {
 						$subFolder = $folder->get($item['name']);
 					}
+					// TODO add this directory in unfinished list
 					$subDownloadResult = $this->downloadDir(
 						$accessToken, $userId, $subFolder, $maxDownloadSize, $newDownloadedSize, $newTotalSeenNumber, $newNbDownloaded,
 						$path . '/' . $item['name'], $alreadyImportedSize, $alreadyImportedNumber
@@ -260,7 +275,7 @@ class OnedriveStorageAPIService {
 	 * @param Node $folder
 	 * @return ?int downloaded size, null if already existing or network error
 	 */
-	private function getFile(string $accessToken, string $userId, Node $folder, array $fileItem): int {
+	private function getFile(string $accessToken, string $userId, Node $folder, array $fileItem): ?int {
 		$fileName = $fileItem['name'];
 		if (!$folder->nodeExists($fileName)) {
 			$savedFile = $folder->newFile($fileName);
@@ -277,12 +292,16 @@ class OnedriveStorageAPIService {
 				$stat = $savedFile->stat();
 				return $stat['size'] ?? 0;
 			} else {
+				// there was an error
 				$this->logger->warning('OneDrive error downloading file ' . $fileName . ' : ' . $res['error'], ['app' => $this->appName]);
 				if ($savedFile->isDeletable()) {
 					$savedFile->delete();
 				}
+				return null;
 			}
+		} else {
+			// file exists
+			return 0;
 		}
-		return 0;
 	}
 }
