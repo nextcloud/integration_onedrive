@@ -54,9 +54,6 @@ class OnedriveStorageAPIService {
 
 	/**
 	 * @param string $accessToken
-	 * @param string $refreshToken
-	 * @param string $clientID
-	 * @param string $clientSecret
 	 * @param string $userId
 	 * @return array
 	 */
@@ -83,6 +80,12 @@ class OnedriveStorageAPIService {
 	public function startImportOnedrive(string $accessToken, string $userId): array {
 		$targetPath = $this->config->getUserValue($userId, Application::APP_ID, 'onedrive_output_dir', '/OneDrive import');
 		$targetPath = $targetPath ?: '/OneDrive import';
+
+		$alreadyImporting = $this->config->getUserValue($userId, Application::APP_ID, 'importing_onedrive', '0') === '1';
+		if ($alreadyImporting) {
+			return ['targetPath' => $targetPath];
+		}
+
 		// create root folder
 		$userFolder = $this->root->getUserFolder($userId);
 		if (!$userFolder->nodeExists($targetPath)) {
@@ -96,6 +99,7 @@ class OnedriveStorageAPIService {
 		$this->config->setUserValue($userId, Application::APP_ID, 'importing_onedrive', '1');
 		$this->config->setUserValue($userId, Application::APP_ID, 'imported_size', '0');
 		$this->config->setUserValue($userId, Application::APP_ID, 'last_onedrive_import_timestamp', '0');
+		$this->config->deleteUserValue($userId, Application::APP_ID, 'import_tree');
 
 		$this->jobList->add(ImportOnedriveJob::class, ['user_id' => $userId]);
 		return ['targetPath' => $targetPath];
@@ -113,30 +117,33 @@ class OnedriveStorageAPIService {
 		}
 
 		$accessToken = $this->config->getUserValue($userId, Application::APP_ID, 'token', '');
-		//$refreshToken = $this->config->getUserValue($userId, Application::APP_ID, 'refresh_token', '');
-		//$clientID = $this->config->getAppValue(Application::APP_ID, 'client_id', '');
-		//$clientSecret = $this->config->getAppValue(Application::APP_ID, 'client_secret', '');
 		// import batch of files
 		$targetPath = $this->config->getUserValue($userId, Application::APP_ID, 'onedrive_output_dir', '/OneDrive import');
 		$targetPath = $targetPath ?: '/OneDrive import';
-		// import by batch of 500 Mo
+		// get previous progress
+		$importTreeStr = $this->config->getUserValue($userId, Application::APP_ID, 'import_tree', '[]');
+		$importTree = ($importTreeStr === '[]' || $importTreeStr === '') ? [] : json_decode($importTreeStr, true);
+		// import by batch of 500 MB
 		$alreadyImportedSize = $this->config->getUserValue($userId, Application::APP_ID, 'imported_size', '0');
 		$alreadyImportedSize = (int) $alreadyImportedSize;
 		$alreadyImportedNumber = $this->config->getUserValue($userId, Application::APP_ID, 'nb_imported_files', '0');
 		$alreadyImportedNumber = (int) $alreadyImportedNumber;
-		$result = $this->importFiles($accessToken, $userId, $targetPath, 500000000, $alreadyImportedSize, $alreadyImportedNumber);
+		$result = $this->importFiles($accessToken, $userId, $targetPath, 500000000, $alreadyImportedSize, $alreadyImportedNumber, $importTree);
 		if (isset($result['error']) || (isset($result['finished']) && $result['finished'])) {
 			$this->config->setUserValue($userId, Application::APP_ID, 'importing_onedrive', '0');
 			$this->config->setUserValue($userId, Application::APP_ID, 'imported_size', '0');
 			$this->config->setUserValue($userId, Application::APP_ID, 'nb_imported_files', '0');
 			$this->config->setUserValue($userId, Application::APP_ID, 'last_onedrive_import_timestamp', '0');
 			if (isset($result['finished']) && $result['finished']) {
+				$this->config->deleteUserValue($userId, Application::APP_ID, 'import_tree');
 				$this->onedriveApiService->sendNCNotification($userId, 'import_onedrive_finished', [
 					'nbImported' => $result['totalSeenNumber'],
 					'targetPath' => $targetPath,
 				]);
 			}
 		} else {
+			// save progress
+			$this->config->setUserValue($userId, Application::APP_ID, 'import_tree', json_encode($importTree));
 			$ts = (new \Datetime())->getTimestamp();
 			$this->config->setUserValue($userId, Application::APP_ID, 'last_onedrive_import_timestamp', $ts);
 			$this->jobList->add(ImportOnedriveJob::class, ['user_id' => $userId]);
@@ -152,14 +159,15 @@ class OnedriveStorageAPIService {
 	 * @return array
 	 */
 	public function importFiles(string $accessToken, string $userId, string $targetPath,
-								?int $maxDownloadSize = null, int $alreadyImportedSize, int $alreadyImportedNumber): array {
+								?int $maxDownloadSize = null, int $alreadyImportedSize, int $alreadyImportedNumber,
+								array &$importTree): array {
 		// create root folder
 		$userFolder = $this->root->getUserFolder($userId);
 		if (!$userFolder->nodeExists($targetPath)) {
-			$folder = $userFolder->newFolder($targetPath);
+			$topFolder = $userFolder->newFolder($targetPath);
 		} else {
-			$folder = $userFolder->get($targetPath);
-			if ($folder->getType() !== FileInfo::TYPE_FOLDER) {
+			$topFolder = $userFolder->get($targetPath);
+			if ($topFolder->getType() !== FileInfo::TYPE_FOLDER) {
 				return ['error' => 'Impossible to create ' . $targetPath . ' folder'];
 			}
 		}
@@ -170,19 +178,27 @@ class OnedriveStorageAPIService {
 		}
 		$onedriveStorageSize = $info['usageInStorage'];
 
-		// TODO iterate on unfinished directory list retrieved with getUserValue
+		// iterate on unfinished directory list retrieved with getUserValue
 		try {
-			$downloadResult = $this->downloadDir(
-				$accessToken, $userId, $folder, $maxDownloadSize, 0, 0, 0, '', $alreadyImportedSize, $alreadyImportedNumber
-			);
+			if (count($importTree) === 0) {
+				$downloadResult = $this->downloadDir(
+					$accessToken, $userId, $topFolder, $maxDownloadSize, 0, 0, 0, '', $alreadyImportedSize, $alreadyImportedNumber, $importTree
+				);
+			} else {
+				foreach ($importTree as $path => $state) {
+					if ($state === 'todo') {
+						$downloadResult = $this->downloadDir(
+							$accessToken, $userId, $topFolder, $maxDownloadSize, 0, 0, 0, $path, $alreadyImportedSize, $alreadyImportedNumber, $importTree
+						);
+					}
+				}
+			}
 		} catch (MaxDownloadSizeReachedException $e) {
-			// TODO save new unfinished list
 			return [
 				'targetPath' => $targetPath,
 				'finished' => false,
 			];
 		}
-		// TODO save new unfinished list
 
 		return [
 			'targetPath' => $targetPath,
@@ -191,18 +207,28 @@ class OnedriveStorageAPIService {
 		];
 	}
 
-	private function downloadDir(string $accessToken, string $userId, Node $folder,
+	private function downloadDir(string $accessToken, string $userId, Node $topFolder,
 								?int $maxDownloadSize, int $downloadedSize, int $totalSeenNumber,
-								int $nbDownloaded, string $path, int $alreadyImportedSize, int $alreadyImportedNumber): array {
+								int $nbDownloaded, string $path, int $alreadyImportedSize, int $alreadyImportedNumber,
+								array &$importTree): array {
 		$newDownloadedSize = $downloadedSize;
 		$newTotalSeenNumber = $totalSeenNumber;
 		$newNbDownloaded = $nbDownloaded;
+
+		// create dir if needed
+		if (!$topFolder->nodeExists($path)) {
+			$folder = $topFolder->newFolder($path);
+		} else {
+			$folder = $topFolder->get($path);
+		}
 
 		$reqPath = ($path === '')
 			? ''
 			: ':' . $path . ':';
 		$endPoint = 'me/drive/root' . $reqPath . '/children';
-		$params = [];
+		$params = [
+			'filter' => 'file ne null',
+		];
 		do {
 			$result = $this->onedriveApiService->request($accessToken, $userId, $endPoint, $params);
 			if (isset($result['error']) || !isset($result['value']) || !is_array($result['value'])) {
@@ -213,16 +239,12 @@ class OnedriveStorageAPIService {
 				];
 			}
 			// first get all files
-			$allFine = true;
 			foreach ($result['value'] as $item) {
 				if (isset($item['file'])) {
 					$newTotalSeenNumber++;
 					$size = $this->getFile($accessToken, $userId, $folder, $item);
-					if (is_null($size)) {
-						$allFine = false;
-					}
 					$newDownloadedSize += ($size ?? 0);
-					if ($size > 0) {
+					if (!is_null($size) && $size > 0) {
 						$newNbDownloaded++;
 						$this->config->setUserValue($userId, Application::APP_ID, 'imported_size', $alreadyImportedSize + $newDownloadedSize);
 						$this->config->setUserValue($userId, Application::APP_ID, 'nb_imported_files', $alreadyImportedNumber + $newNbDownloaded);
@@ -234,21 +256,43 @@ class OnedriveStorageAPIService {
 					}
 				}
 			}
-			// TODO REMOVE this directory from unfinished list IF we got them all ($allFine is true)
+			// REMOVE this directory from unfinished list
+			if (array_key_exists($path, $importTree)) {
+				unset($importTree[$path]);
+			}
+			if (isset($result['@odata.nextLink'])
+				&& $result['@odata.nextLink']
+				&& preg_match('/\$skiptoken=/i', $result['@odata.nextLink'])) {
+				$params['$skiptoken'] = preg_replace('/.*\$skiptoken=/', '', $result['@odata.nextLink']);
+			}
+		} while (isset($result['@odata.nextLink']) && $result['@odata.nextLink']);
 
+		// DIRECTORIES
+		$params = [
+			'filter' => 'folder ne null',
+		];
+		do {
+			$result = $this->onedriveApiService->request($accessToken, $userId, $endPoint, $params);
+			if (isset($result['error']) || !isset($result['value']) || !is_array($result['value'])) {
+				return [
+					'downloadedSize' => $newDownloadedSize,
+					'totalSeenNumber' => $newTotalSeenNumber,
+					'nbDownloaded' => $newNbDownloaded,
+				];
+			}
+			// store directories we have to do
+			foreach ($result['value'] as $item) {
+				if (isset($item['folder'])) {
+					$subDirPath = $path . '/' . $item['name'];
+					$importTree[$subDirPath] = 'todo';
+				}
+			}
 			// then explore sub directories
 			foreach ($result['value'] as $item) {
 				if (isset($item['folder'])) {
-					// create folder if needed
-					if (!$folder->nodeExists($item['name'])) {
-						$subFolder = $folder->newFolder($item['name']);
-					} else {
-						$subFolder = $folder->get($item['name']);
-					}
-					// TODO add this directory in unfinished list
 					$subDownloadResult = $this->downloadDir(
-						$accessToken, $userId, $subFolder, $maxDownloadSize, $newDownloadedSize, $newTotalSeenNumber, $newNbDownloaded,
-						$path . '/' . $item['name'], $alreadyImportedSize, $alreadyImportedNumber
+						$accessToken, $userId, $topFolder, $maxDownloadSize, $newDownloadedSize, $newTotalSeenNumber, $newNbDownloaded,
+						$path . '/' . $item['name'], $alreadyImportedSize, $alreadyImportedNumber, $importTree
 					);
 					$newDownloadedSize = $subDownloadResult['downloadedSize'];
 					$newTotalSeenNumber = $subDownloadResult['totalSeenNumber'];
