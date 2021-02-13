@@ -69,6 +69,8 @@
 						<br>
 						{{ n('integration_onedrive', '{amount} file imported ({formImported}) ({progress}%)', '{amount} files imported ({formImported}) ({progress}%)', nbImportedFiles, { amount: nbImportedFiles, formImported: myHumanFileSize(importedSize), progress: onedriveImportProgress }) }}
 						<br>
+						{{ jobRunningText }}
+						<br>
 						{{ lastOnedriveImportDate }}
 						<br>
 						<button @click="onCancelOnedriveImport">
@@ -141,6 +143,7 @@ export default {
 			// onedrive import stuff
 			storageSize: 0,
 			importingOnedrive: false,
+			jobRunning: false,
 			lastOnedriveImportTimestamp: 0,
 			importedSize: 0,
 			nbImportedFiles: 0,
@@ -163,6 +166,11 @@ export default {
 		},
 		enoughSpaceForOnedrive() {
 			return this.storageSize === 0 || this.state.user_quota === 'none' || this.storageSize < this.state.free_space
+		},
+		jobRunningText() {
+			return this.jobRunning
+				? t('integration_onedrive', 'Import job is currently running')
+				: t('integration_onedrive', 'Import job is scheduled')
 		},
 		lastOnedriveImportDate() {
 			return this.lastOnedriveImportTimestamp !== 0
@@ -290,6 +298,7 @@ export default {
 						this.importedSize = response.data.imported_size
 						this.nbImportedFiles = response.data.nb_imported_files
 						this.importingOnedrive = response.data.importing_onedrive
+						this.jobRunning = response.data.job_running
 						if (!this.importingOnedrive) {
 							clearInterval(this.onedriveImportLoop)
 						} else if (launchLoop) {
