@@ -6,6 +6,14 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
 
+## 0.0.10 – 2021-02-15
+### Added
+- import event colors (based on first event category)
+
+### Changed
+- optimize import process, resume where last job stopped
+- let user know if a background job is running
+
 ## 0.0.9 – 2021-02-12
 ### Fixed
 - remove extra slash in drive request URL
