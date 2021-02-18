@@ -4,9 +4,7 @@
 
 ### User settings
 
-The account configuration happens in the "Data migration" user settings section.
-
-A link to the "Data migration" user settings section will be displayed in the widget for users who didn't configure a Microsoft account.
+The account configuration and data migration happen in the "Data migration" user settings section.
 
 ### Admin settings
 
