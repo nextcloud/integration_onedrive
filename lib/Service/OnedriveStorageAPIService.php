@@ -110,7 +110,7 @@ class OnedriveStorageAPIService {
 	 * @return array
 	 */
 	public function importOnedriveJob(string $userId): void {
-		$this->logger->error('Importing onedrive files for ' . $userId);
+		$this->logger->info('Importing onedrive files for ' . $userId);
 		$importingOnedrive = $this->config->getUserValue($userId, Application::APP_ID, 'importing_onedrive', '0') === '1';
 		if (!$importingOnedrive) {
 			return;
