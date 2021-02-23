@@ -18,6 +18,7 @@ use OCP\ITempManager;
 use OCP\Files\IRootFolder;
 use OCP\Files\FileInfo;
 use OCP\Files\Node;
+use OCP\Files\ForbiddenException;
 use OCP\BackgroundJob\IJobList;
 use GuzzleHttp\Exception\ClientException;
 use GuzzleHttp\Exception\ServerException;
@@ -323,7 +324,12 @@ class OnedriveStorageAPIService {
 	 */
 	private function getFile(string $accessToken, string $userId, Node $folder, array $fileItem): ?int {
 		$fileName = $fileItem['name'];
-		if (!$folder->nodeExists($fileName)) {
+		try {
+            $fileExists = $folder->nodeExists($fileName);
+        } catch (ForbiddenException $e) {
+            return null;
+        }
+		if (!$fileExists) {
 			$savedFile = $folder->newFile($fileName);
 			$resource = $savedFile->fopen('w');
 			$res = $this->onedriveApiService->fileRequest($fileItem['@microsoft.graph.downloadUrl'], $resource);
