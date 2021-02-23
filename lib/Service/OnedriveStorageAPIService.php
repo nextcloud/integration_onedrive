@@ -126,10 +126,8 @@ class OnedriveStorageAPIService {
 		$importTreeStr = $this->config->getUserValue($userId, Application::APP_ID, 'import_tree', '[]');
 		$importTree = ($importTreeStr === '[]' || $importTreeStr === '') ? [] : json_decode($importTreeStr, true);
 		// import by batch of 500 MB
-		$alreadyImportedSize = $this->config->getUserValue($userId, Application::APP_ID, 'imported_size', '0');
-		$alreadyImportedSize = (int) $alreadyImportedSize;
-		$alreadyImportedNumber = $this->config->getUserValue($userId, Application::APP_ID, 'nb_imported_files', '0');
-		$alreadyImportedNumber = (int) $alreadyImportedNumber;
+		$alreadyImportedSize = (float) $this->config->getUserValue($userId, Application::APP_ID, 'imported_size', '0');
+		$alreadyImportedNumber = (int) $this->config->getUserValue($userId, Application::APP_ID, 'nb_imported_files', '0');
 		$result = $this->importFiles($accessToken, $userId, $targetPath, 500000000, $alreadyImportedSize, $alreadyImportedNumber, $importTree);
 		if (isset($result['error']) || (isset($result['finished']) && $result['finished'])) {
 			$this->config->setUserValue($userId, Application::APP_ID, 'importing_onedrive', '0');
@@ -162,7 +160,7 @@ class OnedriveStorageAPIService {
 	 * @return array
 	 */
 	public function importFiles(string $accessToken, string $userId, string $targetPath,
-								?int $maxDownloadSize = null, int $alreadyImportedSize, int $alreadyImportedNumber,
+								?int $maxDownloadSize = null, float $alreadyImportedSize, int $alreadyImportedNumber,
 								array &$importTree): array {
 		// create root folder
 		$userFolder = $this->root->getUserFolder($userId);
@@ -212,7 +210,7 @@ class OnedriveStorageAPIService {
 
 	private function downloadDir(string $accessToken, string $userId, Node $topFolder,
 								?int $maxDownloadSize, int $downloadedSize, int $totalSeenNumber,
-								int $nbDownloaded, string $path, int $alreadyImportedSize, int $alreadyImportedNumber,
+								int $nbDownloaded, string $path, float $alreadyImportedSize, int $alreadyImportedNumber,
 								array &$importTree): array {
 		$newDownloadedSize = $downloadedSize;
 		$newTotalSeenNumber = $totalSeenNumber;
@@ -322,7 +320,7 @@ class OnedriveStorageAPIService {
 	 * @param Node $folder
 	 * @return ?int downloaded size, null if already existing or network error
 	 */
-	private function getFile(string $accessToken, string $userId, Node $folder, array $fileItem): ?int {
+	private function getFile(string $accessToken, string $userId, Node $folder, array $fileItem): ?float {
 		$fileName = $fileItem['name'];
 		try {
             $fileExists = $folder->nodeExists($fileName);
@@ -342,7 +340,7 @@ class OnedriveStorageAPIService {
 					$savedFile->touch();
 				}
 				$stat = $savedFile->stat();
-				return $stat['size'] ?? 0;
+				return (float) $stat['size'] ?? 0;
 			} else {
 				// there was an error
 				$this->logger->warning('OneDrive error downloading file ' . $fileName . ' : ' . $res['error'], ['app' => $this->appName]);
