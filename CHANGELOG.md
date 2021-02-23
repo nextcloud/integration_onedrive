@@ -6,6 +6,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
 
+## 0.0.12 – 2021-02-23
+### Fixed
+- avoid crash when stat() returns float file size
+
 ## 0.0.11 – 2021-02-23
 ### Fixed
 - one log message importance
