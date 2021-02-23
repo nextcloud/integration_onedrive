@@ -6,6 +6,11 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
 
+## 0.0.11 – 2021-02-23
+### Fixed
+- one log message importance
+- catch ForbiddenException
+
 ## 0.0.10 – 2021-02-15
 ### Added
 - import event colors (based on first event category)
