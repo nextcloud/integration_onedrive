@@ -49,7 +49,6 @@ jobs:
           echo "###### install dependencies"
           export DEBIAN_FRONTEND=noninteractive
           sudo apt update -y
-          # sudo apt upgrade -y
           sudo apt-get install make openssl -y
           echo "###### installing nextcloud"
           mkdir ~/html

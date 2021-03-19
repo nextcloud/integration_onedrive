@@ -6,6 +6,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
 
+## 1.0.0 – 2021-03-19
+### Changed
+- bump js libs
+
 ## 0.0.12 – 2021-02-23
 ### Fixed
 - avoid crash when stat() returns float file size
