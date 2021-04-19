@@ -113,10 +113,11 @@ class OnedriveStorageAPIService {
 	public function importOnedriveJob(string $userId): void {
 		$this->logger->info('Importing onedrive files for ' . $userId);
 		$importingOnedrive = $this->config->getUserValue($userId, Application::APP_ID, 'importing_onedrive', '0') === '1';
-		if (!$importingOnedrive) {
+		$jobRunning = $this->config->getUserValue($userId, Application::APP_ID, 'onedrive_import_running', '0') === '1';
+		if (!$importingOnedrive || $jobRunning) {
 			return;
 		}
-		$this->config->setUserValue($userId, Application::APP_ID, 'job_running', '1');
+		$this->config->setUserValue($userId, Application::APP_ID, 'onedrive_import_running', '1');
 
 		$accessToken = $this->config->getUserValue($userId, Application::APP_ID, 'token', '');
 		// import batch of files
@@ -148,7 +149,7 @@ class OnedriveStorageAPIService {
 			$this->config->setUserValue($userId, Application::APP_ID, 'last_onedrive_import_timestamp', $ts);
 			$this->jobList->add(ImportOnedriveJob::class, ['user_id' => $userId]);
 		}
-		$this->config->setUserValue($userId, Application::APP_ID, 'job_running', '0');
+		$this->config->setUserValue($userId, Application::APP_ID, 'onedrive_import_running', '0');
 	}
 
 	/**

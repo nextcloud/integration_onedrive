@@ -298,7 +298,7 @@ export default {
 						this.importedSize = response.data.imported_size
 						this.nbImportedFiles = response.data.nb_imported_files
 						this.importingOnedrive = response.data.importing_onedrive
-						this.jobRunning = response.data.job_running
+						this.jobRunning = response.data.onedrive_import_running
 						if (!this.importingOnedrive) {
 							clearInterval(this.onedriveImportLoop)
 						} else if (launchLoop) {

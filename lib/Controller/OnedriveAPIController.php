@@ -116,7 +116,7 @@ class OnedriveAPIController extends Controller {
 		}
 		$response = new DataResponse([
 			'importing_onedrive' => $this->config->getUserValue($this->userId, Application::APP_ID, 'importing_onedrive', '') === '1',
-			'job_running' => $this->config->getUserValue($this->userId, Application::APP_ID, 'job_running', '') === '1',
+			'onedrive_import_running' => $this->config->getUserValue($this->userId, Application::APP_ID, 'onedrive_import_running', '') === '1',
 			'last_onedrive_import_timestamp' => (int) $this->config->getUserValue($this->userId, Application::APP_ID, 'last_onedrive_import_timestamp', '0'),
 			'imported_size' => (int) $this->config->getUserValue($this->userId, Application::APP_ID, 'imported_size', '0'),
 			'nb_imported_files' => (int) $this->config->getUserValue($this->userId, Application::APP_ID, 'nb_imported_files', '0'),
