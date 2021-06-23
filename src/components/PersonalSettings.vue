@@ -13,7 +13,7 @@
 				@input="onNavigationChange">
 			<label for="onedrive-link">{{ t('integration_onedrive', 'Enable navigation link') }}</label>
 		</div>
-		<br><br>
+		<br>
 		<p v-if="!showOAuth && !connected" class="settings-hint">
 			{{ t('integration_onedrive', 'Ask your Nextcloud administrator to configure OneDrive OAuth settings in order to use this integration.') }}
 		</p>
@@ -46,7 +46,7 @@
 						<input id="onedrive-output"
 							:readonly="true"
 							:value="state.onedrive_output_dir">
-						<button
+						<button class="edit-output-dir"
 							@click="onOnedriveOutputChange">
 							<span class="icon-rename" />
 						</button>
@@ -494,7 +494,7 @@ export default {
 	width: 32px;
 }
 
-#onedrive_prefs .grid-form .icon {
+#onedrive_prefs .onedrive-grid-form .icon {
 	margin-bottom: -3px;
 }
 
@@ -545,6 +545,14 @@ body.theme--dark .icon-onedrive-settings {
 		button {
 			width: 44px !important;
 		}
+
+		>label span {
+			margin-bottom: -2px;
+		}
+	}
+
+	.edit-output-dir {
+		padding: 6px 6px;
 	}
 }
 
