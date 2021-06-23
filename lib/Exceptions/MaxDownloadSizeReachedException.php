@@ -24,5 +24,7 @@ declare(strict_types=1);
 
 namespace OCA\Onedrive\Exceptions;
 
-class MaxDownloadSizeReachedException extends \Exception {
+use Exception;
+
+class MaxDownloadSizeReachedException extends Exception {
 }

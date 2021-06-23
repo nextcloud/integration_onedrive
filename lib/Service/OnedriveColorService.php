@@ -11,10 +11,6 @@
 
 namespace OCA\Onedrive\Service;
 
-use Psr\Log\LoggerInterface;
-
-use OCA\Onedrive\AppInfo\Application;
-
 require_once __DIR__ . '/../../vendor/autoload.php';
 use Ortic\ColorConverter\Color;
 use Ortic\ColorConverter\Colors\Named;
@@ -24,10 +20,7 @@ class OnedriveColorService {
 	/**
 	 * Service to make requests to Onedrive v3 (JSON) API
 	 */
-	public function __construct (string $appName,
-								LoggerInterface $logger) {
-		$this->appName = $appName;
-		$this->logger = $logger;
+	public function __construct () {
 	}
 
 	/**

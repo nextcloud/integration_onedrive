@@ -11,23 +11,15 @@
 
 namespace OCA\Onedrive\Controller;
 
-use OCP\App\IAppManager;
-use OCP\Files\IAppData;
-
 use OCP\IURLGenerator;
 use OCP\IConfig;
-use OCP\IServerContainer;
 use OCP\IL10N;
 use OCP\Contacts\IManager as IContactManager;
 use OCP\Constants;
-use Psr\Log\LoggerInterface;
 
 use OCP\IRequest;
-use OCP\IDBConnection;
-use OCP\AppFramework\Http;
 use OCP\AppFramework\Http\RedirectResponse;
 use OCP\AppFramework\Http\DataResponse;
-use OCP\AppFramework\Http\ContentSecurityPolicy;
 use OCP\AppFramework\Controller;
 
 use OCA\Onedrive\Service\OnedriveAPIService;
@@ -35,35 +27,45 @@ use OCA\Onedrive\AppInfo\Application;
 
 class ConfigController extends Controller {
 
+	/**
+	 * @var string|null
+	 */
 	private $userId;
+	/**
+	 * @var IConfig
+	 */
 	private $config;
-	private $dbconnection;
-	private $dbtype;
+	/**
+	 * @var IContactManager
+	 */
+	private $contactsManager;
+	/**
+	 * @var IURLGenerator
+	 */
+	private $urlGenerator;
+	/**
+	 * @var OnedriveAPIService
+	 */
+	private $onedriveAPIService;
+	/**
+	 * @var IL10N
+	 */
+	private $l;
 
-	public function __construct($AppName,
+	public function __construct($appName,
 								IRequest $request,
-								IServerContainer $serverContainer,
 								IConfig $config,
-								IAppManager $appManager,
-								IAppData $appData,
-								IDBConnection $dbconnection,
 								IURLGenerator $urlGenerator,
 								IL10N $l,
 								IContactManager $contactsManager,
-								LoggerInterface $logger,
 								OnedriveAPIService $onedriveAPIService,
-								$userId) {
-		parent::__construct($AppName, $request);
+								?string $userId) {
+		parent::__construct($appName, $request);
 		$this->l = $l;
-		$this->appName = $AppName;
 		$this->userId = $userId;
-		$this->appData = $appData;
-		$this->serverContainer = $serverContainer;
 		$this->config = $config;
 		$this->contactsManager = $contactsManager;
-		$this->dbconnection = $dbconnection;
 		$this->urlGenerator = $urlGenerator;
-		$this->logger = $logger;
 		$this->onedriveAPIService = $onedriveAPIService;
 	}
 
@@ -115,14 +117,14 @@ class ConfigController extends Controller {
 	 * @return RedirectResponse to user settings
 	 */
 	public function oauthRedirect(string $code = ''): RedirectResponse {
-		$clientID = $this->config->getAppValue(Application::APP_ID, 'client_id', '');
-		$clientSecret = $this->config->getAppValue(Application::APP_ID, 'client_secret', '');
+		$clientID = $this->config->getAppValue(Application::APP_ID, 'client_id');
+		$clientSecret = $this->config->getAppValue(Application::APP_ID, 'client_secret');
 
 		// anyway, reset state
 		$this->config->setUserValue($this->userId, Application::APP_ID, 'oauth_state', '');
 
 		if ($clientID && $clientSecret && $code !== '') {
-			$redirectUri = $this->config->getUserValue($this->userId, Application::APP_ID, 'redirect_uri', '');
+			$redirectUri = $this->config->getUserValue($this->userId, Application::APP_ID, 'redirect_uri');
 			$result = $this->onedriveAPIService->requestOAuthAccessToken([
 				'client_id' => $clientID,
 				'client_secret' => $clientSecret,
@@ -155,25 +157,6 @@ class ConfigController extends Controller {
 			$this->urlGenerator->linkToRoute('settings.PersonalSettings.index', ['section' => 'migration']) .
 			'?onedriveToken=error&message=' . urlencode($result)
 		);
-	}
-
-	/**
-	 * get and store connected user info
-	 *
-	 * @param string $accessToken
-	 * @return string the login/username
-	 */
-	private function storeUserInfo(string $accessToken): string {
-		$info = $this->onedriveAPIService->request($accessToken, 'user');
-		if (isset($info['login'], $info['id'])) {
-			$this->config->setUserValue($this->userId, Application::APP_ID, 'user_id', $info['id']);
-			$this->config->setUserValue($this->userId, Application::APP_ID, 'user_name', $info['login']);
-			return $info['login'];
-		} else {
-			$this->config->setUserValue($this->userId, Application::APP_ID, 'user_id', '');
-			$this->config->setUserValue($this->userId, Application::APP_ID, 'user_name', '');
-			return '';
-		}
 	}
 
 	/**

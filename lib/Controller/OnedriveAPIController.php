@@ -11,21 +11,7 @@
 
 namespace OCA\Onedrive\Controller;
 
-use OCP\App\IAppManager;
-use OCP\Files\IAppData;
-use OCP\AppFramework\Http\DataDisplayResponse;
-
-use OCP\IURLGenerator;
 use OCP\IConfig;
-use OCP\IServerContainer;
-use OCP\IL10N;
-
-use OCP\AppFramework\Http;
-use OCP\AppFramework\Http\RedirectResponse;
-
-use OCP\AppFramework\Http\ContentSecurityPolicy;
-
-use Psr\Log\LoggerInterface;
 use OCP\IRequest;
 use OCP\AppFramework\Http\DataResponse;
 use OCP\AppFramework\Controller;
@@ -37,36 +23,45 @@ use OCA\Onedrive\AppInfo\Application;
 
 class OnedriveAPIController extends Controller {
 
-
-	private $userId;
+	/**
+	 * @var OnedriveContactAPIService
+	 */
+	private $onedriveContactApiService;
+	/**
+	 * @var IConfig
+	 */
 	private $config;
-	private $dbconnection;
-	private $dbtype;
+	/**
+	 * @var OnedriveStorageAPIService
+	 */
+	private $onedriveStorageApiService;
+	/**
+	 * @var OnedriveCalendarAPIService
+	 */
+	private $onedriveCalendarApiService;
+	/**
+	 * @var string|null
+	 */
+	private $userId;
+	/**
+	 * @var string
+	 */
+	private $accessToken;
 
-	public function __construct($AppName,
+	public function __construct($appName,
 								IRequest $request,
-								IServerContainer $serverContainer,
 								IConfig $config,
-								IL10N $l10n,
-								IAppManager $appManager,
-								IAppData $appData,
-								LoggerInterface $logger,
 								OnedriveStorageAPIService $onedriveStorageApiService,
 								OnedriveCalendarAPIService $onedriveCalendarApiService,
 								OnedriveContactAPIService $onedriveContactApiService,
-								$userId) {
-		parent::__construct($AppName, $request);
-		$this->userId = $userId;
-		$this->AppName = $AppName;
-		$this->l10n = $l10n;
-		$this->appData = $appData;
-		$this->serverContainer = $serverContainer;
+								?string $userId) {
+		parent::__construct($appName, $request);
 		$this->config = $config;
-		$this->logger = $logger;
 		$this->onedriveStorageApiService = $onedriveStorageApiService;
 		$this->onedriveCalendarApiService = $onedriveCalendarApiService;
 		$this->onedriveContactApiService = $onedriveContactApiService;
-		$this->accessToken = $this->config->getUserValue($this->userId, Application::APP_ID, 'token', '');
+		$this->userId = $userId;
+		$this->accessToken = $this->config->getUserValue($this->userId, Application::APP_ID, 'token');
 	}
 
 	/**
@@ -96,7 +91,7 @@ class OnedriveAPIController extends Controller {
 		if ($this->accessToken === '') {
 			return new DataResponse(null, 400);
 		}
-		$result = $this->onedriveStorageApiService->startImportOnedrive($this->accessToken, $this->userId);
+		$result = $this->onedriveStorageApiService->startImportOnedrive($this->userId);
 		if (isset($result['error'])) {
 			$response = new DataResponse($result['error'], 401);
 		} else {
@@ -114,14 +109,13 @@ class OnedriveAPIController extends Controller {
 		if ($this->accessToken === '') {
 			return new DataResponse(null, 400);
 		}
-		$response = new DataResponse([
-			'importing_onedrive' => $this->config->getUserValue($this->userId, Application::APP_ID, 'importing_onedrive', '') === '1',
-			'onedrive_import_running' => $this->config->getUserValue($this->userId, Application::APP_ID, 'onedrive_import_running', '') === '1',
+		return new DataResponse([
+			'importing_onedrive' => $this->config->getUserValue($this->userId, Application::APP_ID, 'importing_onedrive') === '1',
+			'onedrive_import_running' => $this->config->getUserValue($this->userId, Application::APP_ID, 'onedrive_import_running') === '1',
 			'last_onedrive_import_timestamp' => (int) $this->config->getUserValue($this->userId, Application::APP_ID, 'last_onedrive_import_timestamp', '0'),
 			'imported_size' => (int) $this->config->getUserValue($this->userId, Application::APP_ID, 'imported_size', '0'),
 			'nb_imported_files' => (int) $this->config->getUserValue($this->userId, Application::APP_ID, 'nb_imported_files', '0'),
 		]);
-		return $response;
 	}
 
 	/**

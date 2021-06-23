@@ -2,41 +2,44 @@
 namespace OCA\Onedrive\Settings;
 
 use OCP\AppFramework\Http\TemplateResponse;
-use OCP\IRequest;
-use OCP\IL10N;
+use OCP\AppFramework\Services\IInitialState;
 use OCP\IConfig;
 use OCP\Settings\ISettings;
-use OCP\Util;
-use OCP\IURLGenerator;
-use OCP\IInitialStateService;
 use OCP\Files\IRootFolder;
 use OCP\IUserManager;
 use OCA\Onedrive\AppInfo\Application;
 
 class Personal implements ISettings {
 
-	private $request;
+	/**
+	 * @var IConfig
+	 */
 	private $config;
-	private $dataDirPath;
-	private $urlGenerator;
-	private $l;
+	/**
+	 * @var IRootFolder
+	 */
+	private $root;
+	/**
+	 * @var IUserManager
+	 */
+	private $userManager;
+	/**
+	 * @var IInitialState
+	 */
+	private $initialStateService;
+	/**
+	 * @var string
+	 */
+	private $userId;
 
-	public function __construct(string $appName,
-								IL10N $l,
-								IRequest $request,
-								IConfig $config,
-								IURLGenerator $urlGenerator,
+	public function __construct(IConfig $config,
 								IRootFolder $root,
 								IUserManager $userManager,
-								IInitialStateService $initialStateService,
+								IInitialState $initialStateService,
 								string $userId) {
-		$this->appName = $appName;
-		$this->urlGenerator = $urlGenerator;
-		$this->request = $request;
-		$this->l = $l;
+		$this->config = $config;
 		$this->root = $root;
 		$this->userManager = $userManager;
-		$this->config = $config;
 		$this->initialStateService = $initialStateService;
 		$this->userId = $userId;
 	}
@@ -45,13 +48,13 @@ class Personal implements ISettings {
 	 * @return TemplateResponse
 	 */
 	public function getForm(): TemplateResponse {
-		$token = $this->config->getUserValue($this->userId, Application::APP_ID, 'token', '');
+		$token = $this->config->getUserValue($this->userId, Application::APP_ID, 'token');
 		$navigationEnabled = $this->config->getUserValue($this->userId, Application::APP_ID, 'navigation_enabled', '0');
-		$userName = $this->config->getUserValue($this->userId, Application::APP_ID, 'user_name', '');
+		$userName = $this->config->getUserValue($this->userId, Application::APP_ID, 'user_name');
 
 		// for OAuth
-		$clientID = $this->config->getAppValue(Application::APP_ID, 'client_id', '');
-		$clientSecret = $this->config->getAppValue(Application::APP_ID, 'client_secret', '') !== '';
+		$clientID = $this->config->getAppValue(Application::APP_ID, 'client_id');
+		$clientSecret = $this->config->getAppValue(Application::APP_ID, 'client_secret') !== '';
 
 		// get free space
 		$userFolder = $this->root->getUserFolder($this->userId);
@@ -70,9 +73,8 @@ class Personal implements ISettings {
 			'user_quota' => $user->getQuota(),
 			'onedrive_output_dir' => $onedriveOutputDir,
 		];
-		$this->initialStateService->provideInitialState($this->appName, 'user-config', $userConfig);
-		$response = new TemplateResponse(Application::APP_ID, 'personalSettings');
-		return $response;
+		$this->initialStateService->provideInitialState('user-config', $userConfig);
+		return new TemplateResponse(Application::APP_ID, 'personalSettings');
 	}
 
 	public function getSection(): string {

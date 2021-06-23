@@ -18,8 +18,10 @@ use OCP\AppFramework\Utility\ITimeFactory;
 use OCA\Onedrive\Service\OnedriveStorageAPIService;
 
 class ImportOnedriveJob extends QueuedJob {
-
-	private $jobList;
+	/**
+	 * @var OnedriveStorageAPIService
+	 */
+	private $service;
 
 	/**
 	 * A QueuedJob to partially import onedrive files and launch following job

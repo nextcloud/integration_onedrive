@@ -11,6 +11,8 @@
 
 namespace OCA\Onedrive\Service;
 
+use DateTime;
+use Exception;
 use OCP\IL10N;
 use OCP\IConfig;
 use Psr\Log\LoggerInterface;
@@ -21,11 +23,31 @@ use GuzzleHttp\Exception\ConnectException;
 use OCP\Notification\IManager as INotificationManager;
 
 use OCA\Onedrive\AppInfo\Application;
+use Throwable;
 
 class OnedriveAPIService {
 
-	private $l10n;
 	private $logger;
+	/**
+	 * @var string
+	 */
+	private $appName;
+	/**
+	 * @var IConfig
+	 */
+	private $config;
+	/**
+	 * @var INotificationManager
+	 */
+	private $notificationManager;
+	/**
+	 * @var IL10N
+	 */
+	private $l10n;
+	/**
+	 * @var \OCP\Http\Client\IClient
+	 */
+	private $client;
 
 	/**
 	 * Service to make requests to OneDrive v3 (JSON) API
@@ -37,18 +59,17 @@ class OnedriveAPIService {
 								INotificationManager $notificationManager,
 								IClientService $clientService) {
 		$this->appName = $appName;
-		$this->l10n = $l10n;
 		$this->logger = $logger;
 		$this->config = $config;
 		$this->notificationManager = $notificationManager;
-		$this->clientService = $clientService;
 		$this->client = $clientService->newClient();
+		$this->l10n = $l10n;
 	}
 
 	/**
 	 * @param string $userId
 	 * @param string $subject
-	 * @param string $params
+	 * @param array $params
 	 * @return void
 	 */
 	public function sendNCNotification(string $userId, string $subject, array $params): void {
@@ -57,7 +78,7 @@ class OnedriveAPIService {
 
 		$notification->setApp(Application::APP_ID)
 			->setUser($userId)
-			->setDateTime(new \DateTime())
+			->setDateTime(new DateTime())
 			->setObject('dum', 'dum')
 			->setSubject($subject, $params);
 
@@ -66,6 +87,7 @@ class OnedriveAPIService {
 
 	/**
 	 * @param string $url
+	 * @param $resource
 	 * @return array
 	 */
 	public function fileRequest(string $url, $resource): array {
@@ -88,13 +110,13 @@ class OnedriveAPIService {
 				return ['success' => true];
 			}
 		} catch (ServerException | ClientException $e) {
-			$response = $e->getResponse();
+			// $response = $e->getResponse();
 			$this->logger->warning('OneDrive API error : '.$e->getMessage(), ['app' => $this->appName]);
 			return ['error' => $e->getMessage()];
 		} catch (ConnectException $e) {
 			$this->logger->error('OneDrive API request connection error: ' . $e->getMessage(), ['app' => $this->appName]);
 			return ['error' => $e->getMessage()];
-		} catch (\Exception | \Throwable $e) {
+		} catch (Exception | Throwable $e) {
 			$this->logger->error('OneDrive API request connection error: ' . $e->getMessage(), ['app' => $this->appName]);
 			return ['error' => $e->getMessage()];
 		}
@@ -103,10 +125,12 @@ class OnedriveAPIService {
 	/**
 	 * Make the HTTP request
 	 * @param string $accessToken
+	 * @param string $userId
 	 * @param string $endPoint The path to reach in api.onedrive.com
 	 * @param array $params Query parameters (key/val pairs)
 	 * @param string $method HTTP query method
 	 * @return array decoded request result or error
+	 * @throws \OCP\PreConditionNotMetException
 	 */
 	public function request(string $accessToken, string $userId, string $endPoint, array $params = [], string $method = 'GET'): array {
 		try {
@@ -135,6 +159,8 @@ class OnedriveAPIService {
 				$response = $this->client->put($url, $options);
 			} else if ($method === 'DELETE') {
 				$response = $this->client->delete($url, $options);
+			} else {
+				return ['error' => $this->l10n->t('Bad HTTP method')];
 			}
 			$body = $response->getBody();
 			$respCode = $response->getStatusCode();
@@ -149,10 +175,10 @@ class OnedriveAPIService {
 			if ($response->getStatusCode() === 401) {
 				$this->logger->info('Trying to REFRESH the access token', ['app' => $this->appName]);
 				// try to refresh the token
-				$clientId = $this->config->getAppValue(Application::APP_ID, 'client_id', '');
-				$clientSecret = $this->config->getAppValue(Application::APP_ID, 'client_secret', '');
-				$redirectUri = $this->config->getUserValue($userId, Application::APP_ID, 'redirect_uri', '');
-				$refreshToken = $this->config->getUserValue($userId, Application::APP_ID, 'refresh_token', '');
+				$clientId = $this->config->getAppValue(Application::APP_ID, 'client_id');
+				$clientSecret = $this->config->getAppValue(Application::APP_ID, 'client_secret');
+				$redirectUri = $this->config->getUserValue($userId, Application::APP_ID, 'redirect_uri');
+				$refreshToken = $this->config->getUserValue($userId, Application::APP_ID, 'refresh_token');
 				$result = $this->requestOAuthAccessToken([
 					'client_id' => $clientId,
 					'client_secret' => $clientSecret,
@@ -211,6 +237,8 @@ class OnedriveAPIService {
 				$response = $this->client->put($url, $options);
 			} else if ($method === 'DELETE') {
 				$response = $this->client->delete($url, $options);
+			} else {
+				return ['error' => $this->l10n->t('Bad HTTP method')];
 			}
 			$body = $response->getBody();
 			$respCode = $response->getStatusCode();

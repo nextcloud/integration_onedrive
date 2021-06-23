@@ -11,16 +11,39 @@
 
 namespace OCA\Onedrive\Service;
 
+use Datetime;
+use DateTimeZone;
+use Exception;
+use Generator;
 use OCP\IL10N;
 use OCA\DAV\CalDAV\CalDavBackend;
 use Sabre\DAV\Exception\BadRequest;
 use Psr\Log\LoggerInterface;
-
-use OCA\Onedrive\AppInfo\Application;
+use Throwable;
 
 class OnedriveCalendarAPIService {
 
 	private $l10n;
+	/**
+	 * @var string
+	 */
+	private $appName;
+	/**
+	 * @var LoggerInterface
+	 */
+	private $logger;
+	/**
+	 * @var CalDavBackend
+	 */
+	private $caldavBackend;
+	/**
+	 * @var OnedriveColorService
+	 */
+	private $colorService;
+	/**
+	 * @var OnedriveAPIService
+	 */
+	private $onedriveApiService;
 
 	public function __construct (string $appName,
 								LoggerInterface $logger,
@@ -29,11 +52,11 @@ class OnedriveCalendarAPIService {
 								OnedriveColorService $colorService,
 								OnedriveAPIService $onedriveApiService) {
 		$this->appName = $appName;
-		$this->l10n = $l10n;
 		$this->logger = $logger;
+		$this->l10n = $l10n;
 		$this->caldavBackend = $caldavBackend;
-		$this->onedriveApiService = $onedriveApiService;
 		$this->colorService = $colorService;
+		$this->onedriveApiService = $onedriveApiService;
 	}
 
 	/**
@@ -42,7 +65,6 @@ class OnedriveCalendarAPIService {
 	 * @return array
 	 */
 	public function getCalendarList(string $accessToken, string $userId): array {
-		$params = [];
 		$result = $this->onedriveApiService->request($accessToken, $userId, 'me/calendars');
 		if (isset($result['error']) || !isset($result['value'])) {
 			return $result;
@@ -136,7 +158,7 @@ class OnedriveCalendarAPIService {
 		}
 
 		date_default_timezone_set('UTC');
-		$utcTimezone = new \DateTimeZone('-0000');
+		$utcTimezone = new DateTimeZone('-0000');
 		$events = $this->getCalendarEvents($accessToken, $userId, $calId);
 		$nbAdded = 0;
 		foreach ($events as $e) {
@@ -166,13 +188,13 @@ class OnedriveCalendarAPIService {
 			}
 
 			if (isset($e['createdDateTime'])) {
-				$created = new \Datetime($e['createdDateTime']);
+				$created = new Datetime($e['createdDateTime']);
 				$created->setTimezone($utcTimezone);
 				$calData .= 'CREATED:' . $created->format('Ymd\THis\Z') . "\n";
 			}
 
 			if (isset($e['lastModifiedDateTime'])) {
-				$updated = new \Datetime($e['lastModifiedDateTime']);
+				$updated = new Datetime($e['lastModifiedDateTime']);
 				$updated->setTimezone($utcTimezone);
 				$calData .= 'LAST-MODIFIED:' . $updated->format('Ymd\THis\Z') . "\n";
 			}
@@ -248,7 +270,7 @@ class OnedriveCalendarAPIService {
 					$parts[] = 'INTERVAL=' . $e['recurrence']['pattern']['interval'];
 				}
 				if (isset($e['recurrence']['range']['endDate'])) {
-					$endDate = new \Datetime($e['recurrence']['range']['endDate']);
+					$endDate = new Datetime($e['recurrence']['range']['endDate']);
 					$endDate->setTimezone($utcTimezone);
 					$parts[] = 'UNTIL=' . $endDate->format('Ymd\THis\Z');
 				} elseif (isset($e['recurrence']['range']['numberOfOccurrences']) && $e['recurrence']['range']['numberOfOccurrences'] > 0) {
@@ -263,15 +285,15 @@ class OnedriveCalendarAPIService {
 			if (isset($e['start'], $e['start']['dateTime'], $e['end'], $e['end']['dateTime'])) {
 				if ($e['isAllDay']) {
 					// whole days
-					$start = new \Datetime($e['start']['dateTime']);
+					$start = new Datetime($e['start']['dateTime']);
 					$calData .= 'DTSTART;VALUE=DATE:' . $start->format('Ymd') . "\n";
-					$end = new \Datetime($e['end']['dateTime']);
+					$end = new Datetime($e['end']['dateTime']);
 					$calData .= 'DTEND;VALUE=DATE:' . $end->format('Ymd') . "\n";
 				} else {
-					$start = new \Datetime($e['start']['dateTime']);
+					$start = new Datetime($e['start']['dateTime']);
 					$start->setTimezone($utcTimezone);
 					$calData .= 'DTSTART;VALUE=DATE-TIME:' . $start->format('Ymd\THis\Z') . "\n";
-					$end = new \Datetime($e['end']['dateTime']);
+					$end = new Datetime($e['end']['dateTime']);
 					$end->setTimezone($utcTimezone);
 					$calData .= 'DTEND;VALUE=DATE-TIME:' . $end->format('Ymd\THis\Z') . "\n";
 				}
@@ -293,7 +315,7 @@ class OnedriveCalendarAPIService {
 				} else {
 					$this->logger->warning('Error when creating calendar event "' . ($e['subject'] ?? 'no title') . '" ' . $ex->getMessage(), ['app' => $this->appName]);
 				}
-			} catch (\Exception | \Throwable $ex) {
+			} catch (Exception | Throwable $ex) {
 				$this->logger->warning('Error when creating calendar event "' . ($e['subject'] ?? 'no title') . '" ' . $ex->getMessage(), ['app' => $this->appName]);
 			}
 		}
@@ -312,9 +334,9 @@ class OnedriveCalendarAPIService {
 	 * @param string $accessToken
 	 * @param string $userId
 	 * @param string $calId
-	 * @return \Generator
+	 * @return Generator
 	 */
-	private function getCalendarEvents(string $accessToken, string $userId, string $calId): \Generator {
+	private function getCalendarEvents(string $accessToken, string $userId, string $calId): Generator {
 		$params = [];
 		do {
 			$result = $this->onedriveApiService->request($accessToken, $userId, 'me/calendars/'.$calId.'/events', $params);

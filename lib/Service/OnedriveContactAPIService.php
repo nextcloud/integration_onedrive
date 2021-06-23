@@ -11,14 +11,43 @@
 
 namespace OCA\Onedrive\Service;
 
+use Datetime;
+use Exception;
 use OCP\Contacts\IManager as IContactManager;
 use Sabre\VObject\Component\VCard;
 use OCA\DAV\CardDAV\CardDavBackend;
 use Psr\Log\LoggerInterface;
-
-use OCA\Onedrive\AppInfo\Application;
+use Throwable;
 
 class OnedriveContactAPIService {
+	/**
+	 * @var string
+	 */
+	private $appName;
+	/**
+	 * @var LoggerInterface
+	 */
+	private $logger;
+	/**
+	 * @var IContactManager
+	 */
+	private $contactsManager;
+	/**
+	 * @var CardDavBackend
+	 */
+	private $cdBackend;
+	/**
+	 * @var OnedriveAPIService
+	 */
+	private $onedriveApiService;
+	/**
+	 * @var string[]
+	 */
+	private $addrTypes;
+	/**
+	 * @var string[]
+	 */
+	private $phoneTypes;
 
 	/**
 	 * Service to make requests to Onedrive v3 (JSON) API
@@ -28,11 +57,6 @@ class OnedriveContactAPIService {
 								IContactManager $contactsManager,
 								CardDavBackend $cdBackend,
 								OnedriveAPIService $onedriveApiService) {
-		$this->appName = $appName;
-		$this->logger = $logger;
-		$this->contactsManager = $contactsManager;
-		$this->cdBackend = $cdBackend;
-		$this->onedriveApiService = $onedriveApiService;
 		$this->addrTypes = [
 			'homeAddress' => 'HOME',
 			'businessAddress' => 'WORK',
@@ -42,6 +66,11 @@ class OnedriveContactAPIService {
 			'homePhones' => 'HOME',
 			'businessPhones' => 'WORK',
 		];
+		$this->appName = $appName;
+		$this->logger = $logger;
+		$this->contactsManager = $contactsManager;
+		$this->cdBackend = $cdBackend;
+		$this->onedriveApiService = $onedriveApiService;
 	}
 
 	/**
@@ -71,13 +100,12 @@ class OnedriveContactAPIService {
 		} while (isset($result['@odata.nextLink']) && $result['@odata.nextLink']);
 
 		// then get all the rest in one request
-		$endPoint = 'me/contactFolders';
 		$params = [
 			'$expand' => 'contacts($select=displayName)',
 			'$top' => 100,
 		];
 		do {
-			$result = $this->onedriveApiService->request($accessToken, $userId, 'me/contactfolders', $params);
+			$result = $this->onedriveApiService->request($accessToken, $userId, 'me/contactFolders', $params);
 			if (isset($result['error']) || !isset($result['value']) || !is_array($result['value'])) {
 				return $result;
 			}
@@ -216,7 +244,7 @@ class OnedriveContactAPIService {
 				$state = $address['state'] ?? '';
 				$postalCode = $address['postalCode'] ?? '';
 				$city = $address['city'] ?? '';
-				$addrType = $address['type'] ?? '';
+//				$addrType = $address['type'] ?? '';
 				$country = $address['countryOrRegion'] ?? '';
 				$postOfficeBox = '';
 
@@ -231,7 +259,7 @@ class OnedriveContactAPIService {
 
 		// birthday
 		if (isset($c['birthday']) && is_string($c['birthday']) && strlen($c['birthday']) > 0) {
-			$date = new \Datetime($c['birthday']);
+			$date = new Datetime($c['birthday']);
 			$strDate = $date->format('Ymd');
 
 			$type = ['VALUE' => 'DATE'];
@@ -283,7 +311,7 @@ class OnedriveContactAPIService {
 		try {
 			$this->cdBackend->createCard($key, 'outlook' . substr($c['id'], 0, 255), $vCard->serialize());
 			return true;
-		} catch (\Throwable | \Exception $e) {
+		} catch (Throwable | Exception $e) {
 			$this->logger->warning('Error when creating contact "' . ($displayName ?? 'no name') . '" ' . json_encode($c), ['app' => $this->appName]);
 		}
 		return false;
