@@ -6,6 +6,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
 
+## 1.1.0 – 2021-06-29
+### Fixed
+- do not exclude "src" but "./src", ortic PHP lib was excluded
+
 ## 1.0.2 – 2021-06-28
 ### Changed
 - bump js libs
