@@ -258,9 +258,10 @@ class OnedriveStorageAPIService {
 			$folder = $topFolder->get($path);
 		}
 
-		$reqPath = ($path === '')
+		$encPath = urlencode($path);
+		$reqPath = ($encPath === '')
 			? ''
-			: ':' . $path . ':';
+			: ':' . $encPath . ':';
 		$endPoint = 'me/drive/root' . $reqPath . '/children';
 		$params = [
 			'filter' => 'file ne null',
