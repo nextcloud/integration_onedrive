@@ -50,6 +50,10 @@ class OnedriveStorageAPIService {
 	 * @var OnedriveAPIService
 	 */
 	private $onedriveApiService;
+	/**
+	 * @var UserScopeService
+	 */
+	private $userScopeService;
 
 	/**
 	 * Service to make requests to Onedrive API
@@ -59,6 +63,7 @@ class OnedriveStorageAPIService {
 								IRootFolder $root,
 								IConfig $config,
 								IJobList $jobList,
+								UserScopeService $userScopeService,
 								OnedriveAPIService $onedriveApiService) {
 		$this->appName = $appName;
 		$this->logger = $logger;
@@ -66,6 +71,7 @@ class OnedriveStorageAPIService {
 		$this->config = $config;
 		$this->jobList = $jobList;
 		$this->onedriveApiService = $onedriveApiService;
+		$this->userScopeService = $userScopeService;
 	}
 
 	/**
@@ -124,6 +130,11 @@ class OnedriveStorageAPIService {
 	 */
 	public function importOnedriveJob(string $userId): void {
 		$this->logger->info('Importing onedrive files for ' . $userId);
+
+		// in case SSE is enabled
+		$this->userScopeService->setUserScope($userId);
+		$this->userScopeService->setFilesystemScope($userId);
+
 		$importingOnedrive = $this->config->getUserValue($userId, Application::APP_ID, 'importing_onedrive', '0') === '1';
 		$jobRunning = $this->config->getUserValue($userId, Application::APP_ID, 'onedrive_import_running', '0') === '1';
 		if (!$importingOnedrive || $jobRunning) {

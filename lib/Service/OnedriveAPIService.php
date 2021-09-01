@@ -93,7 +93,7 @@ class OnedriveAPIService {
 	public function fileRequest(string $url, $resource): array {
 		try {
 			$options = [
-				'sink' => $resource,
+				'stream' => true,
 				'timeout' => 0,
 				'headers' => [
 					'User-Agent' => 'Nextcloud Dropbox integration',
@@ -101,14 +101,20 @@ class OnedriveAPIService {
 			];
 
 			$response = $this->client->get($url, $options);
-			//$body = $response->getBody();
 			$respCode = $response->getStatusCode();
 
 			if ($respCode >= 400) {
 				return ['error' => $this->l10n->t('Bad credentials')];
-			} else {
-				return ['success' => true];
 			}
+
+			$body = $response->getBody();
+			while (!feof($body)) {
+				// write ~5 MB chunks
+				$chunk = fread($body, 5000000);
+				fwrite($resource, $chunk);
+			}
+
+			return ['success' => true];
 		} catch (ServerException | ClientException $e) {
 			// $response = $e->getResponse();
 			$this->logger->warning('OneDrive API error : '.$e->getMessage(), ['app' => $this->appName]);
