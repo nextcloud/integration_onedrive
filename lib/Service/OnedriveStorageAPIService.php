@@ -152,7 +152,13 @@ class OnedriveStorageAPIService {
 		// import by batch of 500 MB
 		$alreadyImportedSize = (float) $this->config->getUserValue($userId, Application::APP_ID, 'imported_size', '0');
 		$alreadyImportedNumber = (int) $this->config->getUserValue($userId, Application::APP_ID, 'nb_imported_files', '0');
-		$result = $this->importFiles($accessToken, $userId, $targetPath, 500000000, $alreadyImportedSize, $alreadyImportedNumber, $importTree);
+		try {
+			$result = $this->importFiles($accessToken, $userId, $targetPath, 500000000, $alreadyImportedSize, $alreadyImportedNumber, $importTree);
+		} catch (\Exception | \Throwable $e) {
+			$result = [
+				'error' => 'Unknow job failure. ' . $e->getMessage(),
+			];
+		}
 		if (isset($result['error']) || (isset($result['finished']) && $result['finished'])) {
 			$this->config->setUserValue($userId, Application::APP_ID, 'importing_onedrive', '0');
 			$this->config->setUserValue($userId, Application::APP_ID, 'imported_size', '0');
