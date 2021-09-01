@@ -5,6 +5,10 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
+## 1.1.1 – 2021-09-01
+### Fixed
+- handle all crashes in import job
+- fix file import with SSE enabled, get temp link and use it on the fly
 
 ## 1.1.0 – 2021-06-29
 ### Fixed
