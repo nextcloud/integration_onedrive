@@ -366,6 +366,9 @@ class OnedriveStorageAPIService {
 			$resource = $savedFile->fopen('w');
 			$res = $this->onedriveApiService->fileRequest($fileItem['@microsoft.graph.downloadUrl'], $resource);
 			if (!isset($res['error'])) {
+				if (is_resource($resource)) {
+					fclose($resource);
+				}
 				if (isset($fileItem['lastModifiedDateTime'])) {
 					$d = new Datetime($fileItem['lastModifiedDateTime']);
 					$ts = $d->getTimestamp();
