@@ -4,7 +4,7 @@
     <name>OneDrive integration</name>
     <summary>Integration of Microsoft OneDrive</summary>
     <description><![CDATA[Microsoft OneDrive integration allows you to automatically import your OneDrive files into Nextcloud.]]></description>
-    <version>1.1.1</version>
+    <version>1.1.2</version>
     <licence>agpl</licence>
     <author>Julien Veyssier</author>
     <namespace>Onedrive</namespace>
@@ -17,10 +17,7 @@
     <bugs>https://github.com/eneiluj/integration_onedrive/issues</bugs>
     <screenshot>https://github.com/eneiluj/integration_onedrive/raw/master/img/screenshot1.jpg</screenshot>
     <dependencies>
-        <database min-version="9.4">pgsql</database>
-        <database>sqlite</database>
-        <database min-version="5.5">mysql</database>
-        <nextcloud min-version="22" max-version="23"/>
+        <nextcloud min-version="22" max-version="24"/>
     </dependencies>
     <settings>
         <admin>OCA\Onedrive\Settings\Admin</admin>
