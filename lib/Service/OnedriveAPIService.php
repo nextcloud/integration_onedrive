@@ -130,7 +130,6 @@ class OnedriveAPIService {
 
 	/**
 	 * Make the HTTP request
-	 * @param string $accessToken
 	 * @param string $userId
 	 * @param string $endPoint The path to reach in api.onedrive.com
 	 * @param array $params Query parameters (key/val pairs)
@@ -138,7 +137,9 @@ class OnedriveAPIService {
 	 * @return array decoded request result or error
 	 * @throws \OCP\PreConditionNotMetException
 	 */
-	public function request(string $accessToken, string $userId, string $endPoint, array $params = [], string $method = 'GET'): array {
+	public function request(string $userId, string $endPoint, array $params = [], string $method = 'GET'): array {
+		$this->checkTokenExpiration($userId);
+		$accessToken = $this->config->getUserValue($userId, Application::APP_ID, 'token');
 		try {
 			$url = 'https://graph.microsoft.com/v1.0/' . $endPoint;
 			$options = [
@@ -177,32 +178,6 @@ class OnedriveAPIService {
 				return json_decode($body, true) ?: [];
 			}
 		} catch (ServerException | ClientException $e) {
-			$response = $e->getResponse();
-			if ($response->getStatusCode() === 401) {
-				$this->logger->info('Trying to REFRESH the access token', ['app' => $this->appName]);
-				// try to refresh the token
-				$clientId = $this->config->getAppValue(Application::APP_ID, 'client_id');
-				$clientSecret = $this->config->getAppValue(Application::APP_ID, 'client_secret');
-				$redirectUri = $this->config->getUserValue($userId, Application::APP_ID, 'redirect_uri');
-				$refreshToken = $this->config->getUserValue($userId, Application::APP_ID, 'refresh_token');
-				$result = $this->requestOAuthAccessToken([
-					'client_id' => $clientId,
-					'client_secret' => $clientSecret,
-					'grant_type' => 'refresh_token',
-					'redirect_uri' => $redirectUri,
-					'refresh_token' => $refreshToken,
-				], 'POST');
-				if (isset($result['access_token'])) {
-					$this->logger->info('OneDrive access token successfully refreshed', ['app' => $this->appName]);
-					$accessToken = $result['access_token'];
-					$this->config->setUserValue($userId, Application::APP_ID, 'token', $accessToken);
-					// retry the request with new access token
-					return $this->request($accessToken, $userId, $endPoint, $params, $method);
-				} else {
-					// impossible to refresh the token
-					return ['error' => $this->l10n->t('Token is not valid anymore. Impossible to refresh it.') . ' ' . $result['error']];
-				}
-			}
 			$this->logger->warning('OneDrive API error : '.$e->getMessage(), ['app' => $this->appName]);
 			return ['error' => $e->getMessage()];
 		} catch (ConnectException $e) {
@@ -258,5 +233,48 @@ class OnedriveAPIService {
 			$this->logger->warning('OneDrive OAuth error : '.$e->getMessage(), ['app' => $this->appName]);
 			return ['error' => $e->getMessage()];
 		}
+	}
+
+	private function checkTokenExpiration(string $userId): void {
+		$refreshToken = $this->config->getUserValue($userId, Application::APP_ID, 'refresh_token');
+		$expireAt = $this->config->getUserValue($userId, Application::APP_ID, 'token_expires_at');
+		if ($refreshToken !== '' && $expireAt !== '') {
+			$nowTs = (new Datetime())->getTimestamp();
+			$expireAt = (int) $expireAt;
+			// if token expires in less than 2 minutes or has already expired
+			if ($nowTs > $expireAt - 120) {
+				$this->refreshToken($userId);
+			}
+		}
+	}
+
+	public function refreshToken(string $userId): array {
+		$this->logger->debug('Trying to REFRESH the access token', ['app' => $this->appName]);
+		$clientId = $this->config->getAppValue(Application::APP_ID, 'client_id');
+		$clientSecret = $this->config->getAppValue(Application::APP_ID, 'client_secret');
+		$redirectUri = $this->config->getUserValue($userId, Application::APP_ID, 'redirect_uri');
+		$refreshToken = $this->config->getUserValue($userId, Application::APP_ID, 'refresh_token');
+		$result = $this->requestOAuthAccessToken([
+			'client_id' => $clientId,
+			'client_secret' => $clientSecret,
+			'grant_type' => 'refresh_token',
+			'redirect_uri' => $redirectUri,
+			'refresh_token' => $refreshToken,
+		], 'POST');
+
+		if (isset($result['access_token'])) {
+			$this->logger->debug('OneDrive access token successfully refreshed', ['app' => $this->appName]);
+			$this->config->setUserValue($userId, Application::APP_ID, 'token', $result['access_token']);
+			if (isset($result['expires_in'])) {
+				$nowTs = (new Datetime())->getTimestamp();
+				$expiresAt = $nowTs + (int) $result['expires_in'];
+				$this->config->setUserValue($userId, Application::APP_ID, 'token_expires_at', $expiresAt);
+			}
+		} else {
+			$responseTxt = json_encode($result);
+			$this->logger->warning('OneDrive API error, impossible to refresh the token. Response: ' . $responseTxt, ['app' => $this->appName]);
+		}
+
+		return $result;
 	}
 }

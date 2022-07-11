@@ -73,7 +73,7 @@ class OnedriveAPIController extends Controller {
 		if ($this->accessToken === '') {
 			return new DataResponse(null, 400);
 		}
-		$result = $this->onedriveStorageApiService->getStorageSize($this->accessToken, $this->userId);
+		$result = $this->onedriveStorageApiService->getStorageSize($this->userId);
 		if (isset($result['error'])) {
 			$response = new DataResponse($result['error'], 401);
 		} else {
@@ -127,7 +127,7 @@ class OnedriveAPIController extends Controller {
 		if ($this->accessToken === '') {
 			return new DataResponse(null, 400);
 		}
-		$result = $this->onedriveCalendarApiService->getCalendarList($this->accessToken, $this->userId);
+		$result = $this->onedriveCalendarApiService->getCalendarList($this->userId);
 		if (isset($result['error'])) {
 			$response = new DataResponse($result['error'], 401);
 		} else {
@@ -148,7 +148,7 @@ class OnedriveAPIController extends Controller {
 		if ($this->accessToken === '') {
 			return new DataResponse('', 400);
 		}
-		$result = $this->onedriveCalendarApiService->importCalendar($this->accessToken, $this->userId, $calId, $calName, $color);
+		$result = $this->onedriveCalendarApiService->importCalendar($this->userId, $calId, $calName, $color);
 		if (isset($result['error'])) {
 			$response = new DataResponse($result['error'], 401);
 		} else {
@@ -166,7 +166,7 @@ class OnedriveAPIController extends Controller {
 		if ($this->accessToken === '') {
 			return new DataResponse(null, 400);
 		}
-		$result = $this->onedriveContactApiService->getContactNumber($this->accessToken, $this->userId);
+		$result = $this->onedriveContactApiService->getContactNumber($this->userId);
 		if (isset($result['error'])) {
 			$response = new DataResponse($result['error'], 401);
 		} else {
@@ -184,7 +184,7 @@ class OnedriveAPIController extends Controller {
 		if ($this->accessToken === '') {
 			return new DataResponse(null, 400);
 		}
-		$result = $this->onedriveContactApiService->importContacts($this->accessToken, $this->userId);
+		$result = $this->onedriveContactApiService->importContacts($this->userId);
 		if (isset($result['error'])) {
 			$response = new DataResponse($result['error'], 401);
 		} else {

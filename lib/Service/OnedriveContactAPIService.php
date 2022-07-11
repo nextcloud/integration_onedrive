@@ -74,11 +74,10 @@ class OnedriveContactAPIService {
 	}
 
 	/**
-	 * @param string $accessToken
 	 * @param string $userId
 	 * @return array
 	 */
-	public function getContactNumber(string $accessToken, string $userId): array {
+	public function getContactNumber(string $userId): array {
 		// first get nb contacts on top level
 		$nbContacts = 0;
 		$endPoint = 'me/contacts';
@@ -87,7 +86,7 @@ class OnedriveContactAPIService {
 			'$top' => 1000,
 		];
 		do {
-			$result = $this->onedriveApiService->request($accessToken, $userId, $endPoint, $params);
+			$result = $this->onedriveApiService->request($userId, $endPoint, $params);
 			if (isset($result['error']) || !isset($result['value']) || !is_array($result['value'])) {
 				return $result;
 			}
@@ -105,7 +104,7 @@ class OnedriveContactAPIService {
 			'$top' => 100,
 		];
 		do {
-			$result = $this->onedriveApiService->request($accessToken, $userId, 'me/contactFolders', $params);
+			$result = $this->onedriveApiService->request($userId, 'me/contactFolders', $params);
 			if (isset($result['error']) || !isset($result['value']) || !is_array($result['value'])) {
 				return $result;
 			}
@@ -125,18 +124,17 @@ class OnedriveContactAPIService {
 	}
 
 	/**
-	 * @param string $accessToken
 	 * @param string $userId
 	 * @return array
 	 */
-	public function getContactsInTopFolder(string $accessToken, string $userId): array {
+	public function getContactsInTopFolder(string $userId): array {
 		$endPoint = 'me/contacts';
 		$contacts = [];
 		$params = [
 			'$top' => 1000,
 		];
 		do {
-			$result = $this->onedriveApiService->request($accessToken, $userId, $endPoint, $params);
+			$result = $this->onedriveApiService->request($userId, $endPoint, $params);
 			if (isset($result['error'])) {
 				return $result;
 			}
@@ -151,15 +149,14 @@ class OnedriveContactAPIService {
 	}
 
 	/**
-	 * @param string $accessToken
 	 * @param string $userId
 	 * @return array
 	 */
-	public function importContacts(string $accessToken, string $userId): array {
+	public function importContacts(string $userId): array {
 		$nbAdded = 0;
 
 		// top folder
-		$topFolderContacts = $this->getContactsInTopFolder($accessToken, $userId);
+		$topFolderContacts = $this->getContactsInTopFolder($userId);
 		$topFolderName = 'Outlook contacts';
 		$nbAdded += $this->importFolder($userId, $topFolderName, $topFolderContacts);
 
@@ -170,7 +167,7 @@ class OnedriveContactAPIService {
 			'$top' => 100,
 		];
 		do {
-			$result = $this->onedriveApiService->request($accessToken, $userId, $endPoint, $params);
+			$result = $this->onedriveApiService->request($userId, $endPoint, $params);
 			if (isset($result['error']) || !isset($result['value']) || !is_array($result['value'])) {
 				return $result;
 			}

@@ -60,12 +60,11 @@ class OnedriveCalendarAPIService {
 	}
 
 	/**
-	 * @param string $accessToken
 	 * @param string $userId
 	 * @return array
 	 */
-	public function getCalendarList(string $accessToken, string $userId): array {
-		$result = $this->onedriveApiService->request($accessToken, $userId, 'me/calendars');
+	public function getCalendarList(string $userId): array {
+		$result = $this->onedriveApiService->request($userId, 'me/calendars');
 		if (isset($result['error']) || !isset($result['value'])) {
 			return $result;
 		}
@@ -84,8 +83,8 @@ class OnedriveCalendarAPIService {
 			: $res['id'];
 	}
 
-	private function getCategories(string $accessToken, string $userId): array {
-		$result = $this->onedriveApiService->request($accessToken, $userId, 'me/outlook/masterCategories');
+	private function getCategories(string $userId): array {
+		$result = $this->onedriveApiService->request($userId, 'me/outlook/masterCategories');
 		if (isset($result['error']) || !isset($result['value']) || !is_array($result['value'])) {
 			return [];
 		}
@@ -127,14 +126,13 @@ class OnedriveCalendarAPIService {
 	}
 
 	/**
-	 * @param string $accessToken
 	 * @param string $userId
 	 * @param string $calId
 	 * @param string $calName
 	 * @param ?string $color
 	 * @return array
 	 */
-	public function importCalendar(string $accessToken, string $userId, string $calId, string $calName, ?string $color = null): array {
+	public function importCalendar(string $userId, string $calId, string $calName, ?string $color = null): array {
 		$setPositions = [
 			'first' => 1,
 			'second' => 2,
@@ -149,7 +147,7 @@ class OnedriveCalendarAPIService {
 			$params['{http://apple.com/ns/ical/}calendar-color'] = $color;
 		}
 
-		$categories = $this->getCategories($accessToken, $userId);
+		$categories = $this->getCategories($userId);
 
 		$newCalName = trim($calName) . ' (' . $this->l10n->t('Microsoft Calendar import') .')';
 		$ncCalId = $this->calendarExists($userId, $newCalName);
@@ -159,7 +157,7 @@ class OnedriveCalendarAPIService {
 
 		date_default_timezone_set('UTC');
 		$utcTimezone = new DateTimeZone('-0000');
-		$events = $this->getCalendarEvents($accessToken, $userId, $calId);
+		$events = $this->getCalendarEvents($userId, $calId);
 		$nbAdded = 0;
 		foreach ($events as $e) {
 			$calData = 'BEGIN:VCALENDAR' . "\n"
@@ -331,15 +329,14 @@ class OnedriveCalendarAPIService {
 	}
 
 	/**
-	 * @param string $accessToken
 	 * @param string $userId
 	 * @param string $calId
 	 * @return Generator
 	 */
-	private function getCalendarEvents(string $accessToken, string $userId, string $calId): Generator {
+	private function getCalendarEvents(string $userId, string $calId): Generator {
 		$params = [];
 		do {
-			$result = $this->onedriveApiService->request($accessToken, $userId, 'me/calendars/'.$calId.'/events', $params);
+			$result = $this->onedriveApiService->request($userId, 'me/calendars/'.$calId.'/events', $params);
 			if (isset($result['error']) || !isset($result['value'])) {
 				return $result;
 			}

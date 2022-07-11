@@ -11,6 +11,7 @@
 
 namespace OCA\Onedrive\Controller;
 
+use DateTime;
 use OCP\IURLGenerator;
 use OCP\IConfig;
 use OCP\IL10N;
@@ -139,10 +140,14 @@ class ConfigController extends Controller {
 				$refreshToken = $result['refresh_token'];
 				$this->config->setUserValue($this->userId, Application::APP_ID, 'refresh_token', $refreshToken);
 				$this->config->setUserValue($this->userId, Application::APP_ID, 'scope', $result['scope'] ?? '');
+				if (isset($result['expires_in'])) {
+					$nowTs = (new Datetime())->getTimestamp();
+					$expiresAt = $nowTs + (int) $result['expires_in'];
+					$this->config->setUserValue($this->userId, Application::APP_ID, 'token_expires_at', $expiresAt);
+				}
 
-				//$this->storeUserInfo($accessToken);
 				$this->config->setUserValue($this->userId, Application::APP_ID, 'user_id', $result['user_id'] ?? '');
-				$info = $this->onedriveAPIService->request($accessToken, $this->userId, 'me');
+				$info = $this->onedriveAPIService->request($this->userId, 'me');
 				$this->config->setUserValue($this->userId, Application::APP_ID, 'user_name', $info['displayName'] ?? '??');
 				return new RedirectResponse(
 					$this->urlGenerator->linkToRoute('settings.PersonalSettings.index', ['section' => 'migration']) .
