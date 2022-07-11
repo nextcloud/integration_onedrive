@@ -132,14 +132,15 @@ export default {
 }
 
 .icon-onedrive {
-	background-image: url(./../../img/app-dark.svg);
+	background-image: url('../../img/app-dark.svg');
 	background-size: 23px 23px;
 	height: 23px;
 	margin-bottom: -4px;
+	filter: var(--background-invert-if-dark);
 }
 
 body.theme--dark .icon-onedrive {
-	background-image: url(./../../img/app.svg);
+	background-image: url('../../img/app.svg');
 }
 
 </style>

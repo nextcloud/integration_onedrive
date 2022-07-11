@@ -18,80 +18,94 @@
 			{{ t('integration_onedrive', 'Ask your Nextcloud administrator to configure OneDrive OAuth settings in order to use this integration.') }}
 		</p>
 		<div v-if="showOAuth" id="onedrive-content">
-			<button v-if="!connected"
-				id="onedrive-oauth"
+			<Button v-if="!connected"
 				@click="onOAuthClick">
-				<span class="icon icon-external" />
+				<template #icon>
+					<LoginVariantIcon :size="20" />
+				</template>
 				{{ t('integration_onedrive', 'Connect to OneDrive') }}
-			</button>
+			</Button>
 			<div v-else>
 				<div class="onedrive-grid-form">
 					<label class="onedrive-connected">
-						<a class="icon icon-checkmark-color" />
+						<CheckIcon :size="20" class="success-icon" />
 						{{ t('integration_onedrive', 'Connected as {user}', { user: state.user_name }) }}
 					</label>
-					<button id="onedrive-rm-cred" @click="onLogoutClick">
-						<span class="icon icon-close" />
+					<Button id="onedrive-rm-cred" @click="onLogoutClick">
+						<template #icon>
+							<CloseIcon :size="20" />
+						</template>
 						{{ t('integration_onedrive', 'Disconnect from OneDrive') }}
-					</button>
+					</Button>
 				</div>
 				<br>
 				<div v-if="storageSize > 0" id="import-storage">
 					<h3>{{ t('integration_onedrive', 'Onedrive storage') }}</h3>
 					<div v-if="!importingOnedrive" class="output-selection">
 						<label for="onedrive-output">
-							<span class="icon icon-folder" />
+							<FolderIcon :size="20" class="folder-icon" />
 							{{ t('integration_onedrive', 'Import directory') }}
 						</label>
 						<input id="onedrive-output"
 							:readonly="true"
 							:value="state.onedrive_output_dir">
-						<button class="edit-output-dir"
+						<Button class="edit-output-dir"
 							@click="onOnedriveOutputChange">
-							<span class="icon-rename" />
-						</button>
+							<template #icon>
+								<PencilIcon :size="20" />
+							</template>
+						</Button>
 						<br><br>
 					</div>
-					<label>
-						<span class="icon icon-folder" />
-						{{ t('integration_onedrive', 'Onedrive storage ({formSize})', { formSize: myHumanFileSize(storageSize, true) }) }}
-					</label>
-					<button v-if="enoughSpaceForOnedrive && !importingOnedrive"
-						id="onedrive-import-files"
-						@click="onImportOnedrive">
-						<span class="icon icon-files-dark" />
-						{{ t('integration_onedrive', 'Import Onedrive files') }}
-					</button>
-					<span v-else-if="!enoughSpaceForOnedrive">
-						{{ t('integration_onedrive', 'Your Onedrive storage is bigger than your remaining space left ({formSpace})', { formSpace: myHumanFileSize(state.free_space) }) }}
-					</span>
-					<div v-else>
-						<br>
-						{{ n('integration_onedrive', '{amount} file imported ({formImported}) ({progress}%)', '{amount} files imported ({formImported}) ({progress}%)', nbImportedFiles, { amount: nbImportedFiles, formImported: myHumanFileSize(importedSize), progress: onedriveImportProgress }) }}
-						<br>
-						{{ jobRunningText }}
-						<br>
-						{{ lastOnedriveImportDate }}
-						<br>
-						<button @click="onCancelOnedriveImport">
-							<span class="icon icon-close" />
-							{{ t('integration_onedrive', 'Cancel Onedrive files import') }}
-						</button>
+					<div class="size-import">
+						<label>
+							<FolderIcon :size="20" class="folder-icon" />
+							{{ t('integration_onedrive', 'Onedrive storage ({formSize})', { formSize: myHumanFileSize(storageSize, true) }) }}
+						</label>
+						<Button v-if="enoughSpaceForOnedrive && !importingOnedrive"
+							@click="onImportOnedrive">
+							<template #icon>
+								<FolderIcon :size="20" class="folder-icon" />
+							</template>
+							{{ t('integration_onedrive', 'Import Onedrive files') }}
+						</Button>
+						<span v-else-if="!enoughSpaceForOnedrive">
+							{{ t('integration_onedrive', 'Your Onedrive storage is bigger than your remaining space left ({formSpace})', { formSpace: myHumanFileSize(state.free_space) }) }}
+						</span>
+						<div v-else>
+							<br>
+							{{ n('integration_onedrive', '{amount} file imported ({formImported}) ({progress}%)', '{amount} files imported ({formImported}) ({progress}%)', nbImportedFiles, { amount: nbImportedFiles, formImported: myHumanFileSize(importedSize), progress: onedriveImportProgress }) }}
+							<br>
+							{{ jobRunningText }}
+							<br>
+							{{ lastOnedriveImportDate }}
+							<br>
+							<Button @click="onCancelOnedriveImport">
+								<template #icon>
+									<CloseIcon :size="20" />
+								</template>
+								{{ t('integration_onedrive', 'Cancel Onedrive files import') }}
+							</Button>
+						</div>
 					</div>
 				</div>
 				<div v-if="nbContacts > 0"
 					id="onedrive-contacts">
 					<h3>{{ t('integration_onedrive', 'Contacts') }}</h3>
-					<label>
-						<span class="icon icon-menu-sidebar" />
-						{{ t('integration_onedrive', '{amount} contacts', { amount: nbContacts }) }}
-					</label>
-					<button id="onedrive-import-contacts"
-						:class="{ loading: importingContacts }"
-						@click="onImportContacts">
-						<span class="icon icon-contacts-dark" />
-						{{ t('integration_onedrive', 'Import Contacts in Nextcloud') }}
-					</button>
+					<div class="onedrive-contacts-import">
+						<label>
+							<GroupIcon :size="16" class="inline-icon" />
+							{{ t('integration_onedrive', '{amount} contacts', { amount: nbContacts }) }}
+						</label>
+						<Button id="onedrive-import-contacts"
+							:class="{ loading: importingContacts }"
+							@click="onImportContacts">
+							<template #icon>
+								<GroupIcon :size="20" />
+							</template>
+							{{ t('integration_onedrive', 'Import Contacts in Nextcloud') }}
+						</Button>
+					</div>
 					<br>
 				</div>
 				<div v-if="calendars.length > 0"
@@ -102,12 +116,14 @@
 							<AppNavigationIconBullet slot="icon" :color="getCalendarColor(cal)" />
 							{{ getCalendarLabel(cal) }}
 						</label>
-						<button
-							:class="{ loading: importingCalendar[cal.id] }"
+						<Button
+							:class="{ loading: importingCalendar[cal.id], 'import-calendar-button': true }"
 							@click="onCalendarImport(cal)">
-							<span class="icon icon-calendar-dark" />
+							<template #icon>
+								<CalendarBlankIcon :size="20" />
+							</template>
 							{{ t('integration_onedrive', 'Import calendar') }}
-						</button>
+						</Button>
 					</div>
 					<br>
 				</div>
@@ -122,15 +138,30 @@ import { generateUrl } from '@nextcloud/router'
 import axios from '@nextcloud/axios'
 import { humanFileSize } from '../utils'
 import { showSuccess, showError } from '@nextcloud/dialogs'
-import '@nextcloud/dialogs/styles/toast.scss'
 import AppNavigationIconBullet from '@nextcloud/vue/dist/Components/AppNavigationIconBullet'
 import moment from '@nextcloud/moment'
+import Button from '@nextcloud/vue/dist/Components/Button'
+import CloseIcon from 'vue-material-design-icons/Close'
+import CheckIcon from 'vue-material-design-icons/Check'
+import LoginVariantIcon from 'vue-material-design-icons/LoginVariant'
+import PencilIcon from 'vue-material-design-icons/Pencil'
+import FolderIcon from 'vue-material-design-icons/Folder'
+import CalendarBlankIcon from 'vue-material-design-icons/CalendarBlank'
+import GroupIcon from './icons/GroupIcon'
 
 export default {
 	name: 'PersonalSettings',
 
 	components: {
+		GroupIcon,
 		AppNavigationIconBullet,
+		Button,
+		CloseIcon,
+		CheckIcon,
+		LoginVariantIcon,
+		PencilIcon,
+		FolderIcon,
+		CalendarBlankIcon,
 	},
 
 	props: [],
@@ -489,6 +520,21 @@ export default {
 	}
 }
 
+.onedrive-connected {
+	display: flex;
+	align-items: center;
+}
+
+.success-icon {
+	color: var(--color-success);
+	margin-right: 8px;
+}
+
+.folder-icon {
+	color: var(--color-primary);
+	margin-right: 8px;
+}
+
 #onedrive_prefs .icon {
 	display: inline-block;
 	width: 32px;
@@ -499,14 +545,15 @@ export default {
 }
 
 .icon-onedrive-settings {
-	background-image: url('./../../img/app-dark.svg');
+	background-image: url('../../img/app-dark.svg');
 	background-size: 23px 23px;
 	height: 23px;
 	margin-bottom: -4px;
+	filter: var(--background-invert-if-dark);
 }
 
 body.theme--dark .icon-onedrive-settings {
-	background-image: url('./../../img/app.svg');
+	background-image: url('../../img/app.svg');
 }
 
 #onedrive-content {
@@ -522,9 +569,10 @@ body.theme--dark .icon-onedrive-settings {
 	}
 
 	#onedrive-contacts > label,
-	#import-storage > label {
+	#import-storage label {
 		width: 300px;
-		display: inline-block;
+		display: flex;
+		align-items: center;
 
 		span {
 			margin-bottom: -2px;
@@ -551,8 +599,30 @@ body.theme--dark .icon-onedrive-settings {
 		}
 	}
 
-	.edit-output-dir {
-		padding: 6px 6px;
+	.size-import {
+		display: flex;
+		align-items: center;
+	}
+
+	.import-calendar-button {
+		height: 32px;
+		max-height: 32px;
+		min-height: 32px;
+	}
+
+	.onedrive-contacts-import {
+		display: flex;
+		align-items: center;
+		> * {
+			width: 300px;
+		}
+		> label {
+			display: flex;
+			align-items: center;
+			.inline-icon {
+				margin-right: 8px;
+			}
+		}
 	}
 }
 
