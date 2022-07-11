@@ -12,6 +12,8 @@
 namespace OCA\Onedrive\Controller;
 
 use DateTime;
+use OCP\AppFramework\Http\TemplateResponse;
+use OCP\AppFramework\Services\IInitialState;
 use OCP\IURLGenerator;
 use OCP\IConfig;
 use OCP\IL10N;
@@ -52,12 +54,17 @@ class ConfigController extends Controller {
 	 * @var IL10N
 	 */
 	private $l;
+	/**
+	 * @var IInitialState
+	 */
+	private $initialStateService;
 
 	public function __construct($appName,
 								IRequest $request,
 								IConfig $config,
 								IURLGenerator $urlGenerator,
 								IL10N $l,
+								IInitialState $initialStateService,
 								IContactManager $contactsManager,
 								OnedriveAPIService $onedriveAPIService,
 								?string $userId) {
@@ -68,6 +75,7 @@ class ConfigController extends Controller {
 		$this->contactsManager = $contactsManager;
 		$this->urlGenerator = $urlGenerator;
 		$this->onedriveAPIService = $onedriveAPIService;
+		$this->initialStateService = $initialStateService;
 	}
 
 	/**
@@ -112,6 +120,18 @@ class ConfigController extends Controller {
 	 * @NoAdminRequired
 	 * @NoCSRFRequired
 	 *
+	 * @param string $username
+	 * @return TemplateResponse
+	 */
+	public function popupSuccessPage(string $username): TemplateResponse {
+		$this->initialStateService->provideInitialState('popup-data', ['user_name' => $username]);
+		return new TemplateResponse(Application::APP_ID, 'popupSuccess', [], TemplateResponse::RENDER_AS_GUEST);
+	}
+
+	/**
+	 * @NoAdminRequired
+	 * @NoCSRFRequired
+	 *
 	 * Receive oauth code and get oauth access token
 	 *
 	 * @param string $code request code to use when requesting oauth token
@@ -149,10 +169,17 @@ class ConfigController extends Controller {
 				$this->config->setUserValue($this->userId, Application::APP_ID, 'user_id', $result['user_id'] ?? '');
 				$info = $this->onedriveAPIService->request($this->userId, 'me');
 				$this->config->setUserValue($this->userId, Application::APP_ID, 'user_name', $info['displayName'] ?? '??');
-				return new RedirectResponse(
-					$this->urlGenerator->linkToRoute('settings.PersonalSettings.index', ['section' => 'migration']) .
-					'?onedriveToken=success'
-				);
+				$usePopup = $this->config->getAppValue(Application::APP_ID, 'use_popup', '0') === '1';
+				if ($usePopup) {
+					return new RedirectResponse(
+						$this->urlGenerator->linkToRoute(Application::APP_ID . '.config.popupSuccessPage', ['username' => $info['displayName'] ?? '??'])
+					);
+				} else {
+					return new RedirectResponse(
+						$this->urlGenerator->linkToRoute('settings.PersonalSettings.index', ['section' => 'migration']) .
+						'?onedriveToken=success'
+					);
+				}
 			}
 			$result = $this->l->t('Error getting OAuth access token') . ' ' . ($result['error'] ?? '');
 		} else {

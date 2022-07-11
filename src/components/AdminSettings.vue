@@ -43,6 +43,11 @@
 				:placeholder="t('integration_onedrive', 'Client secret of your OneDrive application')"
 				@input="onInput"
 				@focus="readonly = false">
+			<CheckboxRadioSwitch
+				:checked.sync="state.use_popup"
+				@update:checked="onUsePopupChanged">
+				{{ t('integration_google', 'Use a popup to authenticate') }}
+			</CheckboxRadioSwitch>
 		</div>
 	</div>
 </template>
@@ -53,12 +58,13 @@ import { generateUrl } from '@nextcloud/router'
 import axios from '@nextcloud/axios'
 import { delay } from '../utils'
 import { showSuccess, showError } from '@nextcloud/dialogs'
-import '@nextcloud/dialogs/styles/toast.scss'
+import CheckboxRadioSwitch from '@nextcloud/vue/dist/Components/CheckboxRadioSwitch'
 
 export default {
 	name: 'AdminSettings',
 
 	components: {
+		CheckboxRadioSwitch,
 	},
 
 	props: [],
@@ -79,6 +85,9 @@ export default {
 	},
 
 	methods: {
+		onUsePopupChanged(newValue) {
+			this.saveOptions({ use_popup: newValue ? '1' : '0' })
+		},
 		onInput() {
 			delay(() => {
 				this.saveOptions({ client_id: this.state.client_id, client_secret: this.state.client_secret })

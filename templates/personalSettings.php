@@ -1,5 +1,6 @@
 <?php
-script(OCA\Onedrive\AppInfo\Application::APP_ID, 'integration_onedrive-personalSettings');
+$appId = OCA\Onedrive\AppInfo\Application::APP_ID;
+\OCP\Util::addScript($appId, $appId . '-personalSettings');
 ?>
 
 <div id="onedrive_prefs"></div>

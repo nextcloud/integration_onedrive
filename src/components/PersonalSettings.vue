@@ -229,15 +229,18 @@ export default {
 			showError(t('integration_onedrive', 'OneDrive OAuth error:') + ' ' + urlParams.get('message'))
 		}
 
-		if (this.connected) {
-			this.getStorageInfo()
-			this.getOnedriveImportValues(true)
-			this.getCalendarList()
-			this.getNbContacts()
-		}
+		this.loadData()
 	},
 
 	methods: {
+		loadData() {
+			if (this.connected) {
+				this.getStorageInfo()
+				this.getOnedriveImportValues(true)
+				this.getCalendarList()
+				this.getNbContacts()
+			}
+		},
 		onLogoutClick() {
 			this.state.user_name = ''
 			this.saveOptions({ user_name: this.state.user_name })
@@ -290,18 +293,28 @@ export default {
 				},
 			}
 			const url = generateUrl('/apps/integration_onedrive/config')
-			axios.put(url, req)
-				.then((response) => {
-					window.location.replace(requestUrl)
-				})
-				.catch((error) => {
-					showError(
-						t('integration_onedrive', 'Failed to save OneDrive OAuth state')
-						+ ': ' + error.response?.request?.responseText
+			axios.put(url, req).then((response) => {
+				if (this.state.use_popup) {
+					const ssoWindow = window.open(
+						requestUrl,
+						t('integration_onedrive', 'Sign in with OneDrive'),
+						'toolbar=no, menubar=no, width=600, height=700'
 					)
-				})
-				.then(() => {
-				})
+					ssoWindow.focus()
+					window.addEventListener('message', (event) => {
+						console.debug('Child window message received', event)
+						this.state.user_name = event.data.username
+						this.loadData()
+					})
+				} else {
+					window.location.replace(requestUrl)
+				}
+			}).catch((error) => {
+				showError(
+					t('integration_onedrive', 'Failed to save OneDrive OAuth state')
+					+ ': ' + error.response?.request?.responseText
+				)
+			})
 		},
 		getStorageInfo() {
 			const url = generateUrl('/apps/integration_onedrive/storage-size')
