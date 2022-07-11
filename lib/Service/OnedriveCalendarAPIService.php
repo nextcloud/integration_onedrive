@@ -15,6 +15,7 @@ use Datetime;
 use DateTimeZone;
 use Exception;
 use Generator;
+use OCA\Onedrive\AppInfo\Application;
 use OCP\IL10N;
 use OCA\DAV\CalDAV\CalDavBackend;
 use Sabre\DAV\Exception\BadRequest;
@@ -309,12 +310,12 @@ class OnedriveCalendarAPIService {
 				$nbAdded++;
 			} catch (BadRequest $ex) {
 				if (strpos($ex->getMessage(), 'uid already exists') !== false) {
-					$this->logger->info('Skip existing event "' . ($e['subject'] ?? 'no title') . '"', ['app' => $this->appName]);
+					$this->logger->info('Skip existing event "' . ($e['subject'] ?? 'no title') . '"', ['app' => Application::APP_ID]);
 				} else {
-					$this->logger->warning('Error when creating calendar event "' . ($e['subject'] ?? 'no title') . '" ' . $ex->getMessage(), ['app' => $this->appName]);
+					$this->logger->warning('Error when creating calendar event "' . ($e['subject'] ?? 'no title') . '" ' . $ex->getMessage(), ['app' => Application::APP_ID]);
 				}
 			} catch (Exception | Throwable $ex) {
-				$this->logger->warning('Error when creating calendar event "' . ($e['subject'] ?? 'no title') . '" ' . $ex->getMessage(), ['app' => $this->appName]);
+				$this->logger->warning('Error when creating calendar event "' . ($e['subject'] ?? 'no title') . '" ' . $ex->getMessage(), ['app' => Application::APP_ID]);
 			}
 		}
 

@@ -377,7 +377,7 @@ class OnedriveStorageAPIService {
 				return (float) $stat['size'] ?? 0;
 			} else {
 				// there was an error
-				$this->logger->warning('OneDrive error downloading file ' . $fileName . ' : ' . $res['error'], ['app' => $this->appName]);
+				$this->logger->warning('OneDrive error downloading file ' . $fileName . ' : ' . $res['error'], ['app' => Application::APP_ID]);
 				if ($savedFile->isDeletable()) {
 					$savedFile->delete();
 				}

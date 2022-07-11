@@ -117,13 +117,13 @@ class OnedriveAPIService {
 			return ['success' => true];
 		} catch (ServerException | ClientException $e) {
 			// $response = $e->getResponse();
-			$this->logger->warning('OneDrive API error : '.$e->getMessage(), ['app' => $this->appName]);
+			$this->logger->warning('OneDrive API error : '.$e->getMessage(), ['app' => Application::APP_ID]);
 			return ['error' => $e->getMessage()];
 		} catch (ConnectException $e) {
-			$this->logger->error('OneDrive API request connection error: ' . $e->getMessage(), ['app' => $this->appName]);
+			$this->logger->error('OneDrive API request connection error: ' . $e->getMessage(), ['app' => Application::APP_ID]);
 			return ['error' => $e->getMessage()];
 		} catch (Exception | Throwable $e) {
-			$this->logger->error('OneDrive API request connection error: ' . $e->getMessage(), ['app' => $this->appName]);
+			$this->logger->error('OneDrive API request connection error: ' . $e->getMessage(), ['app' => Application::APP_ID]);
 			return ['error' => $e->getMessage()];
 		}
 	}
@@ -178,10 +178,10 @@ class OnedriveAPIService {
 				return json_decode($body, true) ?: [];
 			}
 		} catch (ServerException | ClientException $e) {
-			$this->logger->warning('OneDrive API error : '.$e->getMessage(), ['app' => $this->appName]);
+			$this->logger->warning('OneDrive API error : '.$e->getMessage(), ['app' => Application::APP_ID]);
 			return ['error' => $e->getMessage()];
 		} catch (ConnectException $e) {
-			$this->logger->warning('OneDrive API connection error : '.$e->getMessage(), ['app' => $this->appName]);
+			$this->logger->warning('OneDrive API connection error : '.$e->getMessage(), ['app' => Application::APP_ID]);
 			return ['error' => $e->getMessage()];
 		}
 	}
@@ -230,7 +230,7 @@ class OnedriveAPIService {
 				return json_decode($body, true);
 			}
 		} catch (ConnectException | ServerException | ClientException $e) {
-			$this->logger->warning('OneDrive OAuth error : '.$e->getMessage(), ['app' => $this->appName]);
+			$this->logger->warning('OneDrive OAuth error : '.$e->getMessage(), ['app' => Application::APP_ID]);
 			return ['error' => $e->getMessage()];
 		}
 	}
@@ -249,7 +249,7 @@ class OnedriveAPIService {
 	}
 
 	public function refreshToken(string $userId): array {
-		$this->logger->debug('Trying to REFRESH the access token', ['app' => $this->appName]);
+		$this->logger->debug('Trying to REFRESH the access token', ['app' => Application::APP_ID]);
 		$clientId = $this->config->getAppValue(Application::APP_ID, 'client_id');
 		$clientSecret = $this->config->getAppValue(Application::APP_ID, 'client_secret');
 		$redirectUri = $this->config->getUserValue($userId, Application::APP_ID, 'redirect_uri');
@@ -263,7 +263,7 @@ class OnedriveAPIService {
 		], 'POST');
 
 		if (isset($result['access_token'])) {
-			$this->logger->debug('OneDrive access token successfully refreshed', ['app' => $this->appName]);
+			$this->logger->debug('OneDrive access token successfully refreshed', ['app' => Application::APP_ID]);
 			$this->config->setUserValue($userId, Application::APP_ID, 'token', $result['access_token']);
 			if (isset($result['expires_in'])) {
 				$nowTs = (new Datetime())->getTimestamp();
@@ -272,7 +272,7 @@ class OnedriveAPIService {
 			}
 		} else {
 			$responseTxt = json_encode($result);
-			$this->logger->warning('OneDrive API error, impossible to refresh the token. Response: ' . $responseTxt, ['app' => $this->appName]);
+			$this->logger->warning('OneDrive API error, impossible to refresh the token. Response: ' . $responseTxt, ['app' => Application::APP_ID]);
 		}
 
 		return $result;

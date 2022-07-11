@@ -13,6 +13,7 @@ namespace OCA\Onedrive\Service;
 
 use Datetime;
 use Exception;
+use OCA\Onedrive\AppInfo\Application;
 use OCP\Contacts\IManager as IContactManager;
 use Sabre\VObject\Component\VCard;
 use OCA\DAV\CardDAV\CardDavBackend;
@@ -309,7 +310,7 @@ class OnedriveContactAPIService {
 			$this->cdBackend->createCard($key, 'outlook' . substr($c['id'], 0, 255), $vCard->serialize());
 			return true;
 		} catch (Throwable | Exception $e) {
-			$this->logger->warning('Error when creating contact "' . ($displayName ?? 'no name') . '" ' . json_encode($c), ['app' => $this->appName]);
+			$this->logger->warning('Error when creating contact "' . ($displayName ?? 'no name') . '" ' . json_encode($c), ['app' => Application::APP_ID]);
 		}
 		return false;
 	}
