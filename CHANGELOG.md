@@ -5,7 +5,22 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
-## 1.1.1 – 2021-09-01
+
+## 1.1.3 – 2022-08-24
+### Added
+- import contact photos
+
+### Changed
+- bump js libs, bring back eslint/stylelint on compilation, adjust to new eslint config
+- use @nextcloud/vue in settings
+- implement proper token refresh based on expiration date
+- optionally use a popup to authenticate
+
+### Fixed
+- npm scripts
+- method checking if contact already exists
+
+## 1.1.2 – 2021-11-12
 ### Fixed
 - handle all crashes in import job
 - fix file import with SSE enabled, get temp link and use it on the fly
