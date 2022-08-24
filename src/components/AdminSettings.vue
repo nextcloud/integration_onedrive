@@ -6,7 +6,7 @@
 		</h2>
 		<p class="settings-hint">
 			{{ t('integration_onedrive', 'If you want to allow your Nextcloud users to use OAuth to authenticate to https://onedrive.live.com, create an OAuth application in your Azure settings.') }}
-			<a href="https://aka.ms/AppRegistrations/?referrer=https%3A%2F%2Fdev.onedrive.com" class="external">{{ t('integration_onedrive', 'Azure App registrations page') }}</a>
+			<a href="https://aka.ms/AppRegistrations/?referrer=https%3A%2F%2Fdev.onedrive.com" class="external" target="_blank">{{ t('integration_onedrive', 'Azure App registrations page') }}</a>
 			<br>
 			{{ t('integration_onedrive', 'Set "Application name" to a value that will make sense to your Nextcloud users as they will see it when connecting to OneDrive using your OAuth app.') }}
 			<br><br>
@@ -56,9 +56,9 @@
 import { loadState } from '@nextcloud/initial-state'
 import { generateUrl } from '@nextcloud/router'
 import axios from '@nextcloud/axios'
-import { delay } from '../utils'
+import { delay } from '../utils.js'
 import { showSuccess, showError } from '@nextcloud/dialogs'
-import CheckboxRadioSwitch from '@nextcloud/vue/dist/Components/CheckboxRadioSwitch'
+import CheckboxRadioSwitch from '@nextcloud/vue/dist/Components/CheckboxRadioSwitch.js'
 
 export default {
 	name: 'AdminSettings',

@@ -18,25 +18,25 @@
 			{{ t('integration_onedrive', 'Ask your Nextcloud administrator to configure OneDrive OAuth settings in order to use this integration.') }}
 		</p>
 		<div v-if="showOAuth" id="onedrive-content">
-			<Button v-if="!connected"
+			<NcButton v-if="!connected"
 				@click="onOAuthClick">
 				<template #icon>
 					<LoginVariantIcon :size="20" />
 				</template>
 				{{ t('integration_onedrive', 'Connect to OneDrive') }}
-			</Button>
+			</NcButton>
 			<div v-else>
 				<div class="onedrive-grid-form">
 					<label class="onedrive-connected">
 						<CheckIcon :size="20" class="success-icon" />
 						{{ t('integration_onedrive', 'Connected as {user}', { user: state.user_name }) }}
 					</label>
-					<Button id="onedrive-rm-cred" @click="onLogoutClick">
+					<NcButton id="onedrive-rm-cred" @click="onLogoutClick">
 						<template #icon>
 							<CloseIcon :size="20" />
 						</template>
 						{{ t('integration_onedrive', 'Disconnect from OneDrive') }}
-					</Button>
+					</NcButton>
 				</div>
 				<br>
 				<div v-if="storageSize > 0" id="import-storage">
@@ -49,12 +49,12 @@
 						<input id="onedrive-output"
 							:readonly="true"
 							:value="state.onedrive_output_dir">
-						<Button class="edit-output-dir"
+						<NcButton class="edit-output-dir"
 							@click="onOnedriveOutputChange">
 							<template #icon>
 								<PencilIcon :size="20" />
 							</template>
-						</Button>
+						</NcButton>
 						<br><br>
 					</div>
 					<div class="size-import">
@@ -62,13 +62,13 @@
 							<FolderIcon :size="20" class="folder-icon" />
 							{{ t('integration_onedrive', 'Onedrive storage ({formSize})', { formSize: myHumanFileSize(storageSize, true) }) }}
 						</label>
-						<Button v-if="enoughSpaceForOnedrive && !importingOnedrive"
+						<NcButton v-if="enoughSpaceForOnedrive && !importingOnedrive"
 							@click="onImportOnedrive">
 							<template #icon>
 								<FolderIcon :size="20" class="folder-icon" />
 							</template>
 							{{ t('integration_onedrive', 'Import Onedrive files') }}
-						</Button>
+						</NcButton>
 						<span v-else-if="!enoughSpaceForOnedrive">
 							{{ t('integration_onedrive', 'Your Onedrive storage is bigger than your remaining space left ({formSpace})', { formSpace: myHumanFileSize(state.free_space) }) }}
 						</span>
@@ -80,12 +80,12 @@
 							<br>
 							{{ lastOnedriveImportDate }}
 							<br>
-							<Button @click="onCancelOnedriveImport">
+							<NcButton @click="onCancelOnedriveImport">
 								<template #icon>
 									<CloseIcon :size="20" />
 								</template>
 								{{ t('integration_onedrive', 'Cancel Onedrive files import') }}
-							</Button>
+							</NcButton>
 						</div>
 					</div>
 				</div>
@@ -97,14 +97,14 @@
 							<GroupIcon :size="16" class="inline-icon" />
 							{{ t('integration_onedrive', '{amount} contacts', { amount: nbContacts }) }}
 						</label>
-						<Button id="onedrive-import-contacts"
+						<NcButton id="onedrive-import-contacts"
 							:class="{ loading: importingContacts }"
 							@click="onImportContacts">
 							<template #icon>
 								<GroupIcon :size="20" />
 							</template>
 							{{ t('integration_onedrive', 'Import Contacts in Nextcloud') }}
-						</Button>
+						</NcButton>
 					</div>
 					<br>
 				</div>
@@ -116,14 +116,14 @@
 							<AppNavigationIconBullet slot="icon" :color="getCalendarColor(cal)" />
 							{{ getCalendarLabel(cal) }}
 						</label>
-						<Button
+						<NcButton
 							:class="{ loading: importingCalendar[cal.id], 'import-calendar-button': true }"
 							@click="onCalendarImport(cal)">
 							<template #icon>
 								<CalendarBlankIcon :size="20" />
 							</template>
 							{{ t('integration_onedrive', 'Import calendar') }}
-						</Button>
+						</NcButton>
 					</div>
 					<br>
 				</div>
@@ -136,18 +136,18 @@
 import { loadState } from '@nextcloud/initial-state'
 import { generateUrl } from '@nextcloud/router'
 import axios from '@nextcloud/axios'
-import { humanFileSize } from '../utils'
+import { humanFileSize } from '../utils.js'
 import { showSuccess, showError } from '@nextcloud/dialogs'
-import AppNavigationIconBullet from '@nextcloud/vue/dist/Components/AppNavigationIconBullet'
+import AppNavigationIconBullet from '@nextcloud/vue/dist/Components/AppNavigationIconBullet.js'
 import moment from '@nextcloud/moment'
-import Button from '@nextcloud/vue/dist/Components/Button'
-import CloseIcon from 'vue-material-design-icons/Close'
-import CheckIcon from 'vue-material-design-icons/Check'
-import LoginVariantIcon from 'vue-material-design-icons/LoginVariant'
-import PencilIcon from 'vue-material-design-icons/Pencil'
-import FolderIcon from 'vue-material-design-icons/Folder'
-import CalendarBlankIcon from 'vue-material-design-icons/CalendarBlank'
-import GroupIcon from './icons/GroupIcon'
+import NcButton from '@nextcloud/vue/dist/Components/Button.js'
+import CloseIcon from 'vue-material-design-icons/Close.vue'
+import CheckIcon from 'vue-material-design-icons/Check.vue'
+import LoginVariantIcon from 'vue-material-design-icons/LoginVariant.vue'
+import PencilIcon from 'vue-material-design-icons/Pencil.vue'
+import FolderIcon from 'vue-material-design-icons/Folder.vue'
+import CalendarBlankIcon from 'vue-material-design-icons/CalendarBlank.vue'
+import GroupIcon from './icons/GroupIcon.vue'
 
 export default {
 	name: 'PersonalSettings',
@@ -155,7 +155,7 @@ export default {
 	components: {
 		GroupIcon,
 		AppNavigationIconBullet,
-		Button,
+		NcButton,
 		CloseIcon,
 		CheckIcon,
 		LoginVariantIcon,
