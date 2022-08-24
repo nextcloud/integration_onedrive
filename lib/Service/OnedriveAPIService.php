@@ -149,6 +149,9 @@ class OnedriveAPIService {
 					'User-Agent' => 'Nextcloud OneDrive integration'
 				],
 			];
+			if ($method === 'POST') {
+				$options['headers']['Content-Type'] = 'application/json';
+			}
 
 			if (count($params) > 0) {
 				if ($method === 'GET') {
@@ -186,8 +189,8 @@ class OnedriveAPIService {
 				}
 			}
 		} catch (ServerException | ClientException $e) {
-			$this->logger->warning('OneDrive API error : '.$e->getMessage(), ['app' => Application::APP_ID]);
-			return ['error' => $e->getMessage()];
+			$this->logger->warning('OneDrive API error : '.$e->getResponse()->getBody(), ['app' => Application::APP_ID]);
+			return ['error' => $e->getResponse()->getBody()];
 		} catch (ConnectException $e) {
 			$this->logger->warning('OneDrive API connection error : '.$e->getMessage(), ['app' => Application::APP_ID]);
 			return ['error' => $e->getMessage()];

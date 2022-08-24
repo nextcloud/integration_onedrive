@@ -20,6 +20,11 @@ use OCA\DAV\CardDAV\CardDavBackend;
 use Psr\Log\LoggerInterface;
 use Throwable;
 
+function startsWith($haystack, $needle) {
+	$length = strlen($needle);
+	return (substr($haystack, 0, $length) === $needle);
+}
+
 class OnedriveContactAPIService {
 	/**
 	 * @var string
@@ -363,11 +368,24 @@ class OnedriveContactAPIService {
 	 * @return bool
 	 */
 	private function contactExists(array $contact, int $addressBookKey): bool {
-		$displayName = $contact['displayName'] ?? '';
-		if ($displayName) {
+		// check if identical display name is found
+		$displayName = $contact['displayName'];
+		if ($displayName !== null && $displayName !== '') {
 			$searchResult = $this->contactsManager->search($displayName, ['FN']);
 			foreach ($searchResult as $resContact) {
 				if ($resContact['FN'] === $displayName && (int)$resContact['addressbook-key'] === $addressBookKey) {
+					return true;
+				}
+			}
+		}
+
+		// if remote display name is empty, use the first/last name combination
+		if (($displayName === null || $displayName === '')
+			&& ($contact['givenName'] || $contact['surname'])) {
+			$nQuery = trim($contact['surname'] . ';' . $contact['givenName']);
+			$searchResult = $this->contactsManager->search($nQuery, ['N']);
+			foreach ($searchResult as $resContact) {
+				if (startsWith($resContact['N'], $nQuery) && (int)$resContact['addressbook-key'] === $addressBookKey) {
 					return true;
 				}
 			}
