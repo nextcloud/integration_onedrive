@@ -203,14 +203,31 @@ class OnedriveContactAPIService {
 		}
 
 		foreach ($folderContacts as $c) {
-			if ($this->importContact($c, $key)) {
+			if ($this->importContact($userId, $c, $key)) {
 				$nbAdded++;
 			}
 		}
 		return $nbAdded;
 	}
 
-	private function importContact(array $c, $key): bool {
+	private function getContactPhoto(string $userId, array $contact): ?array {
+		$endPoint = 'me/contacts/' . $contact['id'] . '/photo/$value';
+		$result = $this->onedriveApiService->request($userId, $endPoint, [], 'GET', false);
+		if (isset($result['error'])) {
+			return null;
+		}
+		if (is_array($result['headers']['Content-Type']) && count($result['headers']['Content-Type']) > 0) {
+			$type = $result['headers']['Content-Type'][0];
+		} else {
+			$type = $result['headers']['Content-Type'];
+		}
+		return [
+			'type' => $type,
+			'content' => $result['body'],
+		];
+	}
+
+	private function importContact(string $userId, array $c, $key): bool {
 		// avoid existing contacts
 		if ($this->contactExists($c, $key)) {
 			return false;
@@ -304,6 +321,31 @@ class OnedriveContactAPIService {
 		if (isset($c['jobTitle']) && is_string($c['jobTitle'])) {
 			$prop = $vCard->createProperty('TITLE', $c['jobTitle']);
 			$vCard->add($prop);
+		}
+
+		// photo
+		$photo = $this->getContactPhoto($userId, $c);
+		if ($photo !== null) {
+			$type = 'JPEG';
+			if ($photo['type'] === 'image/png') {
+				$type = 'PNG';
+			} elseif ($photo['type'] === 'image/jpeg') {
+				$type = 'JPEG';
+			}
+			$b64Photo = stripslashes('data:image/' . strtolower($type) . ';base64\,') . base64_encode($photo['content']);
+			try {
+				$prop = $vCard->createProperty(
+					'PHOTO',
+					$b64Photo,
+					[
+						'type' => $type,
+						// 'encoding' => 'b',
+					]
+				);
+				$vCard->add($prop);
+			} catch (Exception | Throwable $ex) {
+				$this->logger->warning('Error when setting contact photo: ' . $ex->getMessage(), ['app' => Application::APP_ID]);
+			}
 		}
 
 		try {

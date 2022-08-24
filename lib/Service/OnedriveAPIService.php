@@ -137,7 +137,8 @@ class OnedriveAPIService {
 	 * @return array decoded request result or error
 	 * @throws \OCP\PreConditionNotMetException
 	 */
-	public function request(string $userId, string $endPoint, array $params = [], string $method = 'GET'): array {
+	public function request(string $userId, string $endPoint, array $params = [], string $method = 'GET',
+							bool $jsonResponse = true): array {
 		$this->checkTokenExpiration($userId);
 		$accessToken = $this->config->getUserValue($userId, Application::APP_ID, 'token');
 		try {
@@ -175,7 +176,14 @@ class OnedriveAPIService {
 			if ($respCode >= 400) {
 				return ['error' => $this->l10n->t('Bad credentials')];
 			} else {
-				return json_decode($body, true) ?: [];
+				if ($jsonResponse) {
+					return json_decode($body, true) ?: [];
+				} else {
+					return [
+						'body' => $body,
+						'headers' => $response->getHeaders(),
+					];
+				}
 			}
 		} catch (ServerException | ClientException $e) {
 			$this->logger->warning('OneDrive API error : '.$e->getMessage(), ['app' => Application::APP_ID]);

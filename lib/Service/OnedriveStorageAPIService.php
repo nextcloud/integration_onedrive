@@ -17,7 +17,6 @@ use Psr\Log\LoggerInterface;
 use OCP\IConfig;
 use OCP\Files\IRootFolder;
 use OCP\Files\FileInfo;
-use OCP\Files\Node;
 use OCP\Files\ForbiddenException;
 use OCP\BackgroundJob\IJobList;
 
