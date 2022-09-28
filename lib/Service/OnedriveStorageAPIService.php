@@ -254,7 +254,7 @@ class OnedriveStorageAPIService {
 			$folder = $topFolder->get($path);
 		}
 
-		$encPath = urlencode($path);
+		$encPath = rawurlencode($path);
 		$reqPath = ($encPath === '')
 			? ''
 			: ':' . $encPath . ':';
