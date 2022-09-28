@@ -516,135 +516,146 @@ export default {
 </script>
 
 <style scoped lang="scss">
-.onedrive-grid-form label {
-	line-height: 38px;
-}
-
-.onedrive-grid-form input {
-	width: 100%;
-}
-
-.onedrive-grid-form {
-	max-width: 600px;
-	display: grid;
-	grid-template: 1fr / 1fr 1fr;
-	button .icon {
-		margin-bottom: -1px;
-	}
-}
-
-.onedrive-connected {
-	display: flex;
-	align-items: center;
-}
-
-.success-icon {
-	color: var(--color-success);
-	margin-right: 8px;
-}
-
-.folder-icon {
-	color: var(--color-primary);
-	margin-right: 8px;
-}
-
-#onedrive_prefs .icon {
-	display: inline-block;
-	width: 32px;
-}
-
-#onedrive_prefs .onedrive-grid-form .icon {
-	margin-bottom: -3px;
-}
-
-.icon-onedrive-settings {
-	background-image: url('../../img/app-dark.svg');
-	background-size: 23px 23px;
-	height: 23px;
-	margin-bottom: -4px;
-	filter: var(--background-invert-if-dark);
-}
-
-body.theme--dark .icon-onedrive-settings {
-	background-image: url('../../img/app.svg');
-}
-
-#onedrive-content {
-	margin-left: 40px;
-
-	h3 {
-		font-weight: bold;
+#onedrive_prefs {
+	.onedrive-grid-form label {
+		line-height: 38px;
 	}
 
-	#onedrive-contacts > button,
-	#import-storage > button {
-		width: 300px;
+	.onedrive-grid-form input {
+		width: 100%;
 	}
 
-	#onedrive-contacts > label,
-	#import-storage label {
-		width: 300px;
-		display: flex;
-		align-items: center;
+	.onedrive-grid-form {
+		max-width: 600px;
+		display: grid;
+		grid-template: 1fr / 1fr 1fr;
 
-		span {
-			margin-bottom: -2px;
+		button .icon {
+			margin-bottom: -1px;
 		}
 	}
 
-	.contact-input {
-		width: 200px;
+	.onedrive-connected {
+		display: flex;
+		align-items: center;
 	}
 
-	.output-selection {
-		display: flex;
+	.success-icon {
+		color: var(--color-success);
+		margin-right: 8px;
+	}
 
-		label,
-		input {
+	.folder-icon {
+		margin-right: 0;
+	}
+
+	label > .folder-icon {
+		color: var(--color-primary);
+		margin-right: 8px;
+	}
+
+	.icon {
+		display: inline-block;
+		width: 32px;
+	}
+
+	.onedrive-grid-form .icon {
+		margin-bottom: -3px;
+	}
+
+	.icon-onedrive-settings {
+		background-image: url('../../img/app-dark.svg');
+		background-size: 23px 23px;
+		height: 23px;
+		margin-bottom: -4px;
+		filter: var(--background-invert-if-dark);
+	}
+
+	body.theme--dark .icon-onedrive-settings {
+		background-image: url('../../img/app.svg');
+	}
+
+	#onedrive-content {
+		margin-left: 40px;
+
+		h3 {
+			font-weight: bold;
+		}
+
+		#onedrive-contacts > button,
+		#import-storage > button {
 			width: 300px;
 		}
-		button {
-			width: 44px !important;
-		}
 
-		>label span {
-			margin-bottom: -2px;
-		}
-	}
-
-	.size-import {
-		display: flex;
-		align-items: center;
-	}
-
-	.import-calendar-button {
-		height: 32px;
-		max-height: 32px;
-		min-height: 32px;
-	}
-
-	.onedrive-contacts-import {
-		display: flex;
-		align-items: center;
-		> * {
+		#onedrive-contacts > label,
+		#import-storage label {
 			width: 300px;
-		}
-		> label {
 			display: flex;
 			align-items: center;
-			.inline-icon {
-				margin-right: 8px;
+
+			span {
+				margin-bottom: -2px;
+			}
+		}
+
+		.contact-input {
+			width: 200px;
+		}
+
+		.output-selection {
+			display: flex;
+
+			label,
+			input {
+				width: 300px;
+			}
+
+			button {
+				width: 44px !important;
+			}
+
+			> label span {
+				margin-bottom: -2px;
+			}
+		}
+
+		.size-import {
+			display: flex;
+			align-items: center;
+		}
+
+		.import-calendar-button {
+			height: 32px;
+			max-height: 32px;
+			min-height: 32px;
+		}
+
+		.onedrive-contacts-import {
+			display: flex;
+			align-items: center;
+
+			> * {
+				width: 300px;
+			}
+
+			> label {
+				display: flex;
+				align-items: center;
+
+				.inline-icon {
+					margin-right: 8px;
+				}
 			}
 		}
 	}
-}
 
-#onedrive-search-block .icon {
-	width: 22px;
-}
+	#onedrive-search-block .icon {
+		width: 22px;
+	}
 
-#toggle-onedrive-navigation-link {
-	margin-left: 40px;
+	#toggle-onedrive-navigation-link {
+		margin-left: 40px;
+	}
 }
 
 ::v-deep .app-navigation-entry__icon-bullet {
