@@ -1,0 +1,26 @@
+OC.L10N.register(
+    "integration_onedrive",
+    {
+    "Error getting OAuth access token" : "Pogreška pri dohvaćanju tokena za pristup OAuth",
+    "Error during OAuth exchanges" : "Pogreška tijekom razmjene radi autentifikacije OAuth",
+    "Bad credentials" : "Pogrešne vjerodajnice",
+    "Bad HTTP method" : "Pogrešna metoda HTTP-a",
+    "OAuth access token refused" : "Odbijen token za pristup OAuth",
+    "Connected accounts" : "Povezani računi",
+    "Data migration" : "Migracija podataka",
+    "Make sure you set the \"Redirect URI\" to" : "Obavezno postavite „URL za preusmjeravanje“ na",
+    "Put the OAuth app \"Client ID\" and \"Client secret\" below." : "U nastavku unesite „ID klijenta“ i „Tajni ključ klijenta“ za aplikaciju OAuth.",
+    "Client ID" : "ID klijenta",
+    "Client secret" : "Tajni ključ klijenta",
+    "Enable navigation link" : "Omogući navigacijsku poveznicu",
+    "Connected as {user}" : "Povezan kao {user}",
+    "Import directory" : "Uvezi direktorij",
+    "Contacts" : "Kontakti",
+    "Calendars" : "Kalendari",
+    "Import calendar" : "Uvezi kalendar",
+    "Starting importing files in {targetPath} directory" : "Početak uvoza datoteka u direktorij {targetPath}",
+    "Failed to get calendar list" : "Nije moguće dobiti popis kalendara",
+    "Failed to get address book list" : "Nije moguće dobiti popis adresara",
+    "Choose where to write imported files" : "Odaberite gdje želite zapisivati uvezene datoteke"
+},
+"nplurals=3; plural=n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2;");

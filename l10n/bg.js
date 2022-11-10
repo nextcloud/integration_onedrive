@@ -1,0 +1,27 @@
+OC.L10N.register(
+    "integration_onedrive",
+    {
+    "Error getting OAuth access token" : "Грешка при получаване на маркер за достъп до OAuth",
+    "Error during OAuth exchanges" : "Грешка по време на обмен на OAuth",
+    "Bad credentials" : "Лоши идентификационни данни",
+    "Bad HTTP method" : "Лош HTTP метод",
+    "OAuth access token refused" : " Маркерът за достъп OAuth е отказан",
+    "Connected accounts" : "Свързани профили",
+    "Data migration" : "Миграция на данни",
+    "Make sure you set the \"Redirect URI\" to" : "Уверете се, че сте задали „URI за пренасочване“ на",
+    "Put the OAuth app \"Client ID\" and \"Client secret\" below." : "Поставете приложенията OAuth „Идентификатор на клиент“ и „Тайна на клиент“ по-долу.",
+    "Client ID" : "Идентификатор на клиент",
+    "Client secret" : "Тайна на клиент",
+    "Use a popup to authenticate" : "Използване на изскачащ прозорец за удостоверяване",
+    "Enable navigation link" : "Активиране на връзка за навигация",
+    "Connected as {user}" : "Свързване като {user}",
+    "Import directory" : "Директория за импортиране",
+    "Contacts" : "Контакти",
+    "Calendars" : "Kалендари",
+    "Import calendar" : "Внасяне на календар",
+    "Starting importing files in {targetPath} directory" : "Започва импортирането на файлове в директория {targetPath}",
+    "Failed to get calendar list" : "Неуспешно получаване на списък на календар",
+    "Failed to get address book list" : "Неуспешно получаване на списък на адресна книга",
+    "Choose where to write imported files" : "Изберете къде да запишете импортирани файлове"
+},
+"nplurals=2; plural=(n != 1);");

@@ -1,0 +1,24 @@
+{ "translations": {
+    "Error getting OAuth access token" : "Fout bij ophalen OAuth access token",
+    "Error during OAuth exchanges" : "Fout tijdens OAuth uitwisselingen",
+    "Bad credentials" : "Foute inloggegevens",
+    "Bad HTTP method" : "Foute HTTP methode",
+    "OAuth access token refused" : "OAuth toegangstoken geweigerd",
+    "Connected accounts" : "Verbonden accounts",
+    "Data migration" : "Gegevensmigratie",
+    "Make sure you set the \"Redirect URI\" to" : "Zorg ervoor dat de \"Redirect URI\" is ingesteld op",
+    "Put the OAuth app \"Client ID\" and \"Client secret\" below." : "Zet de OAuth app \"Client ID\" en \"Client secret\" hieronder.",
+    "Client ID" : "Client ID",
+    "Client secret" : "Client secret",
+    "Enable navigation link" : "Inschakelen navigatielink",
+    "Connected as {user}" : "Verbonden als {user}",
+    "Import directory" : "Importdirectory",
+    "Contacts" : "Contacten",
+    "Calendars" : "Agenda's",
+    "Import calendar" : "Importeer agenda",
+    "Starting importing files in {targetPath} directory" : "Beginnen met importeren bestanden in {targetPath} directory",
+    "Failed to get calendar list" : "Kalenderlijst ophalen mislukt",
+    "Failed to get address book list" : "Adresboekentlijst ophalen mislukt",
+    "Choose where to write imported files" : "Kies waar geïmporteerde bestanden moeten worden weggeschreven"
+},"pluralForm" :"nplurals=2; plural=(n != 1);"
+}

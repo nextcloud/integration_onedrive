@@ -1,15 +1,25 @@
 { "translations": {
+    "Error getting OAuth access token" : "Chyba pri získavaní prístupového tokenu OAuth",
     "Error during OAuth exchanges" : "Chyba počas výmeny OAuth",
+    "Bad credentials" : "Nesprávne prihlasovacie údaje",
     "Bad HTTP method" : "Zlá metóda HTTP",
     "OAuth access token refused" : "Prístupový token OAuth bol zamietnutý",
+    "Connected accounts" : "Prepojené účty",
     "Data migration" : "Prenos údajov",
     "Make sure you set the \"Redirect URI\" to" : "Nezabudnite nastaviť \"Redirect URI\" na",
     "Put the OAuth app \"Client ID\" and \"Client secret\" below." : "Nižšie vložte \"ID klienta\" a \"tajný kľúč\" OAuth aplikácie.",
+    "Client ID" : "Client ID",
     "Client secret" : "Heslo klienta",
     "Use a popup to authenticate" : "Pre overenie použite kontextové okno",
+    "Enable navigation link" : "Povoliť navigačný odkaz",
+    "Connected as {user}" : "Pripojený ako {user}",
+    "Import directory" : "Importovať adresár",
+    "Contacts" : "Kontakty",
+    "Calendars" : "Kalendáre",
     "Import calendar" : "Importovať kalendár",
     "Starting importing files in {targetPath} directory" : "Spúšťa sa import súborov do adresára {targetPath}",
     "Failed to get calendar list" : "Nepodarilo sa získať zoznam kalendárov.",
-    "Failed to get address book list" : "Nepodarilo sa získať zoznam adresárov"
+    "Failed to get address book list" : "Nepodarilo sa získať zoznam adresárov",
+    "Choose where to write imported files" : "Vyberte kam zapísať importované súbory"
 },"pluralForm" :"nplurals=4; plural=(n % 1 == 0 && n == 1 ? 0 : n % 1 == 0 && n >= 2 && n <= 4 ? 1 : n % 1 != 0 ? 2: 3);"
 }

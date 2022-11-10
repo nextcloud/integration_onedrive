@@ -1,0 +1,25 @@
+{ "translations": {
+    "Error getting OAuth access token" : "Errorea OAuth sarbide tokena eskuratzen",
+    "Error during OAuth exchanges" : "Errorea OAuth trukeak egitean",
+    "Bad credentials" : "Kredentzial okerrak",
+    "Bad HTTP method" : "HTTP metodo okerra",
+    "OAuth access token refused" : "OAuth sarbide tokena ukatua izan da",
+    "Connected accounts" : "Konektatutako kontuak",
+    "Data migration" : "Datu migrazioa",
+    "Make sure you set the \"Redirect URI\" to" : "Ziurtatu \"Birbideratze URLa\" ezartzen duzula hona:",
+    "Put the OAuth app \"Client ID\" and \"Client secret\" below." : "Jarri OAuth aplikazioaren \"bezero IDa\" eta \"bezero-sekretua\" behean.",
+    "Client ID" : "Bezeroaren IDa",
+    "Client secret" : "Bezeroaren sekretua",
+    "Use a popup to authenticate" : "Erabili laster-menua autentifikatzeko",
+    "Enable navigation link" : "Gaitu nabigazio esteka",
+    "Connected as {user}" : "{user} gisa konektatuta",
+    "Import directory" : "Inportatu direktorioa",
+    "Contacts" : "Kontaktuak",
+    "Calendars" : "Egutegiak",
+    "Import calendar" : "Inportatu egutegia",
+    "Starting importing files in {targetPath} directory" : "Fitxategiak {targetPath} direktoriora inportatzea abiatzen",
+    "Failed to get calendar list" : "Egutegi zerrenda lortzeak huts egin du",
+    "Failed to get address book list" : "Helbide-liburuen zerrenda lortzeak huts egin du",
+    "Choose where to write imported files" : "Aukeratu non idatzi inportatutako fitxategiak"
+},"pluralForm" :"nplurals=2; plural=(n != 1);"
+}

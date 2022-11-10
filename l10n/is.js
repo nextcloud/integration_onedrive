@@ -1,0 +1,18 @@
+OC.L10N.register(
+    "integration_onedrive",
+    {
+    "Error getting OAuth access token" : "Villa við að ná í OAuth-aðgangsteikn",
+    "Error during OAuth exchanges" : "Villa í OAuth-samskiptum",
+    "Bad credentials" : "Gölluð auðkenni",
+    "OAuth access token refused" : "OAuth-aðgangsteikni hafnað",
+    "Connected accounts" : "Tengdir aðgangar",
+    "Client ID" : "Biðlaraauðkenni",
+    "Client secret" : "Leynilykill biðlara",
+    "Enable navigation link" : "Virkja flakktengil",
+    "Connected as {user}" : "Tengt sem {user}",
+    "Import directory" : "Flytja möppu inn",
+    "Contacts" : "Tengiliðir",
+    "Calendars" : "Dagatöl",
+    "Import calendar" : "Flytja inn dagatal"
+},
+"nplurals=2; plural=(n % 10 != 1 || n % 100 == 11);");

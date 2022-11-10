@@ -1,0 +1,25 @@
+{ "translations": {
+    "Error getting OAuth access token" : "Error al obtener el token de acceso OAuth",
+    "Error during OAuth exchanges" : "Error durante los intercambios OAuth",
+    "Bad credentials" : "Credenciales erróneas",
+    "Bad HTTP method" : "Método HTTP erróneo",
+    "OAuth access token refused" : "Se ha rechazado el token de acceso OAuth",
+    "Connected accounts" : "Cuentas conectadas",
+    "Data migration" : "Migración de datos",
+    "Make sure you set the \"Redirect URI\" to" : "Asegúrate de configurar la \"URI de redirección\" como",
+    "Put the OAuth app \"Client ID\" and \"Client secret\" below." : "Pon la «ID de cliente» y el «Secreto de cliente» de la app OAuth a continuación.",
+    "Client ID" : "ID de cliente",
+    "Client secret" : "Secreto de cliente",
+    "Use a popup to authenticate" : "Usa una ventana emergente para autenticar",
+    "Enable navigation link" : "Activar enlace de navegación",
+    "Connected as {user}" : "Conectado como {user}",
+    "Import directory" : "Importar directorio",
+    "Contacts" : "Contactos",
+    "Calendars" : "Calendarios",
+    "Import calendar" : "Importar calendario",
+    "Starting importing files in {targetPath} directory" : "Comenzando la importación de archivos en el directorio {targetPath}",
+    "Failed to get calendar list" : "Fallo al obtener la lista de calendarios",
+    "Failed to get address book list" : "Fallo al obtener la lista de libretas de direcciones",
+    "Choose where to write imported files" : "Escoge dónde guardar los archivos importados"
+},"pluralForm" :"nplurals=3; plural=n == 1 ? 0 : n != 0 && n % 1000000 == 0 ? 1 : 2;"
+}

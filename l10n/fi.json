@@ -1,10 +1,24 @@
 { "translations": {
+    "Error getting OAuth access token" : "Virhe OAuth-valtuutuksen hakemisessa",
     "Error during OAuth exchanges" : "Virhe OAuth-tunnistautumisessa",
+    "Bad credentials" : "Virheelliset kirjautumistiedot",
     "Bad HTTP method" : "Virheellinen HTTP-metodi",
     "OAuth access token refused" : "OAuth-valtuutus hylätty",
+    "Connected accounts" : "Yhdistetyt tilit",
+    "Data migration" : "Tietojen migraatio",
+    "Put the OAuth app \"Client ID\" and \"Client secret\" below." : "Syötä OAuth-sovelluksen Asiakas-ID ja Asiakassalasana-arvot alas.",
+    "Client ID" : "Asiakas-ID",
     "Client secret" : "Asiakassalasana",
+    "Use a popup to authenticate" : "Käytä ponnahdusikkunaa tunnistautumista varten",
+    "Enable navigation link" : "Näytä navigointipalkissa",
+    "Connected as {user}" : "Yhdistetty käyttäjänä {user}",
+    "Import directory" : "Tuo kansio",
+    "Contacts" : "Yhteystiedot",
+    "Calendars" : "Kalenterit",
     "Import calendar" : "Tuo kalenteri",
     "Starting importing files in {targetPath} directory" : "Aloitetaan tiedostojen tuonti kohteeseen {targetPath}",
-    "Failed to get address book list" : "Osoitekirjalistan hakeminen epäonnistui"
+    "Failed to get calendar list" : "Kalenterilistan hakeminen epäonnistui",
+    "Failed to get address book list" : "Osoitekirjalistan hakeminen epäonnistui",
+    "Choose where to write imported files" : "Valitse, mihin tiedostot tuodaan"
 },"pluralForm" :"nplurals=2; plural=(n != 1);"
 }

@@ -1,5 +1,7 @@
 { "translations": {
+    "Client ID" : "კლიენტის ID",
     "Client secret" : "კლიენტის საიდუმლო",
+    "Contacts" : "კონტაქტები",
     "Import calendar" : "კალენდრის იმპორტი"
 },"pluralForm" :"nplurals=2; plural=(n!=1);"
 }

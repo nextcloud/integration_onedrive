@@ -1,15 +1,26 @@
 OC.L10N.register(
     "integration_onedrive",
     {
+    "Error getting OAuth access token" : "Errore recuperende su token de intrada OAuth.",
     "Error during OAuth exchanges" : "Errore cuncambiende OAuth",
+    "Bad credentials" : "Credentziales non bàlidas",
     "Bad HTTP method" : "Mètodu HTTP no bàlidu",
     "OAuth access token refused" : "Token de intrada OAuth refudadu",
+    "Connected accounts" : "Contos connètidos",
     "Data migration" : "Tramudadura de datos",
     "Make sure you set the \"Redirect URI\" to" : "Segura·ti de impostare \"URI de ri-aderetada\" a ",
+    "Put the OAuth app \"Client ID\" and \"Client secret\" below." : "Pone su «ID de su cliente» e su «Segretu de cliente» de s'aplicatzione OAuth sighende.",
+    "Client ID" : "ID cliente",
     "Client secret" : "Segretu de su cliente",
+    "Enable navigation link" : "Ativa su ligòngiu de navigatzione",
+    "Connected as {user}" : "Connètidu comente {user}",
+    "Import directory" : "Importa cartella",
+    "Contacts" : "Cuntatos",
+    "Calendars" : "Calendàrios",
     "Import calendar" : "Importa calendàrios",
     "Starting importing files in {targetPath} directory" : "Aviamentu de s'importatzione de is archìvios in sa cartella {targetPath}",
     "Failed to get calendar list" : "No at fatu a otènnere s'elencu de is calendàrios.",
-    "Failed to get address book list" : "No at fatu a otènnere s'elencu d is rubricas"
+    "Failed to get address book list" : "No at fatu a otènnere s'elencu d is rubricas",
+    "Choose where to write imported files" : "Sèbera in ue est a pònnere is archìvios importados"
 },
 "nplurals=2; plural=(n != 1);");

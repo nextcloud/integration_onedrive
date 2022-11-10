@@ -1,0 +1,23 @@
+OC.L10N.register(
+    "integration_onedrive",
+    {
+    "Error getting OAuth access token" : "S'ha produït un error en obtenir el testimoni d'accés d'OAuth",
+    "Error during OAuth exchanges" : "S'ha produït un error durant els intercanvis d'OAuth",
+    "Bad credentials" : "Credencials dolentes",
+    "Bad HTTP method" : "Mètode HTTP incorrecte",
+    "OAuth access token refused" : "S'ha rebutjat el testimoni d'accés d'OAuth",
+    "Connected accounts" : "Comptes connectats",
+    "Data migration" : "Migració de dades",
+    "Make sure you set the \"Redirect URI\" to" : "Assegureu-vos de definir l'\"URI de redirecció\" a",
+    "Client ID" : "ID del client",
+    "Client secret" : "Secret del client",
+    "Enable navigation link" : "Habilita l'enllaç de navegació",
+    "Connected as {user}" : "S'ha connectat com a {user}",
+    "Contacts" : "Contactes",
+    "Calendars" : "Calendaris",
+    "Import calendar" : "Importa un calendari",
+    "Starting importing files in {targetPath} directory" : "S'està iniciant la importació de fitxers al directori {targetPath}",
+    "Failed to get calendar list" : "No s'ha pogut obtenir la llista de calendaris",
+    "Failed to get address book list" : "No s'ha pogut obtenir la llista de la llibreta d'adreces"
+},
+"nplurals=2; plural=(n != 1);");

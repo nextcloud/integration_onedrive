@@ -1,0 +1,26 @@
+OC.L10N.register(
+    "integration_onedrive",
+    {
+    "Error getting OAuth access token" : "Errore durante il recupero del token di accesso OAuth",
+    "Error during OAuth exchanges" : "Errore nello scambio dati OAuth",
+    "Bad credentials" : "Credenziali non valide",
+    "Bad HTTP method" : "Metodo HTTP non corretto",
+    "OAuth access token refused" : "Token di accesso OAuth rifiutato",
+    "Connected accounts" : "Account connessi",
+    "Data migration" : "Migrazione dei dati",
+    "Make sure you set the \"Redirect URI\" to" : "Assicurati di impostare \"URI di reindirizzamento\" a",
+    "Put the OAuth app \"Client ID\" and \"Client secret\" below." : "Inserisci sotto \"ID client\" e \"Password del client\" dell'app OAuth.",
+    "Client ID" : "ID client",
+    "Client secret" : "Segreto del client",
+    "Enable navigation link" : "Abilita collegamento di navigazione",
+    "Connected as {user}" : "Connesso come {user}",
+    "Import directory" : "Cartella di importazione",
+    "Contacts" : "Contatti",
+    "Calendars" : "Calendari",
+    "Import calendar" : "Importa calendario",
+    "Starting importing files in {targetPath} directory" : "Avvio dell'importazione file nella cartella {targetPath}",
+    "Failed to get calendar list" : "Impossibile ottenere l'elenco dei calendari",
+    "Failed to get address book list" : "Impossibile ottenere l'elenco delle rubriche",
+    "Choose where to write imported files" : "Scegli dove scrivere i file importati"
+},
+"nplurals=3; plural=n == 1 ? 0 : n != 0 && n % 1000000 == 0 ? 1 : 2;");

@@ -1,14 +1,27 @@
 OC.L10N.register(
     "integration_onedrive",
     {
+    "Error getting OAuth access token" : "Hiba történt az OAuth hozzáférési token lekérése során",
     "Error during OAuth exchanges" : "Hiba történt az OAuth üzenetváltás során",
+    "Bad credentials" : "Hibás hitelesítő adatok",
     "Bad HTTP method" : "Hibás HTTP metódus",
     "OAuth access token refused" : "Az OAuth hozzáférési token lekérése visszautasítva",
+    "Connected accounts" : "Kapcsolt fiókok",
     "Data migration" : "Adatköltöztetés",
     "Make sure you set the \"Redirect URI\" to" : "Győződjön meg róla, hogy erre állította be az „Átirányítási URL” értékét:",
+    "Put the OAuth app \"Client ID\" and \"Client secret\" below." : "Töltse ki az „Ügyfélazonosító” és a „Klienstitok” mezőket.",
+    "Client ID" : "Kliensazonosító",
     "Client secret" : "Klienstitok",
+    "Use a popup to authenticate" : "Felugró ablak használata a hitelesítéshez",
+    "Enable navigation link" : "Navigációs hivatkozás engedélyezése",
+    "Connected as {user}" : "Kapcsolódva mint {user}",
+    "Import directory" : "Mappa importálása",
+    "Contacts" : "Névjegyek",
+    "Calendars" : "Naptárak",
     "Import calendar" : "Naptár importálása",
     "Starting importing files in {targetPath} directory" : "Fájlok importálásának megkezdése a(z) {targetPath} könyvtárban",
-    "Failed to get address book list" : "Nem sikerült lekérni a címjegyzéket"
+    "Failed to get calendar list" : "Nem sikerült megszerezni a naptárlistát",
+    "Failed to get address book list" : "Nem sikerült lekérni a címjegyzéket",
+    "Choose where to write imported files" : "Válassza ki az importált fájlok helyét"
 },
 "nplurals=2; plural=(n != 1);");

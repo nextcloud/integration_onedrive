@@ -1,0 +1,25 @@
+{ "translations": {
+    "Error getting OAuth access token" : "OAuth erişim kodu alınırken sorun çıktı",
+    "Error during OAuth exchanges" : "OAuth takasında sorun çıktı",
+    "Bad credentials" : "Kimlik doğrulama bilgileri hatalı",
+    "Bad HTTP method" : "HTTP yöntemi hatalı",
+    "OAuth access token refused" : "OAuth erişim kodu reddedildi",
+    "Connected accounts" : "Bağlı hesaplar",
+    "Data migration" : "Veri aktarma",
+    "Make sure you set the \"Redirect URI\" to" : "\"Yönlendirme adresini\" şuna ayarladığınızdan emin olun",
+    "Put the OAuth app \"Client ID\" and \"Client secret\" below." : "OAuth uygulaması \"İstemci kimliği\" ve \"İstemci sırrı\" bilgilerini aşağıya ekleyin.",
+    "Client ID" : "İstemci kimliği",
+    "Client secret" : "İstemci parolası",
+    "Use a popup to authenticate" : "Kimlik doğrulaması için açılan pencere kullanılsın",
+    "Enable navigation link" : "Gezinme bağlantısı kullanılsın",
+    "Connected as {user}" : "{user} olarak bağlantı kuruldu",
+    "Import directory" : "İçe klasör aktar",
+    "Contacts" : "Kişiler",
+    "Calendars" : "Takvimler",
+    "Import calendar" : "Takvimi içe aktar",
+    "Starting importing files in {targetPath} directory" : "{targetPath} klasöründeki dosyaların içe aktarılmasına başlanıyor",
+    "Failed to get calendar list" : "Takvim listesi alınamadı",
+    "Failed to get address book list" : "Adres defteri listesi alınamadı",
+    "Choose where to write imported files" : "İçe aktarılan dosyaların kaydedileceği konumu seçin"
+},"pluralForm" :"nplurals=2; plural=(n > 1);"
+}

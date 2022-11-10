@@ -1,0 +1,7 @@
+{ "translations": {
+    "Client ID" : "ID Klien",
+    "Client secret" : "Rahasia klien",
+    "Contacts" : "Kontak",
+    "Calendars" : "Kalender"
+},"pluralForm" :"nplurals=1; plural=0;"
+}

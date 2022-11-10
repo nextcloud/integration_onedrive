@@ -1,0 +1,25 @@
+{ "translations": {
+    "Error getting OAuth access token" : "Fehler beim Abrufen des OAuth-Zugriffstokens",
+    "Error during OAuth exchanges" : "Fehler beim OAuth-Austausch",
+    "Bad credentials" : "Falsche Anmeldeinformationen",
+    "Bad HTTP method" : "Ungültige HTTP-Methode",
+    "OAuth access token refused" : "OAuth-Zugriffstoken abgelehnt",
+    "Connected accounts" : "Verbundene Konten",
+    "Data migration" : "Datenmigration",
+    "Make sure you set the \"Redirect URI\" to" : "Stelle sicher, dass die \"Weiterleitungs-URI\" gesetzt ist auf",
+    "Put the OAuth app \"Client ID\" and \"Client secret\" below." : "Gebe unten die OAuth-App \"Client ID\" und \"Client secret\" ein.",
+    "Client ID" : "Client-ID",
+    "Client secret" : "Geheime Zeichenkette des Clients",
+    "Use a popup to authenticate" : "Popup zur Authentifizierung verwenden",
+    "Enable navigation link" : "Navigations-Link aktivieren",
+    "Connected as {user}" : "Verbunden als {user}",
+    "Import directory" : "Import-Verzeichnis",
+    "Contacts" : "Benötigt keine Übersetzung. Hier wird nur die formelle Übersetzung verwendet (de_DE). ",
+    "Calendars" : "Benötigt keine Übersetzung. Hier wird nur die formelle Übersetzung verwendet (de_DE).",
+    "Import calendar" : "Kalender importieren",
+    "Starting importing files in {targetPath} directory" : "Import der Dateien im Verzeichnis {targetPath} starten",
+    "Failed to get calendar list" : "Fehler beim Abrufen der Kalender-Liste",
+    "Failed to get address book list" : "Fehler beim Abrufen der Adressbuch-Liste",
+    "Choose where to write imported files" : "Auswählen, wo die Dateien importiert werden sollen"
+},"pluralForm" :"nplurals=2; plural=(n != 1);"
+}

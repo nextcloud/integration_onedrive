@@ -1,0 +1,7 @@
+{ "translations": {
+    "Client ID" : "Klientidentigilo",
+    "Client secret" : "Klientosekreto",
+    "Contacts" : "Kontaktoj",
+    "Import calendar" : "Enporti kalendaron"
+},"pluralForm" :"nplurals=2; plural=(n != 1);"
+}

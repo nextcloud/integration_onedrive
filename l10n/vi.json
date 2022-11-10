@@ -1,4 +1,7 @@
 { "translations": {
+    "Client ID" : "ID khách hàng",
+    "Contacts" : "Danh bạ",
+    "Calendars" : "Lịch",
     "Import calendar" : "Nhập lịch biểu"
 },"pluralForm" :"nplurals=1; plural=0;"
 }
