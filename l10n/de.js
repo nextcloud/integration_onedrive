@@ -16,8 +16,6 @@ OC.L10N.register(
     "Enable navigation link" : "Navigations-Link aktivieren",
     "Connected as {user}" : "Verbunden als {user}",
     "Import directory" : "Import-Verzeichnis",
-    "Contacts" : "Benötigt keine Übersetzung. Hier wird nur die formelle Übersetzung verwendet (de_DE). ",
-    "Calendars" : "Benötigt keine Übersetzung. Hier wird nur die formelle Übersetzung verwendet (de_DE).",
     "Import calendar" : "Kalender importieren",
     "Starting importing files in {targetPath} directory" : "Import der Dateien im Verzeichnis {targetPath} starten",
     "Failed to get calendar list" : "Fehler beim Abrufen der Kalender-Liste",
