@@ -4,7 +4,7 @@ OC.L10N.register(
     "Microsoft OneDrive" : "Microsoft OneDrive",
     "Error getting OAuth access token" : "擷取 OAuth 存取權杖時發生錯誤",
     "Error during OAuth exchanges" : "OAuth 交換時發生錯誤",
-    "Onedrive" : "Onedrive",
+    "Onedrive" : "OneDrive",
     "_%s file was imported from Onedrive storage._::_%s files were imported from Onedrive storage._" : ["從 Onedrive 匯入了 %s 個檔案。"],
     "Bad credentials" : "錯誤的憑證",
     "Bad HTTP method" : "不正確的 HTTP 方法",
