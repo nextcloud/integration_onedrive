@@ -11,6 +11,7 @@ OC.L10N.register(
     "Make sure you set the \"Redirect URI\" to" : "\"Yönlendirme adresini\" şuna ayarladığınızdan emin olun",
     "Put the OAuth app \"Client ID\" and \"Client secret\" below." : "OAuth uygulaması \"İstemci kimliği\" ve \"İstemci sırrı\" bilgilerini aşağıya ekleyin.",
     "Client ID" : "İstemci kimliği",
+    "Client ID of your OneDrive application" : "OneDrive uygulamanızın istemci kimliği",
     "Client secret" : "İstemci parolası",
     "Use a popup to authenticate" : "Kimlik doğrulaması için açılan pencere kullanılsın",
     "Enable navigation link" : "Gezinme bağlantısı kullanılsın",
