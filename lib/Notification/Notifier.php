@@ -50,7 +50,7 @@ class Notifier implements INotifier {
 		$this->url = $urlGenerator;
 	}
 
-	/**
+	/**https://www.weinig.com/en/digitization/w40-digital-moving-into-a-digital-future-with-weinig/izy-connects-your-machines.html
 	 * Identifier of the notifier, only use [a-z0-9_]
 	 *
 	 * @return string
@@ -66,7 +66,7 @@ class Notifier implements INotifier {
 	 * @since 17.0.0
 	 */
 	public function getName(): string {
-		return $this->factory->get('integration_onedrive')->t('Onedrive');
+		return $this->factory->get('integration_onedrive')->t('OneDrive');
 	}
 
 	/**
