@@ -19,7 +19,7 @@ OC.L10N.register(
     "Contacts" : "Contacts",
     "Calendars" : "Agendas",
     "Import calendar" : "Importer un calendrier",
-    "Starting importing files in {targetPath} directory" : "Démarrage de l'importation de fichiers dans le répertoire {targetPath}",
+    "Starting importing files in {targetPath} directory" : "Démarrage de l'import des fichiers dans le dossier {targetPath}",
     "Failed to get calendar list" : "Échec de l'obtention de la liste des calendriers",
     "Failed to get address book list" : "Échec de l'obtention de la liste de carnets d'adresses",
     "Choose where to write imported files" : "Choisissez où écrire les fichiers importés"
