@@ -12,6 +12,7 @@ OC.L10N.register(
     "Put the OAuth app \"Client ID\" and \"Client secret\" below." : "Vpisati je treba »ID programa« in »geslo programa«.",
     "Client ID" : "ID Odjemalca",
     "Client secret" : "Skrivni ključ odjemalca",
+    "Use a popup to authenticate" : "Uporabi pojavno okno za overitev",
     "Enable navigation link" : "Omogoči povezave za krmarjenje",
     "Connected as {user}" : "Povezan je uporabniški račun {user}",
     "Import directory" : "Uvozi mapo",
