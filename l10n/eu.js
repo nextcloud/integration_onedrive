@@ -22,6 +22,7 @@ OC.L10N.register(
     "Starting importing files in {targetPath} directory" : "Fitxategiak {targetPath} direktoriora inportatzea abiatzen",
     "Failed to get calendar list" : "Egutegi zerrenda lortzeak huts egin du",
     "Failed to get address book list" : "Helbide-liburuen zerrenda lortzeak huts egin du",
-    "Choose where to write imported files" : "Aukeratu non idatzi inportatutako fitxategiak"
+    "Choose where to write imported files" : "Aukeratu non idatzi inportatutako fitxategiak",
+    "_{number} event successfully imported in {name}_::_{number} events successfully imported in {name}_" : ["Gertaera {number} ondo inportatu da {name}-ra","{number} gertaera ondo inportatu dira {name}-ra"]
 },
 "nplurals=2; plural=(n != 1);");
