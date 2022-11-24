@@ -55,7 +55,7 @@
     "Sign in with OneDrive" : "Mit OneDrive anmelden",
     "Failed to save OneDrive OAuth state" : "Fehler beim Speichern des Reddit OneDrive-OAuth-Status",
     "Failed to get OneDrive storage information" : "Fehler beim Abrufen der OneDrive-Speicher-Informationen",
-    "Starting importing files in {targetPath} directory" : "Beginn des Imports von Dateien ins Verzeichnis {targetPath}",
+    "Starting importing files in {targetPath} directory" : "Beginn des Imports von Dateien in das Verzeichnis {targetPath}",
     "Failed to start importing Onedrive storage" : "Fehler beim Starten des OneDrive-Speicher-Imports",
     "Failed to get calendar list" : "Fehler beim Abrufen der Kalender-Liste",
     "Failed to import calendar" : "Fehler beim Kalenderimport",
