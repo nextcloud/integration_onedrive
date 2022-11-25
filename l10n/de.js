@@ -8,6 +8,8 @@ OC.L10N.register(
     "OAuth access token refused" : "OAuth-Zugriffstoken abgelehnt",
     "Connected accounts" : "Verbundene Konten",
     "Data migration" : "Datenmigration",
+    "Microsoft OneDrive integration allows you to automatically import your OneDrive files into Nextcloud." : "Mit der Microsoft OneDrive-Integration kannst du deine OneDrive-Dateien automatisch in Nextcloud importieren.",
+    "If you want to allow your Nextcloud users to use OAuth to authenticate to https://onedrive.live.com, create an OAuth application in your Azure settings." : "Wenn du deinen Nextcloud-Benutzern erlauben möchtest, OAuth zur Authentifizierung bei https://onedrive.live.com zu verwenden, erstelle eine OAuth-Anwendung in deinen Azure-Einstellungen.",
     "Make sure you set the \"Redirect URI\" to" : "Stelle sicher, dass die \"Weiterleitungs-URI\" gesetzt ist auf",
     "Put the OAuth app \"Client ID\" and \"Client secret\" below." : "Gebe unten die OAuth-App \"Client ID\" und \"Client secret\" ein.",
     "Client ID" : "Client-ID",
