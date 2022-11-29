@@ -1,6 +1,7 @@
 { "translations": {
     "Error getting OAuth access token" : "Erreur lors de l'obtention du jeton d'accès OAuth",
     "Error during OAuth exchanges" : "Erreur pendant les échanges OAuth",
+    "_%s file was imported from Onedrive storage._::_%s files were imported from Onedrive storage._" : ["%s fichier a été importé depuis OneDrive.","%s fichiers ont été importés depuis OneDrive.","%s fichiers ont été importés depuis OneDrive."],
     "Bad credentials" : "Identifiants incorrects",
     "Bad HTTP method" : "Mauvaise méthode HTTP",
     "OAuth access token refused" : "Jeton d'accès OAuth refusé",
@@ -20,6 +21,7 @@
     "Starting importing files in {targetPath} directory" : "Démarrage de l'import des fichiers dans le dossier {targetPath}",
     "Failed to get calendar list" : "Échec de l'obtention de la liste des calendriers",
     "Failed to get address book list" : "Échec de l'obtention de la liste de carnets d'adresses",
-    "Choose where to write imported files" : "Choisissez où écrire les fichiers importés"
+    "Choose where to write imported files" : "Choisissez où écrire les fichiers importés",
+    "_{amount} file imported ({formImported}) ({progress}%)_::_{amount} files imported ({formImported}) ({progress}%)_" : ["{amount} fichier importé ({formImported}) ({progress}%)","{amount} fichiers importés ({formImported}) ({progress}%)","{amount} fichiers importés ({formImported}) ({progress}%)"]
 },"pluralForm" :"nplurals=3; plural=(n == 0 || n == 1) ? 0 : n != 0 && n % 1000000 == 0 ? 1 : 2;"
 }

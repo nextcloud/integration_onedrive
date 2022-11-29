@@ -13,6 +13,7 @@ OC.L10N.register(
     "Client secret" : "Secret del client",
     "Enable navigation link" : "Habilita l'enllaç de navegació",
     "Connected as {user}" : "S'ha connectat com a {user}",
+    "Import directory" : "Carpeta d'importació",
     "Contacts" : "Contactes",
     "Calendars" : "Calendaris",
     "Import calendar" : "Importa un calendari",
