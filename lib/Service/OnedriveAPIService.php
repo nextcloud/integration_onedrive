@@ -202,13 +202,15 @@ class OnedriveAPIService {
 	 * @param array $params Query parameters (key/val pairs)
 	 * @param string $method HTTP query method
 	 * @return array parsed result or error
+	 * @throws Exception
 	 */
 	public function requestOAuthAccessToken(array $params = [], string $method = 'POST'): array {
 		try {
 			$url = 'https://login.live.com/oauth20_token.srf';
 			$options = [
 				'headers' => [
-					'User-Agent' => 'Nextcloud OneDrive integration'
+					'User-Agent' => 'Nextcloud OneDrive integration',
+					'Content-Type' => 'application/x-www-form-urlencoded',
 				],
 			];
 
