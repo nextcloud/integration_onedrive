@@ -10,7 +10,7 @@ OC.L10N.register(
     "Bad HTTP method" : "Mauvaise méthode HTTP",
     "OAuth access token refused" : "Jeton d'accès OAuth refusé",
     "Connected accounts" : "Comptes connectés",
-    "Data migration" : "Migration de données",
+    "Data migration" : "Migration des données",
     "OneDrive integration" : "intégration OneDrive",
     "Microsoft OneDrive integration" : "intégration Microsoft OneDrive",
     "Make sure you set the \"Redirect URI\" to" : "Assurez-vous que \"l'URI de redirection\" a la valeur",
