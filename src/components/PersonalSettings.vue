@@ -113,7 +113,7 @@
 					<h3>{{ t('integration_onedrive', 'Calendars') }}</h3>
 					<div v-for="cal in calendars" :key="cal.id" class="onedrive-grid-form">
 						<label>
-							<AppNavigationIconBullet slot="icon" :color="getCalendarColor(cal)" />
+							<NcAppNavigationIconBullet slot="icon" :color="getCalendarColor(cal)" />
 							{{ getCalendarLabel(cal) }}
 						</label>
 						<NcButton
@@ -133,28 +133,31 @@
 </template>
 
 <script>
-import { loadState } from '@nextcloud/initial-state'
-import { generateUrl } from '@nextcloud/router'
-import axios from '@nextcloud/axios'
-import { humanFileSize } from '../utils.js'
-import { showSuccess, showError } from '@nextcloud/dialogs'
-import AppNavigationIconBullet from '@nextcloud/vue/dist/Components/AppNavigationIconBullet.js'
-import moment from '@nextcloud/moment'
-import NcButton from '@nextcloud/vue/dist/Components/Button.js'
 import CloseIcon from 'vue-material-design-icons/Close.vue'
 import CheckIcon from 'vue-material-design-icons/Check.vue'
 import LoginVariantIcon from 'vue-material-design-icons/LoginVariant.vue'
 import PencilIcon from 'vue-material-design-icons/Pencil.vue'
 import FolderIcon from 'vue-material-design-icons/Folder.vue'
 import CalendarBlankIcon from 'vue-material-design-icons/CalendarBlank.vue'
+
 import GroupIcon from './icons/GroupIcon.vue'
+
+import NcAppNavigationIconBullet from '@nextcloud/vue/dist/Components/NcAppNavigationIconBullet.js'
+import NcButton from '@nextcloud/vue/dist/Components/NcButton.js'
+
+import { loadState } from '@nextcloud/initial-state'
+import { generateUrl } from '@nextcloud/router'
+import axios from '@nextcloud/axios'
+import moment from '@nextcloud/moment'
+import { showSuccess, showError } from '@nextcloud/dialogs'
+import { humanFileSize } from '../utils.js'
 
 export default {
 	name: 'PersonalSettings',
 
 	components: {
 		GroupIcon,
-		AppNavigationIconBullet,
+		NcAppNavigationIconBullet,
 		NcButton,
 		CloseIcon,
 		CheckIcon,

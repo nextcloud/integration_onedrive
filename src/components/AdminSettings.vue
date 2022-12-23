@@ -43,28 +43,29 @@
 				:placeholder="t('integration_onedrive', 'Client secret of your OneDrive application')"
 				@input="onInput"
 				@focus="readonly = false">
-			<CheckboxRadioSwitch
+			<NcCheckboxRadioSwitch
 				:checked.sync="state.use_popup"
 				@update:checked="onUsePopupChanged">
 				{{ t('integration_google', 'Use a popup to authenticate') }}
-			</CheckboxRadioSwitch>
+			</NcCheckboxRadioSwitch>
 		</div>
 	</div>
 </template>
 
 <script>
+import NcCheckboxRadioSwitch from '@nextcloud/vue/dist/Components/NcCheckboxRadioSwitch.js'
+
 import { loadState } from '@nextcloud/initial-state'
 import { generateUrl } from '@nextcloud/router'
 import axios from '@nextcloud/axios'
 import { delay } from '../utils.js'
 import { showSuccess, showError } from '@nextcloud/dialogs'
-import CheckboxRadioSwitch from '@nextcloud/vue/dist/Components/CheckboxRadioSwitch.js'
 
 export default {
 	name: 'AdminSettings',
 
 	components: {
-		CheckboxRadioSwitch,
+		NcCheckboxRadioSwitch,
 	},
 
 	props: [],
