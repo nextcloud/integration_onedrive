@@ -24,24 +24,16 @@ use OCP\Notification\IManager as INotificationManager;
 
 use OCA\Onedrive\Notification\Notifier;
 
-/**
- * Class Application
- *
- * @package OCA\Onedrive\AppInfo
- */
 class Application extends App implements IBootstrap {
 
 	public const APP_ID = 'integration_onedrive';
+	public const IMPORT_JOB_TIMEOUT = 3600;
+
 	/**
 	 * @var mixed
 	 */
 	private $config;
 
-	/**
-	 * Constructor
-	 *
-	 * @param array $urlParams
-	 */
 	public function __construct(array $urlParams = []) {
 		parent::__construct(self::APP_ID, $urlParams);
 

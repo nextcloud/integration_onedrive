@@ -12,6 +12,7 @@
 namespace OCA\Onedrive\Service;
 
 use Datetime;
+use Exception;
 use OCP\Files\Folder;
 use Psr\Log\LoggerInterface;
 use OCP\IConfig;
@@ -23,6 +24,7 @@ use OCP\BackgroundJob\IJobList;
 use OCA\Onedrive\AppInfo\Application;
 use OCA\Onedrive\BackgroundJob\ImportOnedriveJob;
 use OCA\Onedrive\Exceptions\MaxDownloadSizeReachedException;
+use Throwable;
 
 class OnedriveStorageAPIService {
 	/**
@@ -134,11 +136,20 @@ class OnedriveStorageAPIService {
 		$this->userScopeService->setFilesystemScope($userId);
 
 		$importingOnedrive = $this->config->getUserValue($userId, Application::APP_ID, 'importing_onedrive', '0') === '1';
-		$jobRunning = $this->config->getUserValue($userId, Application::APP_ID, 'onedrive_import_running', '0') === '1';
-		if (!$importingOnedrive || $jobRunning) {
+		if (!$importingOnedrive) {
 			return;
 		}
+		$jobRunning = $this->config->getUserValue($userId, Application::APP_ID, 'onedrive_import_running', '0') === '1';
+		$nowTs = (new Datetime())->getTimestamp();
+		if ($jobRunning) {
+			$lastJobStart = $this->config->getUserValue($userId, Application::APP_ID, 'onedrive_import_job_last_start');
+			if ($lastJobStart !== '' && ($nowTs - intval($lastJobStart) < Application::IMPORT_JOB_TIMEOUT)) {
+				// last job has started less than an hour ago => we consider it can still be running
+				return;
+			}
+		}
 		$this->config->setUserValue($userId, Application::APP_ID, 'onedrive_import_running', '1');
+		$this->config->setUserValue($userId, Application::APP_ID, 'onedrive_import_job_last_start', strval($nowTs));
 
 		// import batch of files
 		$targetPath = $this->config->getUserValue($userId, Application::APP_ID, 'onedrive_output_dir', '/OneDrive import');
@@ -151,7 +162,7 @@ class OnedriveStorageAPIService {
 		$alreadyImportedNumber = (int) $this->config->getUserValue($userId, Application::APP_ID, 'nb_imported_files', '0');
 		try {
 			$result = $this->importFiles($userId, $targetPath, 500000000, $alreadyImportedSize, $alreadyImportedNumber, $importTree);
-		} catch (\Exception | \Throwable $e) {
+		} catch (Exception | Throwable $e) {
 			$result = [
 				'error' => 'Unknow job failure. ' . $e->getMessage(),
 			];
