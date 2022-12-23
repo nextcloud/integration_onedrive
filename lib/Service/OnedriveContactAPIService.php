@@ -277,6 +277,12 @@ class OnedriveContactAPIService {
 			}
 		}
 
+		// notes
+		if (isset($c['personalNotes']) && is_string($c['personalNotes'])) {
+			$prop = $vCard->createProperty('NOTE', $c['personalNotes']);
+			$vCard->add($prop);
+		}
+
 		// birthday
 		if (isset($c['birthday']) && is_string($c['birthday']) && strlen($c['birthday']) > 0) {
 			$date = new Datetime($c['birthday']);
