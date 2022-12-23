@@ -50,7 +50,7 @@ class Notifier implements INotifier {
 		$this->url = $urlGenerator;
 	}
 
-	/**https://www.weinig.com/en/digitization/w40-digital-moving-into-a-digital-future-with-weinig/izy-connects-your-machines.html
+	/**
 	 * Identifier of the notifier, only use [a-z0-9_]
 	 *
 	 * @return string
