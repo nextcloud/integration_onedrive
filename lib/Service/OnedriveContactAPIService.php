@@ -15,9 +15,11 @@ use Datetime;
 use Exception;
 use OCA\Onedrive\AppInfo\Application;
 use OCP\Contacts\IManager as IContactManager;
+use Sabre\DAV\Exception\BadRequest;
 use Sabre\VObject\Component\VCard;
 use OCA\DAV\CardDAV\CardDavBackend;
 use Psr\Log\LoggerInterface;
+use Sabre\VObject\InvalidDataException;
 use Throwable;
 
 function startsWith($haystack, $needle) {
@@ -26,10 +28,6 @@ function startsWith($haystack, $needle) {
 }
 
 class OnedriveContactAPIService {
-	/**
-	 * @var string
-	 */
-	private $appName;
 	/**
 	 * @var LoggerInterface
 	 */
@@ -46,14 +44,22 @@ class OnedriveContactAPIService {
 	 * @var OnedriveAPIService
 	 */
 	private $onedriveApiService;
-	/**
-	 * @var string[]
-	 */
-	private $addrTypes;
-	/**
-	 * @var string[]
-	 */
-	private $phoneTypes;
+
+	private const ADDRESS_TYPES = [
+		'homeAddress' => 'HOME',
+		'businessAddress' => 'WORK',
+		'otherAddress' => 'OTHER',
+	];
+	private const PHONE_TYPES = [
+		'homePhones' => 'HOME',
+		'businessPhones' => 'WORK',
+	];
+	private const IMPORT_RESULT = [
+		'CREATED' => 0,
+		'UPDATED' => 1,
+		'SKIPPED' => 2,
+		'FAILED' => 3,
+	];
 
 	/**
 	 * Service to make requests to Onedrive v3 (JSON) API
@@ -63,16 +69,6 @@ class OnedriveContactAPIService {
 								IContactManager $contactsManager,
 								CardDavBackend $cdBackend,
 								OnedriveAPIService $onedriveApiService) {
-		$this->addrTypes = [
-			'homeAddress' => 'HOME',
-			'businessAddress' => 'WORK',
-			'otherAddress' => 'OTHER',
-		];
-		$this->phoneTypes = [
-			'homePhones' => 'HOME',
-			'businessPhones' => 'WORK',
-		];
-		$this->appName = $appName;
 		$this->logger = $logger;
 		$this->contactsManager = $contactsManager;
 		$this->cdBackend = $cdBackend;
@@ -160,11 +156,18 @@ class OnedriveContactAPIService {
 	 */
 	public function importContacts(string $userId): array {
 		$nbAdded = 0;
+		$nbUpdated = 0;
+		$nbSkipped = 0;
+		$nbFailed = 0;
 
 		// top folder
 		$topFolderContacts = $this->getContactsInTopFolder($userId);
 		$topFolderName = 'Outlook contacts';
-		$nbAdded += $this->importFolder($userId, $topFolderName, $topFolderContacts);
+		$importResult = $this->importFolder($userId, $topFolderName, $topFolderContacts);
+		$nbAdded += $importResult['nbAdded'] ?? 0;
+		$nbUpdated += $importResult['nbUpdated'] ?? 0;
+		$nbSkipped += $importResult['nbSkipped'] ?? 0;
+		$nbFailed += $importResult['nbFailed'] ?? 0;
 
 		// all the ones in folders in one request
 		$endPoint = 'me/contactFolders';
@@ -179,8 +182,11 @@ class OnedriveContactAPIService {
 			}
 			foreach ($result['value'] as $folder) {
 				if (isset($folder['displayName'], $folder['contacts']) && is_array($folder['contacts'])) {
-					$count= $this->importFolder($userId, $folder['displayName'], $folder['contacts']);
-					$nbAdded += $count;
+					$importResult = $this->importFolder($userId, $folder['displayName'], $folder['contacts']);
+					$nbAdded += $importResult['nbAdded'] ?? 0;
+					$nbUpdated += $importResult['nbUpdated'] ?? 0;
+					$nbSkipped += $importResult['nbSkipped'] ?? 0;
+					$nbFailed += $importResult['nbFailed'] ?? 0;
 				}
 			}
 			if (isset($result['@odata.nextLink'])
@@ -189,11 +195,27 @@ class OnedriveContactAPIService {
 				$params['$skip'] = preg_replace('/.*\$skip=/', '', $result['@odata.nextLink']);
 			}
 		} while (isset($result['@odata.nextLink']) && $result['@odata.nextLink']);
-		return ['nbAdded' => $nbAdded];
+		return [
+			'nbAdded' => $nbAdded,
+			'nbUpdated' => $nbUpdated,
+			'nbSkipped' => $nbSkipped,
+			'nbFailed' => $nbFailed,
+		];
 	}
 
-	private function importFolder(string $userId, string $folderName, array $folderContacts): int {
+	/**
+	 * @param string $userId
+	 * @param string $folderName
+	 * @param array $folderContacts
+	 * @return int[]
+	 * @throws InvalidDataException
+	 * @throws BadRequest
+	 */
+	private function importFolder(string $userId, string $folderName, array $folderContacts): array {
 		$nbAdded = 0;
+		$nbUpdated = 0;
+		$nbSkipped = 0;
+		$nbFailed = 0;
 		$key = 0;
 		$addressBooks = $this->contactsManager->getUserAddressBooks();
 		$folderNameInNC = $folderName . ' (Microsoft calendar)';
@@ -203,16 +225,30 @@ class OnedriveContactAPIService {
 				break;
 			}
 		}
+		$isAddressBookNew = false;
 		if ($key === 0) {
 			$key = $this->cdBackend->createAddressBook('principals/users/' . $userId, $folderNameInNC, []);
+			$isAddressBookNew = true;
 		}
 
 		foreach ($folderContacts as $c) {
-			if ($this->importContact($userId, $c, $key)) {
+			$res = $this->importContact($userId, $c, $key, $isAddressBookNew);
+			if ($res === self::IMPORT_RESULT['CREATED']) {
 				$nbAdded++;
+			} elseif ($res === self::IMPORT_RESULT['UPDATED']) {
+				$nbUpdated++;
+			} elseif ($res === self::IMPORT_RESULT['SKIPPED']) {
+				$nbSkipped++;
+			} elseif ($res === self::IMPORT_RESULT['FAILED']) {
+				$nbFailed++;
 			}
 		}
-		return $nbAdded;
+		return [
+			'nbAdded' => $nbAdded,
+			'nbUpdated' => $nbUpdated,
+			'nbSkipped' => $nbSkipped,
+			'nbFailed' => $nbFailed,
+		];
 	}
 
 	private function getContactPhoto(string $userId, array $contact): ?array {
@@ -232,11 +268,41 @@ class OnedriveContactAPIService {
 		];
 	}
 
-	private function importContact(string $userId, array $c, $key): bool {
-		// avoid existing contacts
-		if ($this->contactExists($c, $key)) {
-			return false;
+	/**
+	 * @param string $userId
+	 * @param array $c
+	 * @param $key
+	 * @param bool $isAddressBookNew
+	 * @return int
+	 * @throws InvalidDataException
+	 */
+	private function importContact(string $userId, array $c, $key, bool $isAddressBookNew): int {
+		$cardUri = substr($c['id'], 0, 255);
+		$cardUri = str_replace('/', '_', $cardUri);
+
+		// check if contact exists and needs to be updated
+		$existingContact = null;
+		if (!$isAddressBookNew) {
+			$existingContact = $this->cdBackend->getCard($key, $cardUri);
+			if ($existingContact) {
+				$msoftUpdateTime = $c['lastModifiedDateTime'] ?? null;
+				if ($msoftUpdateTime === null) {
+					$msoftUpdateTimestamp = 0;
+				} else {
+					try {
+						$msoftUpdateTimestamp = (new Datetime($msoftUpdateTime))->getTimestamp();
+					} catch (Exception|Throwable $e) {
+						$msoftUpdateTimestamp = 0;
+					}
+				}
+
+				if ($msoftUpdateTimestamp <= $existingContact['lastmodified']) {
+					$this->logger->debug('Skipping existing contact which is up-to-date', ['contact' => $c, 'app' => Application::APP_ID]);
+					return self::IMPORT_RESULT['SKIPPED'];
+				}
+			}
 		}
+
 		$vCard = new VCard();
 
 		$displayName = $c['displayName'] ?? '';
@@ -249,10 +315,6 @@ class OnedriveContactAPIService {
 		if ($familyName || $firstName) {
 			$prop = $vCard->createProperty('N', [0 => $familyName, 1 => $firstName, 2 => '', 3 => '', 4 => '']);
 			$vCard->add($prop);
-		}
-		// we don't want empty names
-		if (!$displayName && !$familyName && !$firstName) {
-			return false;
 		}
 
 		// address
@@ -268,7 +330,7 @@ class OnedriveContactAPIService {
 				$country = $address['countryOrRegion'] ?? '';
 				$postOfficeBox = '';
 
-				$type = ['TYPE' => $this->addrTypes[$addressKey]];
+				$type = ['TYPE' => self::ADDRESS_TYPES[$addressKey]];
 				$addrProp = $vCard->createProperty('ADR',
 					[0 => $postOfficeBox, 1 => $extendedAddress, 2 => $streetAddress, 3 => $city, 4 => $state, 5 => $postalCode, 6 => $country],
 					$type
@@ -312,7 +374,7 @@ class OnedriveContactAPIService {
 			if (isset($c[$phoneKey]) && is_array($c[$phoneKey])) {
 				foreach ($c[$phoneKey] as $ph) {
 					if (is_string($ph) && strlen($ph) > 0) {
-						$type = ['TYPE' => $this->phoneTypes[$phoneKey]];
+						$type = ['TYPE' => self::PHONE_TYPES[$phoneKey]];
 						$prop = $vCard->createProperty('TEL', $ph, $type);
 						$vCard->add($prop);
 					}
@@ -359,43 +421,21 @@ class OnedriveContactAPIService {
 			}
 		}
 
-		try {
-			$this->cdBackend->createCard($key, 'outlook' . substr($c['id'], 0, 255), $vCard->serialize());
-			return true;
-		} catch (Throwable | Exception $e) {
-			$this->logger->warning('Error when creating contact "' . ($displayName ?? 'no name') . '" ' . json_encode($c), ['app' => Application::APP_ID]);
-		}
-		return false;
-	}
-
-	/**
-	 * @param array $contact
-	 * @param int $addressBookKey
-	 * @return bool
-	 */
-	private function contactExists(array $contact, int $addressBookKey): bool {
-		// check if identical display name is found
-		$displayName = $contact['displayName'];
-		if ($displayName !== null && $displayName !== '') {
-			$searchResult = $this->contactsManager->search($displayName, ['FN']);
-			foreach ($searchResult as $resContact) {
-				if ($resContact['FN'] === $displayName && (int)$resContact['addressbook-key'] === $addressBookKey) {
-					return true;
-				}
+		if ($existingContact === null || $existingContact === false) {
+			try {
+				$this->cdBackend->createCard($key, $cardUri, $vCard->serialize());
+				return self::IMPORT_RESULT['CREATED'];
+			} catch (Throwable|Exception $e) {
+				$this->logger->warning('Error when creating contact "' . ($displayName ?? 'no name') . '"', ['contact' => $c, 'app' => Application::APP_ID]);
+			}
+		} else {
+			try {
+				$this->cdBackend->updateCard($key, $cardUri, $vCard->serialize());
+				return self::IMPORT_RESULT['UPDATED'];
+			} catch (Throwable|Exception $e) {
+				$this->logger->warning('Error when updating contact "' . ($displayName ?? 'no name') . '"', ['contact' => $c, 'app' => Application::APP_ID]);
 			}
 		}
-
-		// if remote display name is empty, use the first/last name combination
-		if (($displayName === null || $displayName === '')
-			&& ($contact['givenName'] || $contact['surname'])) {
-			$nQuery = trim($contact['surname'] . ';' . $contact['givenName']);
-			$searchResult = $this->contactsManager->search($nQuery, ['N']);
-			foreach ($searchResult as $resContact) {
-				if (startsWith($resContact['N'], $nQuery) && (int)$resContact['addressbook-key'] === $addressBookKey) {
-					return true;
-				}
-			}
-		}
-		return false;
+		return self::IMPORT_RESULT['FAILED'];
 	}
 }

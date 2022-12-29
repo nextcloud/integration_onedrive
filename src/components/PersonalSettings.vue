@@ -485,8 +485,17 @@ export default {
 			axios.get(url)
 				.then((response) => {
 					const nbAdded = response.data.nbAdded
+					const nbUpdated = response.data.nbUpdated
+					const nbSkipped = response.data.nbSkipped
+					const nbFailed = response.data.nbFailed
 					showSuccess(
-						this.n('integration_onedrive', '{number} contact successfully imported', '{number} contacts successfully imported', nbAdded, { number: nbAdded })
+						this.n(
+							'integration_onedrive',
+							'{nbAdded} contact created, {nbUpdated} updated, {nbSkipped} skipped, {nbFailed} failed',
+							'{nbAdded} contacts created, {nbUpdated} updated, {nbSkipped} skipped, {nbFailed} failed',
+							nbAdded,
+							{ nbAdded, nbUpdated, nbSkipped, nbFailed }
+						)
 					)
 				})
 				.catch((error) => {
