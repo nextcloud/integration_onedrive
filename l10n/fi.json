@@ -47,7 +47,6 @@
     "Choose where to write imported files" : "Valitse, mihin tiedostot tuodaan",
     "_{amount} file imported ({formImported}) ({progress}%)_::_{amount} files imported ({formImported}) ({progress}%)_" : ["{amount} tiedosto tuotu ({formImported}) ({progress}%)","{amount} tiedostoa tuotu ({formImported}) ({progress}%)"],
     "_{number} event successfully imported in {name}_::_{number} events successfully imported in {name}_" : ["{number} tapahtuma tuotu kalenteriin {name}","{number} tapahtumaa tuotu kalenteriin {name}"],
-    "_{number} contact successfully imported_::_{number} contacts successfully imported_" : ["{number} yhteystieto tuotu","{number} yhteystietoa tuotu"],
     "Last Onedrive import job at {date}" : "Viimeisin Onedrive-tuonti {date}"
 },"pluralForm" :"nplurals=2; plural=(n != 1);"
 }

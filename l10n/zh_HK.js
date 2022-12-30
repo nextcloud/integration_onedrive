@@ -66,7 +66,6 @@ OC.L10N.register(
     "Choose where to write imported files" : "選擇寫入導入檔案的位置",
     "_{amount} file imported ({formImported}) ({progress}%)_::_{amount} files imported ({formImported}) ({progress}%)_" : ["導入了 {amount} 個檔案 ({formImported})（{progress}%）"],
     "_{number} event successfully imported in {name}_::_{number} events successfully imported in {name}_" : ["{number} 項活動已成功導入{name}中"],
-    "_{number} contact successfully imported_::_{number} contacts successfully imported_" : ["{number}位聯絡人已成功導入"],
     "Last Onedrive import job at {date}" : "上次 OneDrive 導入作業於 {date} 執行"
 },
 "nplurals=1; plural=0;");

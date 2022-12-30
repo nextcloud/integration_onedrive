@@ -64,7 +64,6 @@
     "Choose where to write imported files" : "Vyberte, kam chcete zapsat importované soubory",
     "_{amount} file imported ({formImported}) ({progress}%)_::_{amount} files imported ({formImported}) ({progress}%)_" : ["{amount} soubor naimportován ({formImported}) ({progress}%)","{amount} soubory naimportovány ({formImported}) ({progress}%)","{amount} souborů naimportováno ({formImported}) ({progress}%)","{amount} soubory naimportovány ({formImported}) ({progress}%)"],
     "_{number} event successfully imported in {name}_::_{number} events successfully imported in {name}_" : ["{number} událost úspěšně naimportována do {name}","{number} události úspěšně naimportovány do {name}","{number} událostí úspěšně naimportováno do {name}","{number} události úspěšně naimportovány do {name}"],
-    "_{number} contact successfully imported_::_{number} contacts successfully imported_" : ["{number} kontakt úspěšně naimportován","{number} kontakty úspěšně naimportovány","{number} kontaktů úspěšně naimportováno","{number} kontakty úspěšně naimportovány"],
     "Last Onedrive import job at {date}" : "Poslední import OneDrive proběhl {date}"
 },"pluralForm" :"nplurals=4; plural=(n == 1 && n % 1 == 0) ? 0 : (n >= 2 && n <= 4 && n % 1 == 0) ? 1: (n % 1 != 0 ) ? 2 : 3;"
 }

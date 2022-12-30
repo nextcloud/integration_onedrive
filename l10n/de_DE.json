@@ -64,7 +64,6 @@
     "Choose where to write imported files" : "Auswählen, wohin die Dateien importiert werden sollen",
     "_{amount} file imported ({formImported}) ({progress}%)_::_{amount} files imported ({formImported}) ({progress}%)_" : ["{amount} Datei importiert ({formImported}) ({progress}%)","{amount} Dateien importiert ({formImported}) ({progress}%)"],
     "_{number} event successfully imported in {name}_::_{number} events successfully imported in {name}_" : ["{number} Termin erfolgreich nach {name} importiert","{number} Termine erfolgreich nach {name} importiert"],
-    "_{number} contact successfully imported_::_{number} contacts successfully imported_" : ["{number} Kontakt erfolgreich importiert","{number} Kontakte erfolgreich importiert"],
     "Last Onedrive import job at {date}" : "Letzter Onedrive-Importauftrag am {date}"
 },"pluralForm" :"nplurals=2; plural=(n != 1);"
 }

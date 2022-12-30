@@ -66,7 +66,6 @@ OC.L10N.register(
     "Choose where to write imported files" : "Изберете къде да запишете импортирани файлове",
     "_{amount} file imported ({formImported}) ({progress}%)_::_{amount} files imported ({formImported}) ({progress}%)_" : ["{amount} импортирани файлове ({formImported}) ({progress}%)","{amount} импортирани файлове ({formImported}) ({progress}%)"],
     "_{number} event successfully imported in {name}_::_{number} events successfully imported in {name}_" : ["{number} събития успешно импортирани в {name} ","{number} събития, успешно импортирани в {name} "],
-    "_{number} contact successfully imported_::_{number} contacts successfully imported_" : ["успешно импортирани {number} контакта","успешно импортирани {number} контакта"],
     "Last Onedrive import job at {date}" : "Последна задача за импортиране в Onedrive на {date}"
 },
 "nplurals=2; plural=(n != 1);");

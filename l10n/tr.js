@@ -66,7 +66,6 @@ OC.L10N.register(
     "Choose where to write imported files" : "İçe aktarılan dosyaların kaydedileceği konumu seçin",
     "_{amount} file imported ({formImported}) ({progress}%)_::_{amount} files imported ({formImported}) ({progress}%)_" : ["{amount} dosya içe aktarıldı ({formImported}) ({progress}%)","{amount} dosya içe aktarıldı ({formImported}) ({progress}%)"],
     "_{number} event successfully imported in {name}_::_{number} events successfully imported in {name}_" : ["{number} etkinlik {name} içine aktarıldı","{number} etkinlik {name} içine aktarıldı"],
-    "_{number} contact successfully imported_::_{number} contacts successfully imported_" : ["{number} kişi içe aktarıldı","{number} kişi içe aktarıldı"],
     "Last Onedrive import job at {date}" : "Son OneDrive içe aktarımı {date}"
 },
 "nplurals=2; plural=(n > 1);");

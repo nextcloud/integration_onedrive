@@ -66,7 +66,6 @@ OC.L10N.register(
     "Choose where to write imported files" : "Escoge dónde guardar los archivos importados",
     "_{amount} file imported ({formImported}) ({progress}%)_::_{amount} files imported ({formImported}) ({progress}%)_" : ["{amount} archivo importado ({formImported}) ({progress}%)","{amount} archivos importados ({formImported}) ({progress}%)","{amount} archivos importados ({formImported}) ({progress}%)"],
     "_{number} event successfully imported in {name}_::_{number} events successfully imported in {name}_" : ["{number} evento importado con éxito en {name}","{number} eventos importados con éxito en {name}","{number} eventos importados con éxito en {name}"],
-    "_{number} contact successfully imported_::_{number} contacts successfully imported_" : ["{number} contacto importado con éxito","{number} contactos importados con éxito","{number} contactos importados con éxito"],
     "Last Onedrive import job at {date}" : "Última tarea de importación desde OneDrive a las {date}"
 },
 "nplurals=3; plural=n == 1 ? 0 : n != 0 && n % 1000000 == 0 ? 1 : 2;");

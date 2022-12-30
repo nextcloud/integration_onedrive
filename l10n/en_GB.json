@@ -64,7 +64,6 @@
     "Choose where to write imported files" : "Choose where to write imported files",
     "_{amount} file imported ({formImported}) ({progress}%)_::_{amount} files imported ({formImported}) ({progress}%)_" : ["{amount} file imported ({formImported}) ({progress}%)","{amount} files imported ({formImported}) ({progress}%)"],
     "_{number} event successfully imported in {name}_::_{number} events successfully imported in {name}_" : ["{number} event successfully imported in {name}","{number} events successfully imported in {name}"],
-    "_{number} contact successfully imported_::_{number} contacts successfully imported_" : ["{number} contact successfully imported","{number} contacts successfully imported"],
     "Last Onedrive import job at {date}" : "Last Onedrive import job at {date}"
 },"pluralForm" :"nplurals=2; plural=(n != 1);"
 }
