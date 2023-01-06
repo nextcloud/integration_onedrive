@@ -14,6 +14,10 @@ namespace OCA\Onedrive\Service;
 use Datetime;
 use Exception;
 use OCP\Files\Folder;
+use OCP\Files\InvalidPathException;
+use OCP\Files\NotFoundException;
+use OCP\Files\NotPermittedException;
+use OCP\PreConditionNotMetException;
 use Psr\Log\LoggerInterface;
 use OCP\IConfig;
 use OCP\Files\IRootFolder;
@@ -349,11 +353,39 @@ class OnedriveStorageAPIService {
 				$params['$skiptoken'] = preg_replace('/.*\$skiptoken=/', '', $result['@odata.nextLink']);
 			}
 		} while (isset($result['@odata.nextLink']) && $result['@odata.nextLink']);
+
+		// update last modified date when directory is fully downloaded (because creating children triggers a touch as well)
+		$this->touchFolder($userId, $folder, $path);
+
 		return [
 			'downloadedSize' => $newDownloadedSize,
 			'totalSeenNumber' => $newTotalSeenNumber,
 			'nbDownloaded' => $newNbDownloaded,
 		];
+	}
+
+	/**
+	 * @param string $userId
+	 * @param Folder $folder
+	 * @param string $onedrivePath
+	 * @return void
+	 * @throws InvalidPathException
+	 * @throws NotFoundException
+	 * @throws NotPermittedException
+	 * @throws PreConditionNotMetException
+	 */
+	private function touchFolder(string $userId, Folder $folder, string $onedrivePath): void {
+		$encPath = rawurlencode($onedrivePath);
+		$reqPath = ($encPath === '')
+			? ''
+			: ':' . $encPath . ':';
+		$endPoint = 'me/drive/root' . $reqPath;
+		$remoteFolderInfo = $this->onedriveApiService->request($userId, $endPoint);
+		if (isset($remoteFolderInfo['lastModifiedDateTime'])) {
+			$d = new Datetime($remoteFolderInfo['lastModifiedDateTime']);
+			$ts = $d->getTimestamp();
+			$folder->touch($ts);
+		}
 	}
 
 	/**
