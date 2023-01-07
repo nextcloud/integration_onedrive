@@ -4,7 +4,6 @@ OC.L10N.register(
     "Microsoft OneDrive" : "Microsoft OneDrive",
     "Error getting OAuth access token" : "Erreur lors de l'obtention du jeton d'accès OAuth",
     "Error during OAuth exchanges" : "Erreur pendant les échanges OAuth",
-    "Onedrive" : "Onedrive",
     "_%s file was imported from Onedrive storage._::_%s files were imported from Onedrive storage._" : ["%s fichier a été importé depuis OneDrive.","%s fichiers ont été importés depuis OneDrive.","%s fichiers ont été importés depuis OneDrive."],
     "Bad credentials" : "Identifiants incorrects",
     "Bad HTTP method" : "Mauvaise méthode HTTP",

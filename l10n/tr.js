@@ -4,7 +4,6 @@ OC.L10N.register(
     "Microsoft OneDrive" : "Microsoft OneDrive",
     "Error getting OAuth access token" : "OAuth erişim kodu alınırken sorun çıktı",
     "Error during OAuth exchanges" : "OAuth takasında sorun çıktı",
-    "Onedrive" : "OneDrive",
     "_%s file was imported from Onedrive storage._::_%s files were imported from Onedrive storage._" : ["%s dosya OneDrive depolamasından içe aktarıldı.","%s dosya OneDrive depolamasından içe aktarıldı."],
     "Bad credentials" : "Kimlik doğrulama bilgileri hatalı",
     "Bad HTTP method" : "HTTP yöntemi hatalı",

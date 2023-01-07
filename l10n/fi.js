@@ -4,7 +4,6 @@ OC.L10N.register(
     "Microsoft OneDrive" : "Microsoft OneDrive",
     "Error getting OAuth access token" : "Virhe OAuth-valtuutuksen hakemisessa",
     "Error during OAuth exchanges" : "Virhe OAuth-tunnistautumisessa",
-    "Onedrive" : "OneDrive",
     "_%s file was imported from Onedrive storage._::_%s files were imported from Onedrive storage._" : ["%s tiedosto tuotiin OneDrive-tallennustilasta.","%s tiedostoa tuotiin OneDrive-tallennustilasta."],
     "Bad credentials" : "Virheelliset kirjautumistiedot",
     "Bad HTTP method" : "Virheellinen HTTP-metodi",
