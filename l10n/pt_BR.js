@@ -4,6 +4,7 @@ OC.L10N.register(
     "Microsoft OneDrive" : "Microsoft OneDrive",
     "Error getting OAuth access token" : "Erro ao obter o token de acesso OAuth",
     "Error during OAuth exchanges" : "Erro durante as trocas OAuth",
+    "OneDrive" : "OneDrive",
     "_%s file was imported from Onedrive storage._::_%s files were imported from Onedrive storage._" : ["%s arquivo importado do armazenamento OneDrive.","%s arquivos importados do armazenamento OneDrive.","%s arquivos importados do armazenamento OneDrive."],
     "Bad credentials" : "Credenciais inválidas",
     "Bad HTTP method" : "Método HTTP incorreto",
@@ -65,6 +66,7 @@ OC.L10N.register(
     "Choose where to write imported files" : "Escolha onde gravar os arquivos importados ",
     "_{amount} file imported ({formImported}) ({progress}%)_::_{amount} files imported ({formImported}) ({progress}%)_" : ["{amount} arquivo importado ({formImported}) ({progress}%)","{amount} arquivos importados ({formImported}) ({progress}%)","{amount} arquivos importados ({formImported}) ({progress}%)"],
     "_{number} event successfully imported in {name}_::_{number} events successfully imported in {name}_" : ["{number} evento importado com sucesso em {name}","{number} eventos importados com sucesso em {name}","{number} eventos importados com sucesso em {name}"],
+    "_{nbAdded} contact created, {nbUpdated} updated, {nbSkipped} skipped, {nbFailed} failed_::_{nbAdded} contacts created, {nbUpdated} updated, {nbSkipped} skipped, {nbFailed} failed_" : ["{nbAdded} contato criado, {nbUpdated} atualizado, {nbSkipped} ignorado, {nbFailed} falhou","{nbAdded} contatos criados, {nbUpdated} atualizados, {nbSkipped} ignorados, {nbFailed} falharam","{nbAdded} contatos criados, {nbUpdated} atualizados, {nbSkipped} ignorados, {nbFailed} falharam"],
     "Last Onedrive import job at {date}" : "Último trabalho de importação OneDrive foi em {date}"
 },
 "nplurals=3; plural=(n == 0 || n == 1) ? 0 : n != 0 && n % 1000000 == 0 ? 1 : 2;");
