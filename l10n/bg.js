@@ -4,6 +4,7 @@ OC.L10N.register(
     "Microsoft OneDrive" : "Microsoft OneDrive /приложение за онлайн съхранение на файлове/",
     "Error getting OAuth access token" : "Грешка при получаване на маркер за достъп до OAuth",
     "Error during OAuth exchanges" : "Грешка по време на обмен на OAuth",
+    "OneDrive" : "OneDrive",
     "_%s file was imported from Onedrive storage._::_%s files were imported from Onedrive storage._" : ["%s файлове бяха импортирани от Onedrive хранилище.","%s файлове бяха импортирани от Onedrive хранилище."],
     "Bad credentials" : "Лоши идентификационни данни",
     "Bad HTTP method" : "Лош HTTP метод",
