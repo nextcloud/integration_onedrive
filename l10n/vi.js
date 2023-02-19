@@ -1,6 +1,7 @@
 OC.L10N.register(
     "integration_onedrive",
     {
+    "Bad HTTP method" : "Phương thức HTTP không hợp lệ",
     "Client ID" : "ID khách hàng",
     "Contacts" : "Danh bạ",
     "Calendars" : "Lịch",
