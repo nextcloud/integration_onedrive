@@ -1,6 +1,16 @@
 { "translations": {
+    "Error getting OAuth access token" : "Terjadi kesalahan mendapatkan token akses OAuth",
+    "Error during OAuth exchanges" : "Terjadi kesalahan saat penukaran OAuth",
+    "Bad credentials" : "Kredensial tidak benar",
+    "Bad HTTP method" : "Metode HTTP tidak benar",
+    "OAuth access token refused" : "Token akses OAuth ditolak",
+    "Connected accounts" : "Akun terhubung",
+    "Put the OAuth app \"Client ID\" and \"Client secret\" below." : "Letakkan \"Client ID\" dan \"Client secret\" aplikasi OAuth di bawah.",
     "Client ID" : "ID Klien",
     "Client secret" : "Rahasia klien",
+    "Use a popup to authenticate" : "Gunakan sembulan untuk mengautentikasi",
+    "Enable navigation link" : "Aktifkan tautan navigasi",
+    "Connected as {user}" : "Terhubung sebagai {user}",
     "Contacts" : "Kontak",
     "Calendars" : "Kalender"
 },"pluralForm" :"nplurals=1; plural=0;"
