@@ -5,6 +5,7 @@ OC.L10N.register(
     "Error getting OAuth access token" : "Fehler beim Abrufen des OAuth-Zugriffstokens",
     "Error during OAuth exchanges" : "Fehler beim OAuth-Austausch",
     "OneDrive" : "OneDrive",
+    "_%n file was imported from Onedrive storage._::_%n files were imported from Onedrive storage._" : ["%n Datei wurden vom Onedrive-Speicher importiert.","%n Dateien wurden vom Onedrive-Speicher importiert."],
     "Bad credentials" : "Falsche Anmeldeinformationen",
     "Bad HTTP method" : "Ungültige HTTP-Methode",
     "OAuth access token refused" : "OAuth-Zugriffstoken abgelehnt",

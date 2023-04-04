@@ -3,6 +3,7 @@
     "Error getting OAuth access token" : "Chyba při získávání OAuth přístupového tokenu",
     "Error during OAuth exchanges" : "Chyba při výměnách informací v rámci OAuth",
     "OneDrive" : "OneDrive",
+    "_%n file was imported from Onedrive storage._::_%n files were imported from Onedrive storage._" : ["%n soubor byl naimportován z úložiště Onedrive.","%n soubory byly naimportovány z úložiště Onedrive.","%n souborů bylo naimportováno z úložiště Onedrive.","%n soubory byly naimportovány z úložiště Onedrive."],
     "Bad credentials" : "Nesprávné přihlašovací údaje",
     "Bad HTTP method" : "Nesprávná HTTP metoda",
     "OAuth access token refused" : "OAuth přístupový token odmítnut",
