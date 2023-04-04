@@ -3,7 +3,6 @@ OC.L10N.register(
     {
     "Error getting OAuth access token" : "Klaida gaunant „OAuth“ prieigos raktą",
     "Error during OAuth exchanges" : "Klaida „OAuth“ apsikeitimo metu",
-    "_%s file was imported from Onedrive storage._::_%s files were imported from Onedrive storage._" : ["Iš „OneDrive“ saugyklos buvo importuotas %s failas.","Iš „OneDrive“ saugyklos buvo importuoti %s failai.","Iš „OneDrive“ saugyklos buvo importuota %s failų.","Iš „OneDrive“ saugyklos buvo importuotas %s failas."],
     "Bad credentials" : "Blogi prisijungimo duomenys",
     "Bad HTTP method" : "Blogas HTTP metodas",
     "OAuth access token refused" : "„OAuth“ prieigos raktas atmestas",

@@ -4,7 +4,6 @@ OC.L10N.register(
     "Microsoft OneDrive" : "Microsoft OneDrive",
     "Error getting OAuth access token" : "Napaka pri pridobivanju žetona OAuth za dostop",
     "Error during OAuth exchanges" : "Napaka med izmenjavo podatkov OAuth",
-    "_%s file was imported from Onedrive storage._::_%s files were imported from Onedrive storage._" : ["Iz oblaka Onedrive je bila uvožena %s datoteka.","Iz oblaka Onedrive sta bili uvoženi %s datoteki.","Iz oblaka Onedrive so bile uvožene %s datoteke.","Iz oblaka Onedrive je bilo uvoženih %s datotek."],
     "Bad credentials" : "Neustrezna poverila",
     "Bad HTTP method" : "Neustrezen način HTTP",
     "OAuth access token refused" : "Žeton OAuth za dostop je bil zavrnjen",

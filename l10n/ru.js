@@ -3,7 +3,6 @@ OC.L10N.register(
     {
     "Error getting OAuth access token" : "Ошибка получения токена доступа OAuth",
     "Error during OAuth exchanges" : "Ошибка по время обмена OAuth",
-    "_%s file was imported from Onedrive storage._::_%s files were imported from Onedrive storage._" : ["%s файл импортирован из хранилища Onedrive","%s файлов импортировано из хранилища Onedrive ","%s файлов импортировано из хранилища Onedrive ","%s файлов импортировано из хранилища Onedrive "],
     "Bad credentials" : "Неверные учетные данные",
     "Bad HTTP method" : "Неверный метод HTTP",
     "OAuth access token refused" : "Токен доступа OAuth был отклонен",
