@@ -2,6 +2,7 @@
     "Error getting OAuth access token" : "שגיאה בקבלת אסימון גישה עם OAuth",
     "Error during OAuth exchanges" : "שגיאה במהלך החלפות OAuth",
     "Bad credentials" : "פרטי גישה שגויים",
+    "Bad HTTP method" : "שגיאה במתודת HTTP",
     "OAuth access token refused" : "אסימון הגישה ב־OAuth סורב",
     "Connected accounts" : "חשבונות מקושרים",
     "Data migration" : "הגירת נתונים",

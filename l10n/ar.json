@@ -1,4 +1,9 @@
 { "translations": {
+    "Error during OAuth exchanges" : "خطأ أثناء تبادل OAuth.",
+    "Bad credentials" : "رموز التعريف غير صحيحة",
+    "Bad HTTP method" : "دالة HTTP  غير صحيحة",
+    "OAuth access token refused" : "أمارة token مرفوضة",
+    "Connected accounts" : "حسابات مترابطة",
     "Client ID" : "معرف العميل",
     "Contacts" : "جهات الاتصال",
     "Calendars" : "التقاويم",
