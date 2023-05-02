@@ -9,7 +9,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ## 1.1.4 – 2022-09-28
 ### Fixed
 - use rawurlencode to encode path in download request
-[#29](https://github.com/eneiluj/integration_onedrive/pull/29) @n-stein
+[#29](https://github.com/nextcloud/integration_onedrive/pull/29) @n-stein
 
 ## 1.1.3 – 2022-08-24
 ### Added
