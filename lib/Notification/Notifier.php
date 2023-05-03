@@ -86,6 +86,7 @@ class Notifier implements INotifier {
 
 		switch ($notification->getSubject()) {
 		case 'import_onedrive_finished':
+            /** @var array{nbImported?: string, targetPath: string} $p */
 			$p = $notification->getSubjectParameters();
 			$nbImported = (int) ($p['nbImported'] ?? 0);
 			$targetPath = $p['targetPath'];

@@ -11,7 +11,7 @@
 
 namespace OCA\Onedrive\Service;
 
-use Datetime;
+use DateTime;
 use Exception;
 use OCP\Files\Folder;
 use OCP\Files\InvalidPathException;
@@ -144,7 +144,7 @@ class OnedriveStorageAPIService {
 			return;
 		}
 		$jobRunning = $this->config->getUserValue($userId, Application::APP_ID, 'onedrive_import_running', '0') === '1';
-		$nowTs = (new Datetime())->getTimestamp();
+		$nowTs = (new DateTime())->getTimestamp();
 		if ($jobRunning) {
 			$lastJobStart = $this->config->getUserValue($userId, Application::APP_ID, 'onedrive_import_job_last_start');
 			if ($lastJobStart !== '' && ($nowTs - intval($lastJobStart) < Application::IMPORT_JOB_TIMEOUT)) {
@@ -160,7 +160,8 @@ class OnedriveStorageAPIService {
 		$targetPath = $targetPath ?: '/OneDrive import';
 		// get previous progress
 		$importTreeStr = $this->config->getUserValue($userId, Application::APP_ID, 'import_tree', '[]');
-		$importTree = ($importTreeStr === '[]' || $importTreeStr === '') ? [] : json_decode($importTreeStr, true);
+		/** @var array $importTree */
+        $importTree = ($importTreeStr === '[]' || $importTreeStr === '') ? [] : json_decode($importTreeStr, true);
 		// import by batch of 500 MB
 		$alreadyImportedSize = (float) $this->config->getUserValue($userId, Application::APP_ID, 'imported_size', '0');
 		$alreadyImportedNumber = (int) $this->config->getUserValue($userId, Application::APP_ID, 'nb_imported_files', '0');
@@ -186,8 +187,8 @@ class OnedriveStorageAPIService {
 		} else {
 			// save progress
 			$this->config->setUserValue($userId, Application::APP_ID, 'import_tree', json_encode($importTree));
-			$ts = (new Datetime())->getTimestamp();
-			$this->config->setUserValue($userId, Application::APP_ID, 'last_onedrive_import_timestamp', $ts);
+			$ts = (new DateTime())->getTimestamp();
+			$this->config->setUserValue($userId, Application::APP_ID, 'last_onedrive_import_timestamp', (string)$ts);
 			$this->jobList->add(ImportOnedriveJob::class, ['user_id' => $userId]);
 		}
 		$this->config->setUserValue($userId, Application::APP_ID, 'onedrive_import_running', '0');
@@ -214,7 +215,7 @@ class OnedriveStorageAPIService {
 			$topFolder = $userFolder->newFolder($targetPath);
 		} else {
 			$topFolder = $userFolder->get($targetPath);
-			if ($topFolder->getType() !== FileInfo::TYPE_FOLDER) {
+			if (!$topFolder instanceof Folder) {
 				return ['error' => 'Impossible to create ' . $targetPath . ' folder'];
 			}
 		}
@@ -235,7 +236,7 @@ class OnedriveStorageAPIService {
 				foreach ($importTree as $path => $state) {
 					if ($state === 'todo') {
 						$downloadResult = $this->downloadDir(
-							$userId, $topFolder, $maxDownloadSize, 0, 0, 0, $path, $alreadyImportedSize, $alreadyImportedNumber, $importTree
+							$userId, $topFolder, $maxDownloadSize, 0, 0, 0, (string)$path, $alreadyImportedSize, $alreadyImportedNumber, $importTree
 						);
 					}
 				}
@@ -294,10 +295,10 @@ class OnedriveStorageAPIService {
 					$newDownloadedSize += ($size ?? 0);
 					if (!is_null($size) && $size > 0) {
 						$newNbDownloaded++;
-						$this->config->setUserValue($userId, Application::APP_ID, 'imported_size', $alreadyImportedSize + $newDownloadedSize);
-						$this->config->setUserValue($userId, Application::APP_ID, 'nb_imported_files', $alreadyImportedNumber + $newNbDownloaded);
-						$ts = (new Datetime())->getTimestamp();
-						$this->config->setUserValue($userId, Application::APP_ID, 'last_onedrive_import_timestamp', $ts);
+						$this->config->setUserValue($userId, Application::APP_ID, 'imported_size', (string) ($alreadyImportedSize + $newDownloadedSize));
+						$this->config->setUserValue($userId, Application::APP_ID, 'nb_imported_files', (string) ($alreadyImportedNumber + $newNbDownloaded));
+						$ts = (new DateTime())->getTimestamp();
+						$this->config->setUserValue($userId, Application::APP_ID, 'last_onedrive_import_timestamp', (string)$ts);
 					}
 					if (!is_null($maxDownloadSize) && $newDownloadedSize >= $maxDownloadSize) {
 						throw new MaxDownloadSizeReachedException('Yep');
@@ -339,7 +340,7 @@ class OnedriveStorageAPIService {
 			foreach ($result['value'] as $item) {
 				if (isset($item['folder'])) {
 					$subDownloadResult = $this->downloadDir(
-						$userId, $topFolder, $maxDownloadSize, $newDownloadedSize, $newTotalSeenNumber, $newNbDownloaded,
+						$userId, $topFolder, $maxDownloadSize, (int)$newDownloadedSize, (int)$newTotalSeenNumber, (int)$newNbDownloaded,
 						$path . '/' . $item['name'], $alreadyImportedSize, $alreadyImportedNumber, $importTree
 					);
 					$newDownloadedSize = $subDownloadResult['downloadedSize'];
@@ -382,7 +383,7 @@ class OnedriveStorageAPIService {
 		$endPoint = 'me/drive/root' . $reqPath;
 		$remoteFolderInfo = $this->onedriveApiService->request($userId, $endPoint);
 		if (isset($remoteFolderInfo['lastModifiedDateTime'])) {
-			$d = new Datetime($remoteFolderInfo['lastModifiedDateTime']);
+			$d = new DateTime($remoteFolderInfo['lastModifiedDateTime']);
 			$ts = $d->getTimestamp();
 			$folder->touch($ts);
 		}
@@ -403,20 +404,27 @@ class OnedriveStorageAPIService {
 		if (!$fileExists) {
 			$savedFile = $folder->newFile($fileName);
 			$resource = $savedFile->fopen('w');
+            if ($resource === false) {
+                $this->logger->warning('Could not open new file for writing', ['app' => Application::APP_ID]);
+                if ($savedFile->isDeletable()) {
+                    $savedFile->delete();
+                }
+                return null;
+            }
 			$res = $this->onedriveApiService->fileRequest($fileItem['@microsoft.graph.downloadUrl'], $resource);
 			if (!isset($res['error'])) {
 				if (is_resource($resource)) {
 					fclose($resource);
 				}
 				if (isset($fileItem['lastModifiedDateTime'])) {
-					$d = new Datetime($fileItem['lastModifiedDateTime']);
+					$d = new DateTime($fileItem['lastModifiedDateTime']);
 					$ts = $d->getTimestamp();
 					$savedFile->touch($ts);
 				} else {
 					$savedFile->touch();
 				}
 				$stat = $savedFile->stat();
-				return (float) $stat['size'] ?? 0;
+				return (float) ($stat['size'] ?? 0);
 			} else {
 				// there was an error
 				$this->logger->warning('OneDrive error downloading file ' . $fileName . ' : ' . $res['error'], ['app' => Application::APP_ID]);

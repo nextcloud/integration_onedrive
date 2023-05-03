@@ -28,6 +28,7 @@ class OnedriveColorService {
      * @return string closest CSS color name
      */
     public function getClosestCssColor(string $hexColor): string {
+        /** @var Color $color */
         $color = Color::fromString($hexColor);
         $rbgColor = [
             'r' => $color->getRed(),
@@ -36,6 +37,7 @@ class OnedriveColorService {
         ];
         // init
         $closestColor = 'black';
+        /** @var Color $black */
         $black = Color::fromString(Named::CSS_COLORS['black']);
         $rgbBlack = [
             'r' => $black->getRed(),
@@ -45,6 +47,7 @@ class OnedriveColorService {
         $closestDiff = $this->colorDiff($rbgColor, $rgbBlack);
 
         foreach (Named::CSS_COLORS as $name => $hex) {
+            /** @var Color $c */
             $c = Color::fromString($hex);
             $rgb = [
                 'r' => $c->getRed(),
@@ -62,9 +65,10 @@ class OnedriveColorService {
     }
 
     /**
-     * @param array $rgb1 first color
-     * @param array $rgb2 second color
+     * @param array{r:int, g:int, b:int} $rgb1 first color
+     * @param array{r:int, g:int, b:int} $rgb2 second color
      * @return int the distance between colors
+     * @psalm-return 0|positive-int the distance between colors
      */
     private function colorDiff(array $rgb1, array $rgb2): int {
         return abs($rgb1['r'] - $rgb2['r']) + abs($rgb1['g'] - $rgb2['g']) + abs($rgb1['b'] - $rgb2['b']);

@@ -72,7 +72,7 @@ class Personal implements ISettings {
 			'navigation_enabled' => ($navigationEnabled === '1'),
 			'user_name' => $userName,
 			'free_space' => $freeSpace,
-			'user_quota' => $user->getQuota(),
+			'user_quota' => $user !== null? $user->getQuota() : '',
 			'onedrive_output_dir' => $onedriveOutputDir,
 		];
 		$this->initialStateService->provideInitialState('user-config', $userConfig);

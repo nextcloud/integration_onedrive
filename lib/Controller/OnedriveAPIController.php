@@ -11,6 +11,7 @@
 
 namespace OCA\Onedrive\Controller;
 
+use OCP\AppFramework\Http;
 use OCP\IConfig;
 use OCP\IRequest;
 use OCP\AppFramework\Http\DataResponse;
@@ -48,7 +49,7 @@ class OnedriveAPIController extends Controller {
 	 */
 	private $accessToken;
 
-	public function __construct($appName,
+	public function __construct(string $appName,
 								IRequest $request,
 								IConfig $config,
 								OnedriveStorageAPIService $onedriveStorageApiService,
@@ -70,9 +71,10 @@ class OnedriveAPIController extends Controller {
 	 * @return DataResponse
 	 */
 	public function getStorageSize(): DataResponse {
-		if ($this->accessToken === '') {
-			return new DataResponse(null, 400);
+		if ($this->accessToken === '' || $this->userId === null) {
+			return new DataResponse([], Http::STATUS_BAD_REQUEST);
 		}
+        /** @var array{error: string} $result */
 		$result = $this->onedriveStorageApiService->getStorageSize($this->userId);
 		if (isset($result['error'])) {
 			$response = new DataResponse($result['error'], 401);
@@ -88,9 +90,10 @@ class OnedriveAPIController extends Controller {
 	 * @return DataResponse
 	 */
 	public function importOnedrive(): DataResponse {
-		if ($this->accessToken === '') {
-			return new DataResponse(null, 400);
+		if ($this->accessToken === '' || $this->userId === null) {
+			return new DataResponse([], Http::STATUS_BAD_REQUEST);
 		}
+        /** @var array{error: string} $result */
 		$result = $this->onedriveStorageApiService->startImportOnedrive($this->userId);
 		if (isset($result['error'])) {
 			$response = new DataResponse($result['error'], 401);
@@ -106,8 +109,8 @@ class OnedriveAPIController extends Controller {
 	 * @return DataResponse
 	 */
 	public function getImportOnedriveInformation(): DataResponse {
-		if ($this->accessToken === '') {
-			return new DataResponse(null, 400);
+		if ($this->accessToken === '' || $this->userId === null) {
+            return new DataResponse([], Http::STATUS_BAD_REQUEST);
 		}
 		return new DataResponse([
 			'importing_onedrive' => $this->config->getUserValue($this->userId, Application::APP_ID, 'importing_onedrive') === '1',
@@ -124,9 +127,10 @@ class OnedriveAPIController extends Controller {
 	 * @return DataResponse
 	 */
 	public function getCalendarList(): DataResponse {
-		if ($this->accessToken === '') {
-			return new DataResponse(null, 400);
+		if ($this->accessToken === '' || $this->userId === null) {
+            return new DataResponse([], Http::STATUS_BAD_REQUEST);
 		}
+        /** @var array{error: string} $result */
 		$result = $this->onedriveCalendarApiService->getCalendarList($this->userId);
 		if (isset($result['error'])) {
 			$response = new DataResponse($result['error'], 401);
@@ -145,9 +149,10 @@ class OnedriveAPIController extends Controller {
 	 * @return DataResponse
 	 */
 	public function importCalendar(string $calId, string $calName, ?string $color = null): DataResponse {
-		if ($this->accessToken === '') {
-			return new DataResponse('', 400);
+		if ($this->accessToken === '' || $this->userId === null) {
+			return new DataResponse([], Http::STATUS_BAD_REQUEST);
 		}
+        /** @var array{error: string} $result */
 		$result = $this->onedriveCalendarApiService->importCalendar($this->userId, $calId, $calName, $color);
 		if (isset($result['error'])) {
 			$response = new DataResponse($result['error'], 401);
@@ -163,9 +168,10 @@ class OnedriveAPIController extends Controller {
 	 * @return DataResponse
 	 */
 	public function getContactNumber(): DataResponse {
-		if ($this->accessToken === '') {
-			return new DataResponse(null, 400);
+		if ($this->accessToken === '' || $this->userId === null) {
+            return new DataResponse([], Http::STATUS_BAD_REQUEST);
 		}
+        /** @var array{error: string} $result */
 		$result = $this->onedriveContactApiService->getContactNumber($this->userId);
 		if (isset($result['error'])) {
 			$response = new DataResponse($result['error'], 401);
@@ -181,9 +187,10 @@ class OnedriveAPIController extends Controller {
 	 * @return DataResponse
 	 */
 	public function importContacts(): DataResponse {
-		if ($this->accessToken === '') {
-			return new DataResponse(null, 400);
-		}
+        if ($this->accessToken === '' || $this->userId === null) {
+            return new DataResponse([], Http::STATUS_BAD_REQUEST);
+        }
+        /** @var array{error: string} $result */
 		$result = $this->onedriveContactApiService->importContacts($this->userId);
 		if (isset($result['error'])) {
 			$response = new DataResponse($result['error'], 401);

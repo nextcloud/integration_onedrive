@@ -11,7 +11,7 @@
 
 namespace OCA\Onedrive\Service;
 
-use Datetime;
+use DateTime;
 use DateTimeZone;
 use Exception;
 use Generator;
@@ -24,6 +24,9 @@ use Throwable;
 
 class OnedriveCalendarAPIService {
 
+    /**
+     * @var IL10N
+     */
 	private $l10n;
 	/**
 	 * @var string
@@ -62,7 +65,7 @@ class OnedriveCalendarAPIService {
 
 	/**
 	 * @param string $userId
-	 * @return array
+	 * @return array{error?: string}
 	 */
 	public function getCalendarList(string $userId): array {
 		$result = $this->onedriveApiService->request($userId, 'me/calendars');
@@ -117,7 +120,8 @@ class OnedriveCalendarAPIService {
 			'preset23' => '#32145a',
 			'preset24' => '#5c005c',
 		];
-		foreach ($result['value'] as $k => $v) {
+		foreach ($result['value'] as $v) {
+            /** @var string $preset */
 			$preset = $v['color'];
 			if (array_key_exists($preset, $convColors)) {
 				$categoryColors[$v['displayName']] = $this->colorService->getClosestCssColor($convColors[$preset]);
@@ -131,7 +135,7 @@ class OnedriveCalendarAPIService {
 	 * @param string $calId
 	 * @param string $calName
 	 * @param ?string $color
-	 * @return array
+	 * @return array{nbAdded?: int, calName?: string, error?: string}
 	 */
 	public function importCalendar(string $userId, string $calId, string $calName, ?string $color = null): array {
 		$setPositions = [
@@ -151,8 +155,10 @@ class OnedriveCalendarAPIService {
 		$categories = $this->getCategories($userId);
 
 		$newCalName = trim($calName) . ' (' . $this->l10n->t('Microsoft Calendar import') .')';
-		$ncCalId = $this->calendarExists($userId, $newCalName);
+		/** @var ?string $ncCalId */
+        $ncCalId = $this->calendarExists($userId, $newCalName);
 		if (is_null($ncCalId)) {
+            /** @var string $ncCalId */
 			$ncCalId = $this->caldavBackend->createCalendar('principals/users/' . $userId, $newCalName, $params);
 		}
 
@@ -160,12 +166,14 @@ class OnedriveCalendarAPIService {
 		$utcTimezone = new DateTimeZone('-0000');
 		$events = $this->getCalendarEvents($userId, $calId);
 		$nbAdded = 0;
-		foreach ($events as $e) {
+        /** @var array $e */
+        foreach ($events as $e) {
 			$calData = 'BEGIN:VCALENDAR' . "\n"
 				. 'VERSION:2.0' . "\n"
 				. 'PRODID:NextCloud Calendar' . "\n"
 				. 'BEGIN:VEVENT' . "\n";
 
+            /** @var string $objectUri */
 			$objectUri = $e['iCalUId'];
 			$calData .= 'UID:' . $ncCalId . '-' . $objectUri . "\n";
 			$calData .= isset($e['subject'])
@@ -187,13 +195,13 @@ class OnedriveCalendarAPIService {
 			}
 
 			if (isset($e['createdDateTime'])) {
-				$created = new Datetime($e['createdDateTime']);
+				$created = new \DateTime($e['createdDateTime']);
 				$created->setTimezone($utcTimezone);
 				$calData .= 'CREATED:' . $created->format('Ymd\THis\Z') . "\n";
 			}
 
 			if (isset($e['lastModifiedDateTime'])) {
-				$updated = new Datetime($e['lastModifiedDateTime']);
+				$updated = new \DateTime($e['lastModifiedDateTime']);
 				$updated->setTimezone($utcTimezone);
 				$calData .= 'LAST-MODIFIED:' . $updated->format('Ymd\THis\Z') . "\n";
 			}
@@ -269,7 +277,7 @@ class OnedriveCalendarAPIService {
 					$parts[] = 'INTERVAL=' . $e['recurrence']['pattern']['interval'];
 				}
 				if (isset($e['recurrence']['range']['endDate'])) {
-					$endDate = new Datetime($e['recurrence']['range']['endDate']);
+					$endDate = new DateTime($e['recurrence']['range']['endDate']);
 					$endDate->setTimezone($utcTimezone);
 					$parts[] = 'UNTIL=' . $endDate->format('Ymd\THis\Z');
 				} elseif (isset($e['recurrence']['range']['numberOfOccurrences']) && $e['recurrence']['range']['numberOfOccurrences'] > 0) {
@@ -284,15 +292,15 @@ class OnedriveCalendarAPIService {
 			if (isset($e['start'], $e['start']['dateTime'], $e['end'], $e['end']['dateTime'])) {
 				if ($e['isAllDay']) {
 					// whole days
-					$start = new Datetime($e['start']['dateTime']);
+					$start = new \DateTime($e['start']['dateTime']);
 					$calData .= 'DTSTART;VALUE=DATE:' . $start->format('Ymd') . "\n";
-					$end = new Datetime($e['end']['dateTime']);
+					$end = new \DateTime($e['end']['dateTime']);
 					$calData .= 'DTEND;VALUE=DATE:' . $end->format('Ymd') . "\n";
 				} else {
-					$start = new Datetime($e['start']['dateTime']);
+					$start = new \DateTime($e['start']['dateTime']);
 					$start->setTimezone($utcTimezone);
 					$calData .= 'DTSTART;VALUE=DATE-TIME:' . $start->format('Ymd\THis\Z') . "\n";
-					$end = new Datetime($e['end']['dateTime']);
+					$end = new \DateTime($e['end']['dateTime']);
 					$end->setTimezone($utcTimezone);
 					$calData .= 'DTEND;VALUE=DATE-TIME:' . $end->format('Ymd\THis\Z') . "\n";
 				}
@@ -319,6 +327,7 @@ class OnedriveCalendarAPIService {
 			}
 		}
 
+        /** @var array $eventGeneratorReturn */
 		$eventGeneratorReturn = $events->getReturn();
 		if (isset($eventGeneratorReturn['error'])) {
 			return $eventGeneratorReturn;
@@ -332,7 +341,7 @@ class OnedriveCalendarAPIService {
 	/**
 	 * @param string $userId
 	 * @param string $calId
-	 * @return Generator
+	 * @return Generator<int, mixed, mixed,  array{body?: resource|string, error?: string, headers?: array<array-key, mixed>}>
 	 */
 	private function getCalendarEvents(string $userId, string $calId): Generator {
 		$params = [];

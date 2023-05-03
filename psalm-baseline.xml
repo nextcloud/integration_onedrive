@@ -1,3 +1,239 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <files psalm-version="4.x-dev@">
+  <file src="lib/AppInfo/Application.php">
+    <DeprecatedClass occurrences="2">
+      <code>$this-&gt;getContainer()</code>
+      <code>$this-&gt;getContainer()</code>
+    </DeprecatedClass>
+    <MixedAssignment occurrences="1">
+      <code>$this-&gt;config</code>
+    </MixedAssignment>
+  </file>
+  <file src="lib/Controller/ConfigController.php">
+    <MixedArgument occurrences="1">
+      <code>$info['displayName'] ?? '??'</code>
+    </MixedArgument>
+    <PossiblyNullArgument occurrences="1">
+      <code>$this-&gt;userId</code>
+    </PossiblyNullArgument>
+  </file>
+  <file src="lib/Service/OnedriveAPIService.php">
+    <MixedInferredReturnType occurrences="2">
+      <code>array{body?: resource|string, headers?: array, error?: string}</code>
+      <code>array{error?: string}</code>
+    </MixedInferredReturnType>
+    <MixedReturnStatement occurrences="2">
+      <code>json_decode($body, true)</code>
+      <code>json_decode($body, true) ?: []</code>
+    </MixedReturnStatement>
+  </file>
+  <file src="lib/Service/OnedriveCalendarAPIService.php">
+    <LessSpecificReturnStatement occurrences="1">
+      <code>$eventGeneratorReturn</code>
+    </LessSpecificReturnStatement>
+    <MixedArgument occurrences="20">
+      <code>$day</code>
+      <code>$day</code>
+      <code>$day</code>
+      <code>$e['body']['content']</code>
+      <code>$e['categories'][0]</code>
+      <code>$e['createdDateTime']</code>
+      <code>$e['end']['dateTime']</code>
+      <code>$e['end']['dateTime']</code>
+      <code>$e['lastModifiedDateTime']</code>
+      <code>$e['location']['displayName']</code>
+      <code>$e['recurrence']['pattern']['daysOfWeek']</code>
+      <code>$e['recurrence']['pattern']['daysOfWeek']</code>
+      <code>$e['recurrence']['pattern']['daysOfWeek']</code>
+      <code>$e['recurrence']['pattern']['firstDayOfWeek']</code>
+      <code>$e['recurrence']['range']['endDate']</code>
+      <code>$e['start']['dateTime']</code>
+      <code>$e['start']['dateTime']</code>
+      <code>$e['subject']</code>
+      <code>$result['@odata.nextLink']</code>
+      <code>$result['@odata.nextLink']</code>
+    </MixedArgument>
+    <MixedArrayAccess occurrences="15">
+      <code>$e['recurrence']['pattern']['dayOfMonth']</code>
+      <code>$e['recurrence']['pattern']['dayOfMonth']</code>
+      <code>$e['recurrence']['pattern']['dayOfMonth']</code>
+      <code>$e['recurrence']['pattern']['dayOfMonth']</code>
+      <code>$e['recurrence']['pattern']['firstDayOfWeek']</code>
+      <code>$e['recurrence']['pattern']['index']</code>
+      <code>$e['recurrence']['pattern']['index']</code>
+      <code>$e['recurrence']['pattern']['interval']</code>
+      <code>$e['recurrence']['pattern']['month']</code>
+      <code>$e['recurrence']['pattern']['type']</code>
+      <code>$e['recurrence']['range']['endDate']</code>
+      <code>$e['recurrence']['range']['numberOfOccurrences']</code>
+      <code>$e['recurrence']['range']['numberOfOccurrences']</code>
+      <code>$v['color']</code>
+      <code>$v['displayName']</code>
+    </MixedArrayAccess>
+    <MixedArrayOffset occurrences="4">
+      <code>$categories[$e['categories'][0]]</code>
+      <code>$categoryColors[$v['displayName']]</code>
+      <code>$setPositions[$index]</code>
+      <code>$setPositions[$index]</code>
+    </MixedArrayOffset>
+    <MixedAssignment occurrences="8">
+      <code>$day</code>
+      <code>$day</code>
+      <code>$day</code>
+      <code>$event</code>
+      <code>$index</code>
+      <code>$index</code>
+      <code>$type</code>
+      <code>$v</code>
+    </MixedAssignment>
+    <MixedInferredReturnType occurrences="2">
+      <code>?int</code>
+      <code>array{error?: string}</code>
+    </MixedInferredReturnType>
+    <MixedOperand occurrences="12">
+      <code>$categories[$e['categories'][0]]</code>
+      <code>$e['recurrence']['pattern']['dayOfMonth']</code>
+      <code>$e['recurrence']['pattern']['dayOfMonth']</code>
+      <code>$e['recurrence']['pattern']['dayOfMonth']</code>
+      <code>$e['recurrence']['pattern']['interval']</code>
+      <code>$e['recurrence']['pattern']['month']</code>
+      <code>$e['recurrence']['pattern']['month']</code>
+      <code>$e['recurrence']['range']['numberOfOccurrences']</code>
+      <code>$e['reminderMinutesBeforeStart']</code>
+      <code>$e['subject'] ?? 'no title'</code>
+      <code>$e['subject'] ?? 'no title'</code>
+      <code>$e['subject'] ?? 'no title'</code>
+    </MixedOperand>
+    <MixedReturnStatement occurrences="2">
+      <code>$result['value']</code>
+    </MixedReturnStatement>
+    <MixedReturnTypeCoercion occurrences="1">
+      <code>array{nbAdded?: int, calName?: string, error?: string}</code>
+    </MixedReturnTypeCoercion>
+  </file>
+  <file src="lib/Service/OnedriveContactAPIService.php">
+    <MissingParamType occurrences="1">
+      <code>$key</code>
+    </MissingParamType>
+    <MixedArgument occurrences="14">
+      <code>$c</code>
+      <code>$c[$addressKey]</code>
+      <code>$c['id']</code>
+      <code>$folder['displayName']</code>
+      <code>$msoftUpdateTime</code>
+      <code>$photo['content']</code>
+      <code>$result['@odata.nextLink']</code>
+      <code>$result['@odata.nextLink']</code>
+      <code>$result['@odata.nextLink']</code>
+      <code>$result['@odata.nextLink']</code>
+      <code>$result['@odata.nextLink']</code>
+      <code>$result['@odata.nextLink']</code>
+      <code>$result['@odata.nextLink']</code>
+      <code>$result['@odata.nextLink']</code>
+    </MixedArgument>
+    <MixedArrayAccess occurrences="7">
+      <code>$address['city']</code>
+      <code>$address['countryOrRegion']</code>
+      <code>$address['postalCode']</code>
+      <code>$address['state']</code>
+      <code>$address['street']</code>
+      <code>$email['address']</code>
+      <code>$existingContact['lastmodified']</code>
+    </MixedArrayAccess>
+    <MixedAssignment occurrences="19">
+      <code>$address</code>
+      <code>$c</code>
+      <code>$city</code>
+      <code>$country</code>
+      <code>$displayName</code>
+      <code>$email</code>
+      <code>$existingContact</code>
+      <code>$familyName</code>
+      <code>$firstName</code>
+      <code>$folder</code>
+      <code>$folder</code>
+      <code>$key</code>
+      <code>$msoftUpdateTime</code>
+      <code>$ph</code>
+      <code>$postalCode</code>
+      <code>$state</code>
+      <code>$streetAddress</code>
+      <code>$type</code>
+      <code>$type</code>
+    </MixedAssignment>
+    <MixedOperand occurrences="3">
+      <code>$contact['id']</code>
+      <code>$displayName ?? 'no name'</code>
+      <code>$displayName ?? 'no name'</code>
+    </MixedOperand>
+    <PossiblyUndefinedArrayOffset occurrences="3">
+      <code>$result['body']</code>
+      <code>$result['headers']</code>
+      <code>$result['headers']</code>
+    </PossiblyUndefinedArrayOffset>
+    <PropertyNotSetInConstructor occurrences="4">
+      <code>$cdBackend</code>
+      <code>$contactsManager</code>
+      <code>$logger</code>
+      <code>$onedriveApiService</code>
+    </PropertyNotSetInConstructor>
+    <UndefinedClass occurrences="1">
+      <code>CardDavBackend</code>
+    </UndefinedClass>
+    <UndefinedDocblockClass occurrences="5">
+      <code>$this-&gt;cdBackend</code>
+      <code>$this-&gt;cdBackend</code>
+      <code>$this-&gt;cdBackend</code>
+      <code>$this-&gt;cdBackend</code>
+      <code>CardDavBackend</code>
+    </UndefinedDocblockClass>
+  </file>
+  <file src="lib/Service/OnedriveStorageAPIService.php">
+    <ArgumentTypeCoercion occurrences="2">
+      <code>$folder</code>
+      <code>$folder</code>
+    </ArgumentTypeCoercion>
+    <MixedArgument occurrences="10">
+      <code>$fileItem['@microsoft.graph.downloadUrl']</code>
+      <code>$fileItem['lastModifiedDateTime']</code>
+      <code>$fileName</code>
+      <code>$fileName</code>
+      <code>$item</code>
+      <code>$remoteFolderInfo['lastModifiedDateTime']</code>
+      <code>$result['@odata.nextLink']</code>
+      <code>$result['@odata.nextLink']</code>
+      <code>$result['@odata.nextLink']</code>
+      <code>$result['@odata.nextLink']</code>
+    </MixedArgument>
+    <MixedArrayAccess occurrences="3">
+      <code>$downloadResult['totalSeenNumber']</code>
+      <code>$item['name']</code>
+      <code>$item['name']</code>
+    </MixedArrayAccess>
+    <MixedAssignment occurrences="8">
+      <code>$fileName</code>
+      <code>$item</code>
+      <code>$item</code>
+      <code>$item</code>
+      <code>$newDownloadedSize</code>
+      <code>$newNbDownloaded</code>
+      <code>$newTotalSeenNumber</code>
+      <code>$state</code>
+    </MixedAssignment>
+    <MixedOperand occurrences="4">
+      <code>$fileName</code>
+      <code>$item['name']</code>
+      <code>$item['name']</code>
+      <code>$res['error']</code>
+    </MixedOperand>
+    <PossiblyUndefinedVariable occurrences="1">
+      <code>$downloadResult</code>
+    </PossiblyUndefinedVariable>
+    <RedundantConditionGivenDocblockType occurrences="1">
+      <code>is_resource($resource)</code>
+    </RedundantConditionGivenDocblockType>
+    <UndefinedDocblockClass occurrences="1">
+      <code>\OC\User\NoUserException</code>
+    </UndefinedDocblockClass>
+  </file>
 </files>

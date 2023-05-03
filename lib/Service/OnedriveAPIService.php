@@ -27,6 +27,9 @@ use Throwable;
 
 class OnedriveAPIService {
 
+    /**
+     * @var LoggerInterface
+     */
 	private $logger;
 	/**
 	 * @var string
@@ -87,7 +90,7 @@ class OnedriveAPIService {
 
 	/**
 	 * @param string $url
-	 * @param $resource
+	 * @param resource $resource
 	 * @return array
 	 */
 	public function fileRequest(string $url, $resource): array {
@@ -108,11 +111,15 @@ class OnedriveAPIService {
 			}
 
 			$body = $response->getBody();
-			while (!feof($body)) {
-				// write ~5 MB chunks
-				$chunk = fread($body, 5000000);
-				fwrite($resource, $chunk);
-			}
+            if (is_string($body)) {
+                fwrite($resource, $body);
+            }else {
+                while (!feof($body)) {
+                    // write ~5 MB chunks
+                    $chunk = fread($body, 5000000);
+                    fwrite($resource, $chunk);
+                }
+            }
 
 			return ['success' => true];
 		} catch (ServerException | ClientException $e) {
@@ -134,7 +141,7 @@ class OnedriveAPIService {
 	 * @param string $endPoint The path to reach in api.onedrive.com
 	 * @param array $params Query parameters (key/val pairs)
 	 * @param string $method HTTP query method
-	 * @return array decoded request result or error
+	 * @return array{body?: resource|string, headers?: array, error?: string} decoded request result or error
 	 * @throws \OCP\PreConditionNotMetException
 	 */
 	public function request(string $userId, string $endPoint, array $params = [], string $method = 'GET',
@@ -180,6 +187,9 @@ class OnedriveAPIService {
 				return ['error' => $this->l10n->t('Bad credentials')];
 			} else {
 				if ($jsonResponse) {
+                    if (is_resource($body)) {
+                        $body = stream_get_contents($body);
+                    }
 					return json_decode($body, true) ?: [];
 				} else {
 					return [
@@ -201,7 +211,7 @@ class OnedriveAPIService {
 	 * Make the request to get an OAuth token
 	 * @param array $params Query parameters (key/val pairs)
 	 * @param string $method HTTP query method
-	 * @return array parsed result or error
+	 * @return array{error?: string} parsed result or error
 	 * @throws Exception
 	 */
 	public function requestOAuthAccessToken(array $params = [], string $method = 'POST'): array {
@@ -240,6 +250,9 @@ class OnedriveAPIService {
 			if ($respCode >= 400) {
 				return ['error' => $this->l10n->t('OAuth access token refused')];
 			} else {
+                if (is_resource($body)) {
+                    $body = stream_get_contents($body);
+                }
 				return json_decode($body, true);
 			}
 		} catch (ConnectException | ServerException | ClientException $e) {
@@ -252,7 +265,7 @@ class OnedriveAPIService {
 		$refreshToken = $this->config->getUserValue($userId, Application::APP_ID, 'refresh_token');
 		$expireAt = $this->config->getUserValue($userId, Application::APP_ID, 'token_expires_at');
 		if ($refreshToken !== '' && $expireAt !== '') {
-			$nowTs = (new Datetime())->getTimestamp();
+			$nowTs = (new DateTime())->getTimestamp();
 			$expireAt = (int) $expireAt;
 			// if token expires in less than 2 minutes or has already expired
 			if ($nowTs > $expireAt - 120) {
@@ -267,7 +280,8 @@ class OnedriveAPIService {
 		$clientSecret = $this->config->getAppValue(Application::APP_ID, 'client_secret');
 		$redirectUri = $this->config->getUserValue($userId, Application::APP_ID, 'redirect_uri');
 		$refreshToken = $this->config->getUserValue($userId, Application::APP_ID, 'refresh_token');
-		$result = $this->requestOAuthAccessToken([
+		/** @var array{access_token?: string, expires_in?: string} $result */
+        $result = $this->requestOAuthAccessToken([
 			'client_id' => $clientId,
 			'client_secret' => $clientSecret,
 			'grant_type' => 'refresh_token',
@@ -279,9 +293,9 @@ class OnedriveAPIService {
 			$this->logger->debug('OneDrive access token successfully refreshed', ['app' => Application::APP_ID]);
 			$this->config->setUserValue($userId, Application::APP_ID, 'token', $result['access_token']);
 			if (isset($result['expires_in'])) {
-				$nowTs = (new Datetime())->getTimestamp();
+				$nowTs = (new DateTime())->getTimestamp();
 				$expiresAt = $nowTs + (int) $result['expires_in'];
-				$this->config->setUserValue($userId, Application::APP_ID, 'token_expires_at', $expiresAt);
+				$this->config->setUserValue($userId, Application::APP_ID, 'token_expires_at', (string)$expiresAt);
 			}
 		} else {
 			$responseTxt = json_encode($result);

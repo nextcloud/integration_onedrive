@@ -33,8 +33,12 @@ class ImportOnedriveJob extends QueuedJob {
 		$this->service = $service;
 	}
 
-	public function run($arguments) {
-		$userId = $arguments['user_id'];
+    /**
+     * @param array{user_id: string} $argument
+     * @return void
+     */
+	public function run($argument): void {
+		$userId = $argument['user_id'];
 		$this->service->importOnedriveJob($userId);
 	}
 }

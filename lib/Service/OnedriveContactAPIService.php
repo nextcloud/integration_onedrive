@@ -11,7 +11,7 @@
 
 namespace OCA\Onedrive\Service;
 
-use Datetime;
+use DateTime;
 use Exception;
 use OCA\Onedrive\AppInfo\Application;
 use OCP\Contacts\IManager as IContactManager;
@@ -22,7 +22,7 @@ use Psr\Log\LoggerInterface;
 use Sabre\VObject\InvalidDataException;
 use Throwable;
 
-function startsWith($haystack, $needle) {
+function startsWith(string $haystack, string $needle): bool {
 	$length = strlen($needle);
 	return (substr($haystack, 0, $length) === $needle);
 }
@@ -219,7 +219,7 @@ class OnedriveContactAPIService {
 		$key = 0;
 		$addressBooks = $this->contactsManager->getUserAddressBooks();
 		$folderNameInNC = $folderName . ' (Microsoft calendar)';
-		foreach ($addressBooks as $k => $ab) {
+		foreach ($addressBooks as $ab) {
 			if ($ab->getDisplayName() === $folderNameInNC) {
 				$key = intval($ab->getKey());
 				break;
@@ -290,7 +290,7 @@ class OnedriveContactAPIService {
 					$msoftUpdateTimestamp = 0;
 				} else {
 					try {
-						$msoftUpdateTimestamp = (new Datetime($msoftUpdateTime))->getTimestamp();
+						$msoftUpdateTimestamp = (new DateTime($msoftUpdateTime))->getTimestamp();
 					} catch (Exception|Throwable $e) {
 						$msoftUpdateTimestamp = 0;
 					}
@@ -347,7 +347,7 @@ class OnedriveContactAPIService {
 
 		// birthday
 		if (isset($c['birthday']) && is_string($c['birthday']) && strlen($c['birthday']) > 0) {
-			$date = new Datetime($c['birthday']);
+			$date = new DateTime($c['birthday']);
 			$strDate = $date->format('Ymd');
 
 			$type = ['VALUE' => 'DATE'];

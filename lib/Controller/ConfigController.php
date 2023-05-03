@@ -12,6 +12,7 @@
 namespace OCA\Onedrive\Controller;
 
 use DateTime;
+use OCP\AppFramework\Http;
 use OCP\AppFramework\Http\TemplateResponse;
 use OCP\AppFramework\Services\IInitialState;
 use OCP\IURLGenerator;
@@ -59,7 +60,7 @@ class ConfigController extends Controller {
 	 */
 	private $initialStateService;
 
-	public function __construct($appName,
+	public function __construct(string $appName,
 								IRequest $request,
 								IConfig $config,
 								IURLGenerator $urlGenerator,
@@ -82,10 +83,13 @@ class ConfigController extends Controller {
 	 * @NoAdminRequired
 	 * Set config values
 	 *
-	 * @param array $values key/value pairs to store in user preferences
+	 * @param array<string,string> $values key/value pairs to store in user preferences
 	 * @return DataResponse
 	 */
 	public function setConfig(array $values): DataResponse {
+        if ($this->userId === null) {
+            return new DataResponse([], Http::STATUS_BAD_REQUEST);
+        }
 		foreach ($values as $key => $value) {
 			$this->config->setUserValue($this->userId, Application::APP_ID, $key, $value);
 		}
@@ -106,7 +110,7 @@ class ConfigController extends Controller {
 	/**
 	 * Set admin config values
 	 *
-	 * @param array $values key/value pairs to store in app config
+	 * @param array<string,string> $values key/value pairs to store in app config
 	 * @return DataResponse
 	 */
 	public function setAdminConfig(array $values): DataResponse {
@@ -146,7 +150,8 @@ class ConfigController extends Controller {
 
 		if ($clientID && $clientSecret && $code !== '') {
 			$redirectUri = $this->config->getUserValue($this->userId, Application::APP_ID, 'redirect_uri');
-			$result = $this->onedriveAPIService->requestOAuthAccessToken([
+			/** @var array{error?: string, access_token?: string, refresh_token?: string, scope?: string, expires_in?: string, user_id?: string} $result */
+            $result = $this->onedriveAPIService->requestOAuthAccessToken([
 				'client_id' => $clientID,
 				'client_secret' => $clientSecret,
 				'code' => $code,
@@ -161,9 +166,9 @@ class ConfigController extends Controller {
 				$this->config->setUserValue($this->userId, Application::APP_ID, 'refresh_token', $refreshToken);
 				$this->config->setUserValue($this->userId, Application::APP_ID, 'scope', $result['scope'] ?? '');
 				if (isset($result['expires_in'])) {
-					$nowTs = (new Datetime())->getTimestamp();
+					$nowTs = (new DateTime())->getTimestamp();
 					$expiresAt = $nowTs + (int) $result['expires_in'];
-					$this->config->setUserValue($this->userId, Application::APP_ID, 'token_expires_at', $expiresAt);
+					$this->config->setUserValue($this->userId, Application::APP_ID, 'token_expires_at', (string) $expiresAt);
 				}
 
 				$this->config->setUserValue($this->userId, Application::APP_ID, 'user_id', $result['user_id'] ?? '');
@@ -200,12 +205,14 @@ class ConfigController extends Controller {
 	public function getLocalAddressBooks(): DataResponse {
 		$addressBooks = $this->contactsManager->getUserAddressBooks();
 		$result = [];
-		foreach ($addressBooks as $k => $ab) {
+		foreach ($addressBooks as $ab) {
 			if ($ab->getUri() !== 'system') {
+                /** @var int $perms */
+                $perms = $ab->getPermissions();
 				$result[$ab->getKey()] = [
 					'uri' => $ab->getUri(),
 					'name' => $ab->getDisplayName(),
-					'canEdit' => ($ab->getPermissions() & Constants::PERMISSION_CREATE) ? true : false,
+					'canEdit' => (bool)(($perms & Constants::PERMISSION_CREATE)),
 				];
 			}
 		}
