@@ -5,7 +5,6 @@ OC.L10N.register(
     "Error getting OAuth access token" : "Грешка при получаване на маркер за достъп до OAuth",
     "Error during OAuth exchanges" : "Грешка по време на обмен на OAuth",
     "OneDrive" : "OneDrive",
-    "_%n file was imported from Onedrive storage._::_%n files were imported from Onedrive storage._" : ["%n файлове бяха импортирани от Onedrive хранилище.","%nфайлове бяха импортирани от Onedrive хранилище."],
     "Bad credentials" : "Лоши идентификационни данни",
     "Bad HTTP method" : "Лош HTTP метод",
     "OAuth access token refused" : " Маркерът за достъп OAuth е отказан",
