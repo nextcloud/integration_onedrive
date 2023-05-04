@@ -1,6 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <files psalm-version="4.x-dev@">
   <file src="lib/AppInfo/Application.php">
+    <DeprecatedClass occurrences="2">
+      <code>$this-&gt;getContainer()</code>
+      <code>$this-&gt;getContainer()</code>
+    </DeprecatedClass>
     <MixedAssignment occurrences="1">
       <code>$this-&gt;config</code>
     </MixedAssignment>
