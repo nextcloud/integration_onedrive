@@ -5,6 +5,7 @@ OC.L10N.register(
     "Error getting OAuth access token" : "取得 OAuth 存取權杖時發生錯誤",
     "Error during OAuth exchanges" : "OAuth 交換時發生錯誤",
     "OneDrive" : "OneDrive",
+    "_%n file was imported from OneDrive storage._::_%n files were imported from OneDrive storage._" : ["從 OneDrive 儲存空間匯入了 %n 個檔案。"],
     "Bad credentials" : "錯誤的憑證",
     "Bad HTTP method" : "錯誤的 HTTP 方法",
     "OAuth access token refused" : "OAuth 存取權杖被拒絕",
