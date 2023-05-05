@@ -3,6 +3,7 @@
     "Error getting OAuth access token" : "Error al obtener el token de acceso OAuth",
     "Error during OAuth exchanges" : "Error durante los intercambios OAuth",
     "OneDrive" : "OneDrive",
+    "_%n file was imported from OneDrive storage._::_%n files were imported from OneDrive storage._" : ["%n archivo fue importado desde el almacenamiento OneDrive.","%n archivos fueron importados desde el almacenamiento OneDrive.","%n archivos fueron importados desde el almacenamiento OneDrive."],
     "Bad credentials" : "Credenciales erróneas",
     "Bad HTTP method" : "Método HTTP erróneo",
     "OAuth access token refused" : "Se ha rechazado el token de acceso OAuth",
