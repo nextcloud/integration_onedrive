@@ -1,6 +1,6 @@
 {
 	"name": "integration_onedrive",
-	"version": "2.0.1",
+	"version": "2.0.2",
 	"description": "Onedrive integration",
 	"main": "index.js",
 	"directories": {
