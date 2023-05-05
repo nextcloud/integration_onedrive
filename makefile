@@ -56,12 +56,13 @@ npm-dev:
 	$(npm) run dev
 
 clean:
-	sudo rm -rf $(build_dir)
-	sudo rm -rf $(sign_dir)
+	rm -rf $(build_dir)
+	rm -rf $(sign_dir)
 
 appstore: clean
 	mkdir -p $(sign_dir)
 	mkdir -p $(build_dir)
+	composer install --no-dev
 	@rsync -a \
 	--exclude=.git \
 	--exclude=appinfo/signature.json \

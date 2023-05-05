@@ -4,7 +4,20 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
-## [Unreleased]
+## [2.0.0] - 2023-05-05
+
+### Breaking changes
+ - Drop Support for Nextcloud 22
+ - Drop Support for Nextcloud 23
+
+### New
+ - improve contact import, update if recent changes, more feedback to the user etc...
+ - import contact notes
+
+### Fixed
+ - set last modified date for folders as well
+ - update npm pkgs
+ - add a 1h timeout after which a job is not considered running anymore so another import can start
 
 ## 1.1.4 – 2022-09-28
 ### Fixed
