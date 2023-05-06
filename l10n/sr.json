@@ -3,6 +3,7 @@
     "Error getting OAuth access token" : "Грешка при добијању OAuth приступног жетона",
     "Error during OAuth exchanges" : "Грешко приликом OAuth размена",
     "OneDrive" : "OneDrive",
+    "_%n file was imported from OneDrive storage._::_%n files were imported from OneDrive storage._" : ["%n фајл је увезен са OneDrive складишта.","%n фајла су увезена са OneDrive складишта.","%n фајлова је увезено са OneDrive складишта."],
     "Bad credentials" : "Лоши креденцијали",
     "Bad HTTP method" : "Лоша HTTP метода",
     "OAuth access token refused" : "Одбијен је OAuth приступни жетон",
