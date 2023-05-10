@@ -52,7 +52,7 @@ OC.L10N.register(
     "Onedrive import process will begin soon" : "Onedrive-Import wird in Kürze beginnen",
     "Connected to OneDrive!" : "Mit OneDrive verbunden!",
     "OneDrive OAuth error:" : "OneDrive OAuth-Fehler:",
-    "OneDrive options saved" : "OneDrive Einstellungen gespeichert",
+    "OneDrive options saved" : "OneDrive-Einstellungen gespeichert",
     "Failed to save OneDrive options" : "Fehler beim Speichern der OneDrive-Einstellungen",
     "Sign in with OneDrive" : "Mit OneDrive anmelden",
     "Failed to save OneDrive OAuth state" : "Fehler beim Speichern des OneDrive-OAuth-Status",
