@@ -5,6 +5,7 @@ OC.L10N.register(
     "Error getting OAuth access token" : "Chyba při získávání OAuth přístupového tokenu",
     "Error during OAuth exchanges" : "Chyba při výměnách informací v rámci OAuth",
     "OneDrive" : "OneDrive",
+    "_%n file was imported from OneDrive storage._::_%n files were imported from OneDrive storage._" : ["%n soubor byl naimportován z úložiště OneDrive.","%n soubory byly naimportovány z úložiště OneDrive.","%n soubory bylo naimportováno z úložiště OneDrive.","%n soubory byly naimportovány z úložiště OneDrive."],
     "Bad credentials" : "Nesprávné přihlašovací údaje",
     "Bad HTTP method" : "Nesprávná HTTP metoda",
     "OAuth access token refused" : "OAuth přístupový token odmítnut",
