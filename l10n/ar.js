@@ -8,6 +8,7 @@ OC.L10N.register(
     "Connected accounts" : "حسابات مترابطة",
     "Make sure you set the \"Redirect URI\" to" : "تأكد من تعيين \"إعادة توجيه العنوان URI\" إلى ",
     "Client ID" : "معرف العميل",
+    "Client secret" : "كلمة سر العميل",
     "Use a popup to authenticate" : "استخدم النافذة المنبثقة للتعريف عن نفسك ",
     "Connected as {user}" : "متصل بصفته {user}",
     "Contacts" : "جهات الاتصال",
