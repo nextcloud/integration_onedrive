@@ -9,14 +9,17 @@ OC.L10N.register(
     "Connected accounts" : "关联账号",
     "Data migration" : "数据迁移",
     "Make sure you set the \"Redirect URI\" to" : "确认您将\"重定向URI\"设置为",
-    "Put the OAuth app \"Client ID\" and \"Client secret\" below." : "在下面输入OAuth应用“Client ID”和“Client secret”。",
-    "Client ID" : "客户端 ID",
+    "Put the OAuth app \"Client ID\" and \"Client secret\" below." : "在下面输入OAuth应用的“客户端ID”和“客户端密码”。",
+    "Client ID" : "客户端ID",
     "Client secret" : "客户端 secret",
+    "Use a popup to authenticate" : "使用弹出窗口进行验证",
     "Enable navigation link" : "启用应用图标链接至实例",
     "Connected as {user}" : "以 {user} 身份连接",
     "Import directory" : "导入文件夹",
     "Contacts" : "联系人",
     "Calendars" : "日历",
-    "Import calendar" : "导入日历"
+    "Import calendar" : "导入日历",
+    "Failed to get calendar list" : "获取日历列表失败",
+    "Failed to get address book list" : "获取通讯录列表失败"
 },
 "nplurals=1; plural=0;");
