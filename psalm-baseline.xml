@@ -1,19 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <files psalm-version="4.x-dev@">
   <file src="lib/AppInfo/Application.php">
-    <DeprecatedClass occurrences="2">
-      <code>$this-&gt;getContainer()</code>
+    <DeprecatedClass occurrences="1">
       <code>$this-&gt;getContainer()</code>
     </DeprecatedClass>
     <MixedAssignment occurrences="1">
-      <code>$this-&gt;config</code>
+      <code>$config</code>
     </MixedAssignment>
-  </file>
-  <file src="lib/BackgroundJob/ImportOnedriveJob.php">
-    <PropertyNotSetInConstructor occurrences="2">
-      <code>ImportOnedriveJob</code>
-      <code>ImportOnedriveJob</code>
-    </PropertyNotSetInConstructor>
+    <MixedMethodCall occurrences="1">
+      <code>getUserValue</code>
+    </MixedMethodCall>
   </file>
   <file src="lib/Controller/ConfigController.php">
     <MixedArgument occurrences="1">
@@ -199,9 +195,6 @@
       <code>$folder</code>
       <code>$folder</code>
     </ArgumentTypeCoercion>
-    <DocblockTypeContradiction occurrences="1">
-      <code>$resource === false</code>
-    </DocblockTypeContradiction>
     <MixedArgument occurrences="10">
       <code>$fileItem['@microsoft.graph.downloadUrl']</code>
       <code>$fileItem['lastModifiedDateTime']</code>
