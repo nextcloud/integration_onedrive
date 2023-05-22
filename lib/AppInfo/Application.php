@@ -10,19 +10,18 @@
 namespace OCA\Onedrive\AppInfo;
 
 use Closure;
+use OCA\Onedrive\Notification\Notifier;
+use OCP\AppFramework\App;
+use OCP\AppFramework\Bootstrap\IBootContext;
+use OCP\AppFramework\Bootstrap\IBootstrap;
+use OCP\AppFramework\Bootstrap\IRegistrationContext;
+
 use OCP\IConfig;
 use OCP\IL10N;
 use OCP\INavigationManager;
 use OCP\IURLGenerator;
+
 use OCP\IUserSession;
-
-use OCP\AppFramework\App;
-use OCP\AppFramework\Bootstrap\IRegistrationContext;
-use OCP\AppFramework\Bootstrap\IBootContext;
-use OCP\AppFramework\Bootstrap\IBootstrap;
-use OCP\Notification\IManager as INotificationManager;
-
-use OCA\Onedrive\Notification\Notifier;
 use Psr\Container\ContainerInterface;
 
 class Application extends App implements IBootstrap {
@@ -30,21 +29,12 @@ class Application extends App implements IBootstrap {
 	public const APP_ID = 'integration_onedrive';
 	public const IMPORT_JOB_TIMEOUT = 3600;
 
-	/**
-	 * @var IConfig
-	 */
-	private $config;
-
 	public function __construct(array $urlParams = []) {
 		parent::__construct(self::APP_ID, $urlParams);
-
-        /** @var ContainerInterface $container */
-        $container = $this->getContainer();
-        $this->config = $container->get(IConfig::class);
 	}
 
 	public function register(IRegistrationContext $context): void {
-        $context->registerNotifierService(Notifier::class);
+		$context->registerNotifierService(Notifier::class);
 	}
 
 	public function boot(IBootContext $context): void {
@@ -55,16 +45,17 @@ class Application extends App implements IBootstrap {
 		$user = $userSession->getUser();
 		if ($user !== null) {
 			$userId = $user->getUID();
-            /** @var ContainerInterface $container */
+			/** @var ContainerInterface $container */
 			$container = $this->getContainer();
+            $config = $container->get(IConfig::class);
 
-			if ($this->config->getUserValue($userId, self::APP_ID, 'navigation_enabled', '0') === '1') {
-                /** @var INavigationManager $navManager */
-                $navManager = $container->get(INavigationManager::class);
-                $navManager->add(function () use ($container) {
-                    /** @var IURLGenerator $urlGenerator */
+			if ($config->getUserValue($userId, self::APP_ID, 'navigation_enabled', '0') === '1') {
+				/** @var INavigationManager $navManager */
+				$navManager = $container->get(INavigationManager::class);
+				$navManager->add(function () use ($container) {
+					/** @var IURLGenerator $urlGenerator */
 					$urlGenerator = $container->get(IURLGenerator::class);
-                    /** @var IL10N $l10n */
+					/** @var IL10N $l10n */
 					$l10n = $container->get(IL10N::class);
 					return [
 						'id' => self::APP_ID,
@@ -87,4 +78,3 @@ class Application extends App implements IBootstrap {
 		}
 	}
 }
-

@@ -12,10 +12,10 @@
 
 namespace OCA\Onedrive\BackgroundJob;
 
-use OCP\BackgroundJob\QueuedJob;
+use OCA\Onedrive\Service\OnedriveStorageAPIService;
 use OCP\AppFramework\Utility\ITimeFactory;
 
-use OCA\Onedrive\Service\OnedriveStorageAPIService;
+use OCP\BackgroundJob\QueuedJob;
 
 class ImportOnedriveJob extends QueuedJob {
 	/**
@@ -28,15 +28,15 @@ class ImportOnedriveJob extends QueuedJob {
 	 *
 	 */
 	public function __construct(ITimeFactory $timeFactory,
-								OnedriveStorageAPIService $service) {
+		OnedriveStorageAPIService $service) {
 		parent::__construct($timeFactory);
 		$this->service = $service;
 	}
 
-    /**
-     * @param array{user_id: string} $argument
-     * @return void
-     */
+	/**
+	 * @param array{user_id: string} $argument
+	 * @return void
+	 */
 	public function run($argument): void {
 		$userId = $argument['user_id'];
 		$this->service->importOnedriveJob($userId);

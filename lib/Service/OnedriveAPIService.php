@@ -13,23 +13,23 @@ namespace OCA\Onedrive\Service;
 
 use DateTime;
 use Exception;
-use OCP\IL10N;
-use OCP\IConfig;
-use Psr\Log\LoggerInterface;
-use OCP\Http\Client\IClientService;
 use GuzzleHttp\Exception\ClientException;
-use GuzzleHttp\Exception\ServerException;
 use GuzzleHttp\Exception\ConnectException;
+use GuzzleHttp\Exception\ServerException;
+use OCA\Onedrive\AppInfo\Application;
+use OCP\Http\Client\IClientService;
+use OCP\IConfig;
+use OCP\IL10N;
 use OCP\Notification\IManager as INotificationManager;
 
-use OCA\Onedrive\AppInfo\Application;
+use Psr\Log\LoggerInterface;
 use Throwable;
 
 class OnedriveAPIService {
 
-    /**
-     * @var LoggerInterface
-     */
+	/**
+	 * @var LoggerInterface
+	 */
 	private $logger;
 	/**
 	 * @var string
@@ -55,12 +55,12 @@ class OnedriveAPIService {
 	/**
 	 * Service to make requests to OneDrive v3 (JSON) API
 	 */
-	public function __construct (string $appName,
-								LoggerInterface $logger,
-								IL10N $l10n,
-								IConfig $config,
-								INotificationManager $notificationManager,
-								IClientService $clientService) {
+	public function __construct(string $appName,
+		LoggerInterface $logger,
+		IL10N $l10n,
+		IConfig $config,
+		INotificationManager $notificationManager,
+		IClientService $clientService) {
 		$this->appName = $appName;
 		$this->logger = $logger;
 		$this->config = $config;
@@ -111,15 +111,15 @@ class OnedriveAPIService {
 			}
 
 			$body = $response->getBody();
-            if (is_string($body)) {
-                fwrite($resource, $body);
-            }else {
-                while (!feof($body)) {
-                    // write ~5 MB chunks
-                    $chunk = fread($body, 5000000);
-                    fwrite($resource, $chunk);
-                }
-            }
+			if (is_string($body)) {
+				fwrite($resource, $body);
+			} else {
+				while (!feof($body)) {
+					// write ~5 MB chunks
+					$chunk = fread($body, 5000000);
+					fwrite($resource, $chunk);
+				}
+			}
 
 			return ['success' => true];
 		} catch (ServerException | ClientException $e) {
@@ -145,7 +145,7 @@ class OnedriveAPIService {
 	 * @throws \OCP\PreConditionNotMetException
 	 */
 	public function request(string $userId, string $endPoint, array $params = [], string $method = 'GET',
-							bool $jsonResponse = true): array {
+		bool $jsonResponse = true): array {
 		$this->checkTokenExpiration($userId);
 		$accessToken = $this->config->getUserValue($userId, Application::APP_ID, 'token');
 		try {
@@ -171,11 +171,11 @@ class OnedriveAPIService {
 
 			if ($method === 'GET') {
 				$response = $this->client->get($url, $options);
-			} else if ($method === 'POST') {
+			} elseif ($method === 'POST') {
 				$response = $this->client->post($url, $options);
-			} else if ($method === 'PUT') {
+			} elseif ($method === 'PUT') {
 				$response = $this->client->put($url, $options);
-			} else if ($method === 'DELETE') {
+			} elseif ($method === 'DELETE') {
 				$response = $this->client->delete($url, $options);
 			} else {
 				return ['error' => $this->l10n->t('Bad HTTP method')];
@@ -187,9 +187,9 @@ class OnedriveAPIService {
 				return ['error' => $this->l10n->t('Bad credentials')];
 			} else {
 				if ($jsonResponse) {
-                    if (is_resource($body)) {
-                        $body = stream_get_contents($body);
-                    }
+					if (is_resource($body)) {
+						$body = stream_get_contents($body);
+					}
 					return json_decode($body, true) ?: [];
 				} else {
 					return [
@@ -235,11 +235,11 @@ class OnedriveAPIService {
 
 			if ($method === 'GET') {
 				$response = $this->client->get($url, $options);
-			} else if ($method === 'POST') {
+			} elseif ($method === 'POST') {
 				$response = $this->client->post($url, $options);
-			} else if ($method === 'PUT') {
+			} elseif ($method === 'PUT') {
 				$response = $this->client->put($url, $options);
-			} else if ($method === 'DELETE') {
+			} elseif ($method === 'DELETE') {
 				$response = $this->client->delete($url, $options);
 			} else {
 				return ['error' => $this->l10n->t('Bad HTTP method')];
@@ -250,9 +250,9 @@ class OnedriveAPIService {
 			if ($respCode >= 400) {
 				return ['error' => $this->l10n->t('OAuth access token refused')];
 			} else {
-                if (is_resource($body)) {
-                    $body = stream_get_contents($body);
-                }
+				if (is_resource($body)) {
+					$body = stream_get_contents($body);
+				}
 				return json_decode($body, true);
 			}
 		} catch (ConnectException | ServerException | ClientException $e) {
@@ -281,7 +281,7 @@ class OnedriveAPIService {
 		$redirectUri = $this->config->getUserValue($userId, Application::APP_ID, 'redirect_uri');
 		$refreshToken = $this->config->getUserValue($userId, Application::APP_ID, 'refresh_token');
 		/** @var array{access_token?: string, expires_in?: string} $result */
-        $result = $this->requestOAuthAccessToken([
+		$result = $this->requestOAuthAccessToken([
 			'client_id' => $clientId,
 			'client_secret' => $clientSecret,
 			'grant_type' => 'refresh_token',

@@ -13,12 +13,12 @@ namespace OCA\Onedrive\Service;
 
 use DateTime;
 use Exception;
+use OCA\DAV\CardDAV\CardDavBackend;
 use OCA\Onedrive\AppInfo\Application;
 use OCP\Contacts\IManager as IContactManager;
+use Psr\Log\LoggerInterface;
 use Sabre\DAV\Exception\BadRequest;
 use Sabre\VObject\Component\VCard;
-use OCA\DAV\CardDAV\CardDavBackend;
-use Psr\Log\LoggerInterface;
 use Sabre\VObject\InvalidDataException;
 use Throwable;
 
@@ -64,11 +64,11 @@ class OnedriveContactAPIService {
 	/**
 	 * Service to make requests to Onedrive v3 (JSON) API
 	 */
-	public function __construct (string $appName,
-								LoggerInterface $logger,
-								IContactManager $contactsManager,
-								CardDavBackend $cdBackend,
-								OnedriveAPIService $onedriveApiService) {
+	public function __construct(string $appName,
+		LoggerInterface $logger,
+		IContactManager $contactsManager,
+		CardDavBackend $cdBackend,
+		OnedriveAPIService $onedriveApiService) {
 		$this->logger = $logger;
 		$this->contactsManager = $contactsManager;
 		$this->cdBackend = $cdBackend;
@@ -326,7 +326,7 @@ class OnedriveContactAPIService {
 				$state = $address['state'] ?? '';
 				$postalCode = $address['postalCode'] ?? '';
 				$city = $address['city'] ?? '';
-//				$addrType = $address['type'] ?? '';
+				//				$addrType = $address['type'] ?? '';
 				$country = $address['countryOrRegion'] ?? '';
 				$postOfficeBox = '';
 

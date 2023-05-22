@@ -12,22 +12,22 @@
 namespace OCA\Onedrive\Controller;
 
 use DateTime;
+use OCA\Onedrive\AppInfo\Application;
+use OCA\Onedrive\Service\OnedriveAPIService;
+use OCP\AppFramework\Controller;
 use OCP\AppFramework\Http;
+use OCP\AppFramework\Http\DataResponse;
+use OCP\AppFramework\Http\RedirectResponse;
 use OCP\AppFramework\Http\TemplateResponse;
 use OCP\AppFramework\Services\IInitialState;
-use OCP\IURLGenerator;
+
+use OCP\Constants;
+use OCP\Contacts\IManager as IContactManager;
 use OCP\IConfig;
 use OCP\IL10N;
-use OCP\Contacts\IManager as IContactManager;
-use OCP\Constants;
 
 use OCP\IRequest;
-use OCP\AppFramework\Http\RedirectResponse;
-use OCP\AppFramework\Http\DataResponse;
-use OCP\AppFramework\Controller;
-
-use OCA\Onedrive\Service\OnedriveAPIService;
-use OCA\Onedrive\AppInfo\Application;
+use OCP\IURLGenerator;
 
 class ConfigController extends Controller {
 
@@ -61,14 +61,14 @@ class ConfigController extends Controller {
 	private $initialStateService;
 
 	public function __construct(string $appName,
-								IRequest $request,
-								IConfig $config,
-								IURLGenerator $urlGenerator,
-								IL10N $l,
-								IInitialState $initialStateService,
-								IContactManager $contactsManager,
-								OnedriveAPIService $onedriveAPIService,
-								?string $userId) {
+		IRequest $request,
+		IConfig $config,
+		IURLGenerator $urlGenerator,
+		IL10N $l,
+		IInitialState $initialStateService,
+		IContactManager $contactsManager,
+		OnedriveAPIService $onedriveAPIService,
+		?string $userId) {
 		parent::__construct($appName, $request);
 		$this->l = $l;
 		$this->userId = $userId;
@@ -87,9 +87,9 @@ class ConfigController extends Controller {
 	 * @return DataResponse
 	 */
 	public function setConfig(array $values): DataResponse {
-        if ($this->userId === null) {
-            return new DataResponse([], Http::STATUS_BAD_REQUEST);
-        }
+		if ($this->userId === null) {
+			return new DataResponse([], Http::STATUS_BAD_REQUEST);
+		}
 		foreach ($values as $key => $value) {
 			$this->config->setUserValue($this->userId, Application::APP_ID, $key, $value);
 		}
@@ -151,7 +151,7 @@ class ConfigController extends Controller {
 		if ($clientID && $clientSecret && $code !== '') {
 			$redirectUri = $this->config->getUserValue($this->userId, Application::APP_ID, 'redirect_uri');
 			/** @var array{error?: string, access_token?: string, refresh_token?: string, scope?: string, expires_in?: string, user_id?: string} $result */
-            $result = $this->onedriveAPIService->requestOAuthAccessToken([
+			$result = $this->onedriveAPIService->requestOAuthAccessToken([
 				'client_id' => $clientID,
 				'client_secret' => $clientSecret,
 				'code' => $code,
@@ -207,8 +207,8 @@ class ConfigController extends Controller {
 		$result = [];
 		foreach ($addressBooks as $ab) {
 			if ($ab->getUri() !== 'system') {
-                /** @var int $perms */
-                $perms = $ab->getPermissions();
+				/** @var int $perms */
+				$perms = $ab->getPermissions();
 				$result[$ab->getKey()] = [
 					'uri' => $ab->getUri(),
 					'name' => $ab->getDisplayName(),

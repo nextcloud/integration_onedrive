@@ -13,21 +13,21 @@ namespace OCA\Onedrive\Service;
 
 use DateTime;
 use Exception;
-use OCP\Files\Folder;
-use OCP\Files\InvalidPathException;
-use OCP\Files\NotFoundException;
-use OCP\Files\NotPermittedException;
-use OCP\PreConditionNotMetException;
-use Psr\Log\LoggerInterface;
-use OCP\IConfig;
-use OCP\Files\IRootFolder;
-use OCP\Files\FileInfo;
-use OCP\Files\ForbiddenException;
-use OCP\BackgroundJob\IJobList;
-
 use OCA\Onedrive\AppInfo\Application;
 use OCA\Onedrive\BackgroundJob\ImportOnedriveJob;
 use OCA\Onedrive\Exceptions\MaxDownloadSizeReachedException;
+use OCP\BackgroundJob\IJobList;
+use OCP\Files\FileInfo;
+use OCP\Files\Folder;
+use OCP\Files\ForbiddenException;
+use OCP\Files\InvalidPathException;
+use OCP\Files\IRootFolder;
+use OCP\Files\NotFoundException;
+use OCP\Files\NotPermittedException;
+
+use OCP\IConfig;
+use OCP\PreConditionNotMetException;
+use Psr\Log\LoggerInterface;
 use Throwable;
 
 class OnedriveStorageAPIService {
@@ -63,13 +63,13 @@ class OnedriveStorageAPIService {
 	/**
 	 * Service to make requests to Onedrive API
 	 */
-	public function __construct (string $appName,
-								LoggerInterface $logger,
-								IRootFolder $root,
-								IConfig $config,
-								IJobList $jobList,
-								UserScopeService $userScopeService,
-								OnedriveAPIService $onedriveApiService) {
+	public function __construct(string $appName,
+		LoggerInterface $logger,
+		IRootFolder $root,
+		IConfig $config,
+		IJobList $jobList,
+		UserScopeService $userScopeService,
+		OnedriveAPIService $onedriveApiService) {
 		$this->appName = $appName;
 		$this->logger = $logger;
 		$this->root = $root;
@@ -85,12 +85,12 @@ class OnedriveStorageAPIService {
 	 */
 	public function getStorageSize(string $userId): array {
 		// onedrive storage size
-//		$onedriveUserId = $this->config->getUserValue($userId, Application::APP_ID, 'user_id');
+		//		$onedriveUserId = $this->config->getUserValue($userId, Application::APP_ID, 'user_id');
 		$result = $this->onedriveApiService->request($userId, 'me/drive');
 		if (isset($result['error']) || !isset($result['quota'], $result['quota']['used'])) {
 			return $result;
 		}
-//		$driveId = $result['id'] ?? '';
+		//		$driveId = $result['id'] ?? '';
 		return [
 			'usageInStorage' => $result['quota']['used'],
 		];
@@ -161,7 +161,7 @@ class OnedriveStorageAPIService {
 		// get previous progress
 		$importTreeStr = $this->config->getUserValue($userId, Application::APP_ID, 'import_tree', '[]');
 		/** @var array $importTree */
-        $importTree = ($importTreeStr === '[]' || $importTreeStr === '') ? [] : json_decode($importTreeStr, true);
+		$importTree = ($importTreeStr === '[]' || $importTreeStr === '') ? [] : json_decode($importTreeStr, true);
 		// import by batch of 500 MB
 		$alreadyImportedSize = (float) $this->config->getUserValue($userId, Application::APP_ID, 'imported_size', '0');
 		$alreadyImportedNumber = (int) $this->config->getUserValue($userId, Application::APP_ID, 'nb_imported_files', '0');
@@ -207,8 +207,8 @@ class OnedriveStorageAPIService {
 	 * @throws \OC\User\NoUserException
 	 */
 	public function importFiles(string $userId, string $targetPath,
-								?int $maxDownloadSize = null, float $alreadyImportedSize = 0, int $alreadyImportedNumber = 0,
-								array &$importTree = []): array {
+		?int $maxDownloadSize = null, float $alreadyImportedSize = 0, int $alreadyImportedNumber = 0,
+		array &$importTree = []): array {
 		// create root folder
 		$userFolder = $this->root->getUserFolder($userId);
 		if (!$userFolder->nodeExists($targetPath)) {
@@ -224,7 +224,7 @@ class OnedriveStorageAPIService {
 		if (isset($info['error'])) {
 			return $info;
 		}
-//		$onedriveStorageSize = $info['usageInStorage'];
+		//		$onedriveStorageSize = $info['usageInStorage'];
 
 		// iterate on unfinished directory list retrieved with getUserValue
 		try {
@@ -256,9 +256,9 @@ class OnedriveStorageAPIService {
 	}
 
 	private function downloadDir(string $userId, Folder $topFolder,
-								?int $maxDownloadSize, int $downloadedSize, int $totalSeenNumber,
-								int $nbDownloaded, string $path, float $alreadyImportedSize, int $alreadyImportedNumber,
-								array &$importTree): array {
+		?int $maxDownloadSize, int $downloadedSize, int $totalSeenNumber,
+		int $nbDownloaded, string $path, float $alreadyImportedSize, int $alreadyImportedNumber,
+		array &$importTree): array {
 		$newDownloadedSize = $downloadedSize;
 		$newTotalSeenNumber = $totalSeenNumber;
 		$newNbDownloaded = $nbDownloaded;
@@ -397,20 +397,20 @@ class OnedriveStorageAPIService {
 	private function getFile(Folder $folder, array $fileItem): ?float {
 		$fileName = $fileItem['name'];
 		try {
-            $fileExists = $folder->nodeExists($fileName);
-        } catch (ForbiddenException $e) {
-            return null;
-        }
+			$fileExists = $folder->nodeExists($fileName);
+		} catch (ForbiddenException $e) {
+			return null;
+		}
 		if (!$fileExists) {
 			$savedFile = $folder->newFile($fileName);
 			$resource = $savedFile->fopen('w');
-            if ($resource === false) {
-                $this->logger->warning('Could not open new file for writing', ['app' => Application::APP_ID]);
-                if ($savedFile->isDeletable()) {
-                    $savedFile->delete();
-                }
-                return null;
-            }
+			if ($resource === false) {
+				$this->logger->warning('Could not open new file for writing', ['app' => Application::APP_ID]);
+				if ($savedFile->isDeletable()) {
+					$savedFile->delete();
+				}
+				return null;
+			}
 			$res = $this->onedriveApiService->fileRequest($fileItem['@microsoft.graph.downloadUrl'], $resource);
 			if (!isset($res['error'])) {
 				if (is_resource($resource)) {

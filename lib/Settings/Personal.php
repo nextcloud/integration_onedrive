@@ -1,13 +1,14 @@
 <?php
+
 namespace OCA\Onedrive\Settings;
 
+use OCA\Onedrive\AppInfo\Application;
 use OCP\AppFramework\Http\TemplateResponse;
 use OCP\AppFramework\Services\IInitialState;
-use OCP\IConfig;
-use OCP\Settings\ISettings;
 use OCP\Files\IRootFolder;
+use OCP\IConfig;
 use OCP\IUserManager;
-use OCA\Onedrive\AppInfo\Application;
+use OCP\Settings\ISettings;
 
 class Personal implements ISettings {
 
@@ -33,10 +34,10 @@ class Personal implements ISettings {
 	private $userId;
 
 	public function __construct(IConfig $config,
-								IRootFolder $root,
-								IUserManager $userManager,
-								IInitialState $initialStateService,
-								string $userId) {
+		IRootFolder $root,
+		IUserManager $userManager,
+		IInitialState $initialStateService,
+		string $userId) {
 		$this->config = $config;
 		$this->root = $root;
 		$this->userManager = $userManager;

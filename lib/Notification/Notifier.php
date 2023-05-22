@@ -12,13 +12,13 @@
 namespace OCA\Onedrive\Notification;
 
 use InvalidArgumentException;
+use OCA\Onedrive\AppInfo\Application;
 use OCP\IURLGenerator;
 use OCP\IUserManager;
 use OCP\L10N\IFactory;
 use OCP\Notification\IManager as INotificationManager;
 use OCP\Notification\INotification;
 use OCP\Notification\INotifier;
-use OCA\Onedrive\AppInfo\Application;
 
 class Notifier implements INotifier {
 
@@ -41,9 +41,9 @@ class Notifier implements INotifier {
 	 * @param IURLGenerator $urlGenerator
 	 */
 	public function __construct(IFactory $factory,
-								IUserManager $userManager,
-								INotificationManager $notificationManager,
-								IURLGenerator $urlGenerator) {
+		IUserManager $userManager,
+		INotificationManager $notificationManager,
+		IURLGenerator $urlGenerator) {
 		$this->factory = $factory;
 		$this->userManager = $userManager;
 		$this->notificationManager = $notificationManager;
@@ -85,21 +85,21 @@ class Notifier implements INotifier {
 		$l = $this->factory->get('integration_onedrive', $languageCode);
 
 		switch ($notification->getSubject()) {
-		case 'import_onedrive_finished':
-            /** @var array{nbImported?: string, targetPath: string} $p */
-			$p = $notification->getSubjectParameters();
-			$nbImported = (int) ($p['nbImported'] ?? 0);
-			$targetPath = $p['targetPath'];
-			$content = $l->n('%n file was imported from OneDrive storage.', '%n files were imported from OneDrive storage.', $nbImported);
+			case 'import_onedrive_finished':
+				/** @var array{nbImported?: string, targetPath: string} $p */
+				$p = $notification->getSubjectParameters();
+				$nbImported = (int) ($p['nbImported'] ?? 0);
+				$targetPath = $p['targetPath'];
+				$content = $l->n('%n file was imported from OneDrive storage.', '%n files were imported from OneDrive storage.', $nbImported);
 
-			$notification->setParsedSubject($content)
-				->setIcon($this->url->getAbsoluteURL($this->url->imagePath(Application::APP_ID, 'app-dark.svg')))
-				->setLink($this->url->linkToRouteAbsolute('files.view.index', ['dir' => $targetPath]));
-			return $notification;
+				$notification->setParsedSubject($content)
+					->setIcon($this->url->getAbsoluteURL($this->url->imagePath(Application::APP_ID, 'app-dark.svg')))
+					->setLink($this->url->linkToRouteAbsolute('files.view.index', ['dir' => $targetPath]));
+				return $notification;
 
-		default:
-			// Unknown subject => Unknown notification => throw
-			throw new InvalidArgumentException();
+			default:
+				// Unknown subject => Unknown notification => throw
+				throw new InvalidArgumentException();
 		}
 	}
 }

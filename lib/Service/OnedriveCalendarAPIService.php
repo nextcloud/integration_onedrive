@@ -15,18 +15,18 @@ use DateTime;
 use DateTimeZone;
 use Exception;
 use Generator;
+use OCA\DAV\CalDAV\CalDavBackend;
 use OCA\Onedrive\AppInfo\Application;
 use OCP\IL10N;
-use OCA\DAV\CalDAV\CalDavBackend;
-use Sabre\DAV\Exception\BadRequest;
 use Psr\Log\LoggerInterface;
+use Sabre\DAV\Exception\BadRequest;
 use Throwable;
 
 class OnedriveCalendarAPIService {
 
-    /**
-     * @var IL10N
-     */
+	/**
+	 * @var IL10N
+	 */
 	private $l10n;
 	/**
 	 * @var string
@@ -49,12 +49,12 @@ class OnedriveCalendarAPIService {
 	 */
 	private $onedriveApiService;
 
-	public function __construct (string $appName,
-								LoggerInterface $logger,
-								IL10N $l10n,
-								CalDavBackend $caldavBackend,
-								OnedriveColorService $colorService,
-								OnedriveAPIService $onedriveApiService) {
+	public function __construct(string $appName,
+		LoggerInterface $logger,
+		IL10N $l10n,
+		CalDavBackend $caldavBackend,
+		OnedriveColorService $colorService,
+		OnedriveAPIService $onedriveApiService) {
 		$this->appName = $appName;
 		$this->logger = $logger;
 		$this->l10n = $l10n;
@@ -121,7 +121,7 @@ class OnedriveCalendarAPIService {
 			'preset24' => '#5c005c',
 		];
 		foreach ($result['value'] as $v) {
-            /** @var string $preset */
+			/** @var string $preset */
 			$preset = $v['color'];
 			if (array_key_exists($preset, $convColors)) {
 				$categoryColors[$v['displayName']] = $this->colorService->getClosestCssColor($convColors[$preset]);
@@ -156,9 +156,9 @@ class OnedriveCalendarAPIService {
 
 		$newCalName = trim($calName) . ' (' . $this->l10n->t('Microsoft Calendar import') .')';
 		/** @var ?string $ncCalId */
-        $ncCalId = $this->calendarExists($userId, $newCalName);
+		$ncCalId = $this->calendarExists($userId, $newCalName);
 		if (is_null($ncCalId)) {
-            /** @var string $ncCalId */
+			/** @var string $ncCalId */
 			$ncCalId = $this->caldavBackend->createCalendar('principals/users/' . $userId, $newCalName, $params);
 		}
 
@@ -166,14 +166,14 @@ class OnedriveCalendarAPIService {
 		$utcTimezone = new DateTimeZone('-0000');
 		$events = $this->getCalendarEvents($userId, $calId);
 		$nbAdded = 0;
-        /** @var array $e */
-        foreach ($events as $e) {
+		/** @var array $e */
+		foreach ($events as $e) {
 			$calData = 'BEGIN:VCALENDAR' . "\n"
 				. 'VERSION:2.0' . "\n"
 				. 'PRODID:NextCloud Calendar' . "\n"
 				. 'BEGIN:VEVENT' . "\n";
 
-            /** @var string $objectUri */
+			/** @var string $objectUri */
 			$objectUri = $e['iCalUId'];
 			$calData .= 'UID:' . $ncCalId . '-' . $objectUri . "\n";
 			$calData .= isset($e['subject'])
@@ -327,7 +327,7 @@ class OnedriveCalendarAPIService {
 			}
 		}
 
-        /** @var array $eventGeneratorReturn */
+		/** @var array $eventGeneratorReturn */
 		$eventGeneratorReturn = $events->getReturn();
 		if (isset($eventGeneratorReturn['error'])) {
 			return $eventGeneratorReturn;
