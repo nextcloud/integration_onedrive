@@ -7,6 +7,7 @@ OC.L10N.register(
     "Bad HTTP method" : "Felaktig HTTP-metod",
     "OAuth access token refused" : "OAuth-token avvisades",
     "Connected accounts" : "Anslutna konton",
+    "Data migration" : "Datamigrering",
     "Client ID" : "Klient-ID",
     "Client secret" : "Klienthemlighet",
     "Enable navigation link" : "Aktivera navigeringslänk",
