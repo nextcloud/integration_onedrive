@@ -47,7 +47,7 @@ class Application extends App implements IBootstrap {
 			$userId = $user->getUID();
 			/** @var ContainerInterface $container */
 			$container = $this->getContainer();
-            $config = $container->get(IConfig::class);
+			$config = $container->get(IConfig::class);
 
 			if ($config->getUserValue($userId, self::APP_ID, 'navigation_enabled', '0') === '1') {
 				/** @var INavigationManager $navManager */
