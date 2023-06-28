@@ -9,7 +9,7 @@ OC.L10N.register(
     "OAuth access token refused" : "Žeton OAuth za dostop je bil zavrnjen",
     "Microsoft Calendar import" : "Uvoz koledarja Microsoft",
     "Connected accounts" : "Povezani računi",
-    "Data migration" : "Selitev podatkov",
+    "Data migration" : "Preselitev podatkov",
     "OneDrive integration" : "Združevalnik OneDrive",
     "Integration of Microsoft OneDrive" : "Združevalnik programa Microsoft OneDrive",
     "Make sure you set the \"Redirect URI\" to" : "Poskrbite, da bo »preusmeritveni naslov URI« nastavljen na",
