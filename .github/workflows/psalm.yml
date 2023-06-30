@@ -22,10 +22,7 @@ jobs:
     strategy:
       matrix:
         php-versions: [ '8.0', '8.1', '8.2' ]
-        server-versions: ['v25.0.0', 'dev-master' ]
-        include:
-          - php-versions: 7.4
-            server-versions: v24.0.0
+        server-versions: ['v26.0.0', 'v27.0.0', 'dev-master' ]
 
     name: Nextcloud
     steps:
@@ -42,10 +39,9 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Install dependencies
-        run: composer i
-
-      - name: Install nextcloud OCP
-        run: composer require --dev nextcloud/ocp:${{ matrix.server-versions }}
+        run: |
+          composer require --dev nextcloud/ocp:${{ matrix.server-versions }}
+          composer i
 
       - name: Run coding standards check
         run: composer run psalm

@@ -1,6 +1,5 @@
 {
     "require": {
-        "php": ">=7.4",
         "ortic/color-converter": "^0.1.0"
     },
     "scripts": {
@@ -19,7 +18,7 @@
     },
     "config": {
         "platform": {
-            "php": "7.4"
+            "php": "8.0"
         }
     }
 }
