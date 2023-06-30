@@ -4,6 +4,18 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [3.0.0] - 2023-06-30
+
+### Breaking changes
+
+ - Drop Support for php 7.4
+ - Drop Support for Nextcloud 24
+ - Drop Support for Nextcloud 25
+
+### Fixed
+
+ - More translations from transifex :blue_heart:
+
 ## [2.0.3] - 2023-05-05
 
 ### Fixed
