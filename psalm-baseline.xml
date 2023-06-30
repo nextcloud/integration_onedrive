@@ -195,6 +195,9 @@
       <code>$folder</code>
       <code>$folder</code>
     </ArgumentTypeCoercion>
+    <DocblockTypeContradiction occurrences="1">
+      <code>$resource === false</code>
+    </DocblockTypeContradiction>
     <MixedArgument occurrences="10">
       <code>$fileItem['@microsoft.graph.downloadUrl']</code>
       <code>$fileItem['lastModifiedDateTime']</code>
