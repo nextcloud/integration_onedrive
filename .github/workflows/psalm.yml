@@ -42,10 +42,9 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Install dependencies
-        run: composer i
-
-      - name: Install nextcloud OCP
-        run: composer require --dev nextcloud/ocp:${{ matrix.server-versions }}
+        run: |
+          composer require --dev nextcloud/ocp:${{ matrix.server-versions }}
+          composer i
 
       - name: Run coding standards check
         run: composer run psalm
