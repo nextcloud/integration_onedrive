@@ -40,7 +40,7 @@ OC.L10N.register(
     "Import directory" : "Importar directorio",
     "Onedrive storage ({formSize})" : "Almacenamento de OneDrive ({formSize})",
     "Import Onedrive files" : "Importar os ficheiros de OneDrive",
-    "Your Onedrive storage is bigger than your remaining space left ({formSpace})" : "O seu OneDrive é máis grande que o espazo que lle queda libre ({formSpace})",
+    "Your Onedrive storage is bigger than your remaining space left ({formSpace})" : "O seu almacenamento de OneDrive é máis grande que o espazo que lle queda libre ({formSpace})",
     "Cancel Onedrive files import" : "Cancelar a importación de ficheiros de OneDrive",
     "Contacts" : "Contactos",
     "{amount} contacts" : "{amount} contactos",
