@@ -4,6 +4,8 @@ OC.L10N.register(
     "Microsoft OneDrive" : "مايكروسوفت ون درايف",
     "Error getting OAuth access token" : "حدث خطأ أثناء محاولة الحصول على أَمَارَة token للتصديق المفتوح OAuth",
     "Error during OAuth exchanges" : "خطأ أثناء تبادل OAuth.",
+    "OneDrive" : "ون درايف",
+    "_%n file was imported from OneDrive storage._::_%n files were imported from OneDrive storage._" : ["%n ملفات تم استيرادها من المخزن السحابي جوجل درايف","%n ملف تم استيراده من المخزن السحابي جوجل درايف","%n ملفات تم استيرادها من المخزن السحابي جوجل درايف","%n ملفات تم استيرادها من المخزن السحابي جوجل درايف","%n ملفات تم استيرادها من المخزن السحابي جوجل درايف","%n ملفات تم استيرادها من المخزن السحابي جوجل درايف"],
     "Bad credentials" : "معلومات تسجيل الدخول غير صحيحة",
     "Bad HTTP method" : "دالة HTTP  غير صحيحة",
     "OAuth access token refused" : "أمارة token مرفوضة",
@@ -64,6 +66,7 @@ OC.L10N.register(
     "Choose where to write imported files" : "حدِّد إلى أين ستتم كتابة الملفات المستوردة",
     "_{amount} file imported ({formImported}) ({progress}%)_::_{amount} files imported ({formImported}) ({progress}%)_" : ["تم استيراد {amount} ملفات ({formImported}) ({progress}٪)","تم استيراد {amount} ملف ({formImported}) ({progress}٪)","تم استيراد {amount} ملفات ({formImported}) ({progress}٪)","تم استيراد {amount} ملفات ({formImported}) ({progress}٪)","تم استيراد {amount} ملفات ({formImported}) ({progress}٪)","تم استيراد {amount} ملفات ({formImported}) ({progress}٪)"],
     "_{number} event successfully imported in {name}_::_{number} events successfully imported in {name}_" : ["تم استيراد {number} أحداث بنجاح في {name}","تم استيراد {number} حدث بنجاح في {name}","تم استيراد {number} أحداث بنجاح في {name}","تم استيراد {number} أحداث بنجاح في {name}","تم استيراد {number} أحداث بنجاح في {name}","تم استيراد {number} أحداث بنجاح في {name}"],
+    "_{nbAdded} contact created, {nbUpdated} updated, {nbSkipped} skipped, {nbFailed} failed_::_{nbAdded} contacts created, {nbUpdated} updated, {nbSkipped} skipped, {nbFailed} failed_" : ["{nb added} تم إنشاء جهات الاتصال ، تحديث {nbUpdated} ، تم تخطي {nbSkipped} ، فشل {nbFailed}","{nb added} تم إنشاء جهة الاتصال ، تحديث {nbUpdated} ، تم تخطي {nbSkipped} ، فشل {nbFailed}","{nb added} تم إنشاء جهات الاتصال ، تحديث {nbUpdated} ، تم تخطي {nbSkipped} ، فشل {nbFailed}","{nb added} تم إنشاء جهات الاتصال ، تحديث {nbUpdated} ، تم تخطي {nbSkipped} ، فشل {nbFailed}","{nb added} تم إنشاء جهات الاتصال ، تحديث {nbUpdated} ، تم تخطي {nbSkipped} ، فشل {nbFailed}","{nb added} تم إنشاء جهات الاتصال ، تحديث {nbUpdated} ، تم تخطي {nbSkipped} ، فشل {nbFailed}"],
     "Last Onedrive import job at {date}" : "آخر مهمة استيراد لـ ون درايف في {date}"
 },
 "nplurals=6; plural=n==0 ? 0 : n==1 ? 1 : n==2 ? 2 : n%100>=3 && n%100<=10 ? 3 : n%100>=11 && n%100<=99 ? 4 : 5;");
