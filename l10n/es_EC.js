@@ -6,10 +6,21 @@ OC.L10N.register(
     "Bad credentials" : "Credenciales incorrectas",
     "Bad HTTP method" : "Método HTTP incorrecto",
     "OAuth access token refused" : "Se rechazó el token de acceso de OAuth",
+    "Connected accounts" : "Cuentas conectadas",
+    "Data migration" : "Migración de datos",
+    "Make sure you set the \"Redirect URI\" to" : "Asegúrate de configurar el \"URI de redirección\" a",
+    "Put the OAuth app \"Client ID\" and \"Client secret\" below." : "Coloca a continuación el \"ID de cliente\" y el \"Secreto del cliente\" de tu aplicación OAuth.",
     "Client ID" : "ID del cliente",
     "Client secret" : "Secreto del cliente",
+    "Use a popup to authenticate" : "Usar un popup para la autenticación",
+    "Enable navigation link" : "Habilitar enlace de navegación",
+    "Connected as {user}" : "Conectado como {usuario}",
+    "Import directory" : "Directorio de importación",
     "Contacts" : "Contactos",
     "Calendars" : "Calendarios",
-    "Import calendar" : "Importar calendario"
+    "Import calendar" : "Importar calendario",
+    "Import job is currently running" : "El proceso de importación está en curso",
+    "Starting importing files in {targetPath} directory" : "Iniciando la importación de archivos en el directorio {targetPath}",
+    "Choose where to write imported files" : "Elige dónde escribir los archivos importados"
 },
 "nplurals=3; plural=n == 1 ? 0 : n != 0 && n % 1000000 == 0 ? 1 : 2;");
