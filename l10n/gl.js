@@ -63,7 +63,7 @@ OC.L10N.register(
     "Failed to import calendar" : "Produciuse un fallo ao importar o calendario",
     "Failed to get number of contacts" : "Produciuse un fallo ao obter o número de contactos",
     "Failed to get address book list" : "Produciuse un fallo ao obter a lista de cadernos de enderezos",
-    "Choose where to write imported files" : "Escolla onde gravar os ficheiros importados",
+    "Choose where to write imported files" : "Escoller onde gravar os ficheiros importados",
     "_{amount} file imported ({formImported}) ({progress}%)_::_{amount} files imported ({formImported}) ({progress}%)_" : ["{amount} ficheiro importado ({formImported}) ({progress}%)","{amount} ficheiros importados ({formImported}) ({progress}%)"],
     "_{number} event successfully imported in {name}_::_{number} events successfully imported in {name}_" : ["{number} evento foi importado sactifactoriamente en {name}","{number} eventos foron importados sactifactoriamente en {name}"],
     "_{nbAdded} contact created, {nbUpdated} updated, {nbSkipped} skipped, {nbFailed} failed_::_{nbAdded} contacts created, {nbUpdated} updated, {nbSkipped} skipped, {nbFailed} failed_" : ["{nbAdded} contacto creado, {nbUpdated} actualizado, {nbSkipped} omitido, {nbFailed} fallado","{nbAdded} contactos creados, {nbUpdated} actualizados, {nbSkipped} omitidos, {nbFailed} fallados"],
