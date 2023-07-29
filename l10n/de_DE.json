@@ -25,7 +25,7 @@
     "Client ID" : "Client-ID",
     "Client ID of your OneDrive application" : "Client-ID Ihrer OneDrive-Anwendung",
     "Client secret" : "Geheime Zeichenkette des Clients",
-    "Client secret of your OneDrive application" : "Client-Passwort Ihrer OneDrive-Anwendung",
+    "Client secret of your OneDrive application" : "Geheime Zeichenkette des Clients Ihrer OneDrive-Anwendung",
     "Use a popup to authenticate" : "Ein Popup zur Anmeldung verwenden",
     "OneDrive admin options saved" : "OneDrive Administrations-Einstellungen gespeichert",
     "Failed to save OneDrive admin options" : "Fehler beim Speichern der OneDrive-Administrations-Einstellungen",
