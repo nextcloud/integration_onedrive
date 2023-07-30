@@ -28,7 +28,7 @@ OC.L10N.register(
     "Client ID of your OneDrive application" : "Client-ID Ihrer OneDrive-Anwendung",
     "Client secret" : "Geheime Zeichenkette des Clients",
     "Client secret of your OneDrive application" : "Geheime Zeichenkette des Clients Ihrer OneDrive-Anwendung",
-    "Use a popup to authenticate" : "Ein Popup zur Anmeldung verwenden",
+    "Use a popup to authenticate" : "Pop-up zur Authentifizierung verwenden",
     "OneDrive admin options saved" : "OneDrive Administrations-Einstellungen gespeichert",
     "Failed to save OneDrive admin options" : "Fehler beim Speichern der OneDrive-Administrations-Einstellungen",
     "Enable navigation link" : "Navigations-Link aktivieren",

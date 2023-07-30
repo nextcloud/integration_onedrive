@@ -52,7 +52,7 @@
     "OneDrive OAuth error:" : "Erro do OAuth de OneDrive:",
     "OneDrive options saved" : "Gardáronse as opcións de OneDrive",
     "Failed to save OneDrive options" : "Produciuse un fallo ao gardar as opcións de OneDrive",
-    "Sign in with OneDrive" : "Acceda con OneDrive",
+    "Sign in with OneDrive" : "Acceder con OneDrive",
     "Failed to save OneDrive OAuth state" : "Produciuse un fallo ao gardar o estado do OAuth de OneDrive",
     "Failed to get OneDrive storage information" : "Produciuse un fallo ao obter información do almacenamento de OneDrive",
     "Starting importing files in {targetPath} directory" : "Comezando a importar ficheiros no directorio {targetPath}",
