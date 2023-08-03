@@ -18,7 +18,7 @@ OC.L10N.register(
     "Microsoft OneDrive integration" : "Microsoft OneDrive bütünleştirmesi",
     "If you want to allow your Nextcloud users to use OAuth to authenticate to https://onedrive.live.com, create an OAuth application in your Azure settings." : "Nextcloud kullanıcılarınızın https://onedrive.live.com kimlik doğrulaması için OAuth uygulamasını kullanmak istiyorsanız, Azure ayarlarınızdan bir OAuth uygulaması oluşturun.",
     "Azure App registrations page" : "Azure uygulaması oluşturma sayfası",
-    "Set \"Application name\" to a value that will make sense to your Nextcloud users as they will see it when connecting to OneDrive using your OAuth app." : "OAuth uygulaması kullanılarak OneDrive bağlantısı kurulurken Nextcloud kullanıcılarınıza görüntüleneceğinden, \"Uygulama adı\" alanına kullanıcılarınıza anlamlı görünecek şeyler yazın.",
+    "Set \"Application name\" to a value that will make sense to your Nextcloud users as they will see it when connecting to OneDrive using your OAuth app." : "OAuth uygulaması kullanılarak OneDrive ile bağlantı kurulurken Nextcloud kullanıcılarınıza görüntüleneceğinden, \"Uygulama adı\" alanına kullanıcılarınıza anlamlı görünecek şeyler yazın.",
     "Make sure you set the \"Redirect URI\" to" : "\"Yönlendirme adresini\" şuna ayarladığınızdan emin olun",
     "Give the \"Contacts.Read\", \"Calendars.Read\", \"MailboxSettings.Read\" and \"User.Read\" API permission to your app." : "Uygulamanıza \"Contacts.Read\", \"Calendars.Read\", \"MailboxSettings.Read\" ve \"User.Read\" API izinlerini verin.",
     "Create a client secret in \"Certificates & secrets\"." : "\"Sertifikalar ve parolalar\" bölümünden bir istemci parolası oluşturun.",
