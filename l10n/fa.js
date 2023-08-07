@@ -8,6 +8,7 @@ OC.L10N.register(
     "Connected accounts" : "حساب‌های متصل",
     "Client ID" : "شناسه مشتری",
     "Client secret" : "رمز مشتری",
+    "Connected as {user}" : "متصل به عنوان {user}",
     "Contacts" : "مخاطبین",
     "Calendars" : "تقویم‌ها"
 },
