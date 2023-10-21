@@ -10,6 +10,7 @@ OC.L10N.register(
     "Data migration" : "Datamigrering",
     "Client ID" : "Klient-ID",
     "Client secret" : "Klienthemlighet",
+    "Use a popup to authenticate" : "Använd en popup för att autentisera",
     "Enable navigation link" : "Aktivera navigeringslänk",
     "Connected as {user}" : "Ansluten som {user}",
     "Contacts" : "Kontakter",
