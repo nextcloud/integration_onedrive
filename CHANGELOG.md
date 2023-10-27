@@ -4,6 +4,14 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [3.1.0] - 2023-10-27
+
+### Changes
+ - enh: Add support nc 28
+
+### Fixes
+ - Fix(l10n): Update translations from Transifex
+
 ## [3.0.0] - 2023-06-30
 
 ### Breaking changes
