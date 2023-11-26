@@ -28,7 +28,7 @@ OC.L10N.register(
     "Client secret" : "Geheime Zeichenkette des Clients",
     "Client secret of your OneDrive application" : "Client-Geheimnis deiner OneDrive-Anwendung",
     "Use a popup to authenticate" : "Popup zur Authentifizierung verwenden",
-    "OneDrive admin options saved" : "OneDrive Verwaltungseinstellungen gespeichert",
+    "OneDrive admin options saved" : "OneDrive-Verwaltungseinstellungen gespeichert",
     "Failed to save OneDrive admin options" : "Fehler beim Speichern der OneDrive-Verwaltungseinstellungen",
     "Enable navigation link" : "Navigations-Link aktivieren",
     "Ask your Nextcloud administrator to configure OneDrive OAuth settings in order to use this integration." : "Bitte deinen Nextcloud-Administrator, die OneDrive-OAuth-Einstellungen zu konfigurieren, um diese Integration verwenden zu können.",
