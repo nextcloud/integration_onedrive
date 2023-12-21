@@ -2,6 +2,8 @@
 
 🗔 OneDrive integration allows you to automatically import your files into Nextcloud.
 
+**Note: This app does not work with OneDrive for Business**
+
 ### User settings
 
 The account configuration and data migration happen in the "Data migration" user settings section.
