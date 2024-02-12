@@ -7,14 +7,21 @@ OC.L10N.register(
     "Bad HTTP method" : "HTTP-metode er feil",
     "OAuth access token refused" : "OAuth access token ble avslått",
     "Connected accounts" : "Tilknyttede kontoer",
+    "Data migration" : "Datamigrering",
     "Make sure you set the \"Redirect URI\" to" : "Pass på at du setter \"Redirect URI\" til",
+    "Put the OAuth app \"Client ID\" and \"Client secret\" below." : "Sett \"Klient-ID\" og \"Klienthemmelighet\" nedenfor.",
     "Client ID" : "Klient-ID",
     "Client secret" : "Klient-hemmelighet",
     "Use a popup to authenticate" : "Bruk en popup for å autentisere",
     "Enable navigation link" : "Aktiver navigasjonskobling",
     "Connected as {user}" : "Tilkoblet som {user}",
+    "Import directory" : "Importkatalog",
     "Contacts" : "Kontakter",
     "Calendars" : "Kalendere",
-    "Import calendar" : "Importer kalender"
+    "Import calendar" : "Importer kalender",
+    "Starting importing files in {targetPath} directory" : "Begynner å importere filer i {targetPath}-katalogen",
+    "Failed to get calendar list" : "Henting av kalenderlisten feilet",
+    "Failed to get address book list" : "Henting av adresseboklisten feilet",
+    "Choose where to write imported files" : "Velg hvor du vil skrive importerte filer"
 },
 "nplurals=2; plural=(n != 1);");
