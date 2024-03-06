@@ -1,0 +1,7 @@
+{ "translations": {
+    "Client ID" : "ID de veceru",
+    "Client secret" : "Secretu de veceru",
+    "Contacts" : "Contautos",
+    "Calendars" : "Calendarios"
+},"pluralForm" :"nplurals=2; plural=(n != 1);"
+}
