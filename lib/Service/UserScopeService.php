@@ -43,7 +43,7 @@ class UserScopeService {
 	 * @param $uid
 	 * @throws \InvalidArgumentException
 	 */
-	public function setUserScope(string $uid = null): void {
+	public function setUserScope(?string $uid = null): void {
 		if ($uid === null) {
 			return;
 		}
