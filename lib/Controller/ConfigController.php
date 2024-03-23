@@ -115,6 +115,7 @@ class ConfigController extends Controller {
 	 */
 	public function setAdminConfig(array $values): DataResponse {
 		foreach ($values as $key => $value) {
+			/** @psalm-suppress DeprecatedMethod */
 			$this->config->setAppValue(Application::APP_ID, $key, $value);
 		}
 		return new DataResponse(1);
@@ -142,7 +143,9 @@ class ConfigController extends Controller {
 	 * @return RedirectResponse to user settings
 	 */
 	public function oauthRedirect(string $code = ''): RedirectResponse {
+		/** @psalm-suppress DeprecatedMethod */
 		$clientID = $this->config->getAppValue(Application::APP_ID, 'client_id');
+		/** @psalm-suppress DeprecatedMethod */
 		$clientSecret = $this->config->getAppValue(Application::APP_ID, 'client_secret');
 
 		// anyway, reset state
@@ -174,6 +177,7 @@ class ConfigController extends Controller {
 				$this->config->setUserValue($this->userId, Application::APP_ID, 'user_id', $result['user_id'] ?? '');
 				$info = $this->onedriveAPIService->request($this->userId, 'me');
 				$this->config->setUserValue($this->userId, Application::APP_ID, 'user_name', $info['displayName'] ?? '??');
+				/** @psalm-suppress DeprecatedMethod */
 				$usePopup = $this->config->getAppValue(Application::APP_ID, 'use_popup', '0') === '1';
 				if ($usePopup) {
 					return new RedirectResponse(

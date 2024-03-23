@@ -54,8 +54,11 @@ class Personal implements ISettings {
 		$userName = $this->config->getUserValue($this->userId, Application::APP_ID, 'user_name');
 
 		// for OAuth
+		/** @psalm-suppress DeprecatedMethod */
 		$clientID = $this->config->getAppValue(Application::APP_ID, 'client_id');
+		/** @psalm-suppress DeprecatedMethod */
 		$clientSecret = $this->config->getAppValue(Application::APP_ID, 'client_secret') !== '';
+		/** @psalm-suppress DeprecatedMethod */
 		$usePopup = $this->config->getAppValue(Application::APP_ID, 'use_popup', '0');
 
 		// get free space

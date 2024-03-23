@@ -279,7 +279,9 @@ class OnedriveAPIService {
 
 	public function refreshToken(string $userId): array {
 		$this->logger->debug('Trying to REFRESH the access token', ['app' => Application::APP_ID]);
+		/** @psalm-suppress DeprecatedMethod */
 		$clientId = $this->config->getAppValue(Application::APP_ID, 'client_id');
+		/** @psalm-suppress DeprecatedMethod */
 		$clientSecret = $this->config->getAppValue(Application::APP_ID, 'client_secret');
 		$redirectUri = $this->config->getUserValue($userId, Application::APP_ID, 'redirect_uri');
 		$refreshToken = $this->config->getUserValue($userId, Application::APP_ID, 'refresh_token');
