@@ -142,8 +142,7 @@ import CalendarBlankIcon from 'vue-material-design-icons/CalendarBlank.vue'
 
 import GroupIcon from './icons/GroupIcon.vue'
 
-import NcAppNavigationIconBullet from '@nextcloud/vue/dist/Components/NcAppNavigationIconBullet.js'
-import NcButton from '@nextcloud/vue/dist/Components/NcButton.js'
+import { NcAppNavigationIconBullet, NcButton } from '@nextcloud/vue'
 
 import { loadState } from '@nextcloud/initial-state'
 import { generateUrl } from '@nextcloud/router'
