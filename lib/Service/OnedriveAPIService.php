@@ -119,6 +119,7 @@ class OnedriveAPIService {
 					$chunk = fread($body, 5000000);
 					fwrite($resource, $chunk);
 				}
+				fclose($body);
 			}
 
 			return ['success' => true];
@@ -188,7 +189,9 @@ class OnedriveAPIService {
 			} else {
 				if ($jsonResponse) {
 					if (is_resource($body)) {
-						$body = stream_get_contents($body);
+						$stream_body = stream_get_contents($body);
+						fclose($body);
+						$body = $stream_body;
 					}
 					return json_decode($body, true) ?: [];
 				} else {
