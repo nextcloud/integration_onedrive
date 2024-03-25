@@ -29,8 +29,11 @@ class Admin implements ISettings {
 	 * @return TemplateResponse
 	 */
 	public function getForm(): TemplateResponse {
+		/** @psalm-suppress DeprecatedMethod */
 		$clientID = $this->config->getAppValue(Application::APP_ID, 'client_id');
+		/** @psalm-suppress DeprecatedMethod */
 		$clientSecret = $this->config->getAppValue(Application::APP_ID, 'client_secret');
+		/** @psalm-suppress DeprecatedMethod */
 		$usePopup = $this->config->getAppValue(Application::APP_ID, 'use_popup', '0');
 
 		$adminConfig = [

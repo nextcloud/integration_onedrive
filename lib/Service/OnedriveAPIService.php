@@ -119,6 +119,7 @@ class OnedriveAPIService {
 					$chunk = fread($body, 5000000);
 					fwrite($resource, $chunk);
 				}
+				fclose($body);
 			}
 
 			return ['success' => true];
@@ -188,7 +189,9 @@ class OnedriveAPIService {
 			} else {
 				if ($jsonResponse) {
 					if (is_resource($body)) {
-						$body = stream_get_contents($body);
+						$stream_body = stream_get_contents($body);
+						fclose($body);
+						$body = $stream_body;
 					}
 					return json_decode($body, true) ?: [];
 				} else {
@@ -276,7 +279,9 @@ class OnedriveAPIService {
 
 	public function refreshToken(string $userId): array {
 		$this->logger->debug('Trying to REFRESH the access token', ['app' => Application::APP_ID]);
+		/** @psalm-suppress DeprecatedMethod */
 		$clientId = $this->config->getAppValue(Application::APP_ID, 'client_id');
+		/** @psalm-suppress DeprecatedMethod */
 		$clientSecret = $this->config->getAppValue(Application::APP_ID, 'client_secret');
 		$redirectUri = $this->config->getUserValue($userId, Application::APP_ID, 'redirect_uri');
 		$refreshToken = $this->config->getUserValue($userId, Application::APP_ID, 'refresh_token');

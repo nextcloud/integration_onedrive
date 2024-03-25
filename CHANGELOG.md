@@ -4,6 +4,16 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [3.2.0] - 2024-03-24
+
+### Changes
+- Added support for NC 29, removed support for NC 26
+
+### Fixes
+- Fixed potential memory leaks
+- Bumped js libs
+- Updated translations from Transifex
+
 ## [3.1.0] - 2023-10-27
 
 ### Changes
