@@ -1,6 +1,7 @@
 OC.L10N.register(
     "integration_onedrive",
     {
+    "Data migration" : "Migración de los datos",
     "Client ID" : "ID de veceru",
     "Client secret" : "Secretu de veceru",
     "Contacts" : "Contautos",
