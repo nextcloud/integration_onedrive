@@ -158,6 +158,20 @@ class OnedriveStorageAPIService {
 		// import batch of files
 		$targetPath = $this->config->getUserValue($userId, Application::APP_ID, 'onedrive_output_dir', '/OneDrive import');
 		$targetPath = $targetPath ?: '/OneDrive import';
+
+		try {
+			$targetNode = $this->root->getUserFolder($userId)->get($targetPath);
+			if ($targetNode->isShared()) {
+				$this->logger->error('Target path ' . $targetPath . 'is shared, resorting to user root folder');
+				$targetPath = '/';
+			}
+		} catch (NotFoundException) {
+			// noop, folder doesn't exist
+		} catch (NotPermittedException) {
+			$this->logger->error('Cannot determine if target path ' . $targetPath . 'is shared, resorting to root folder');
+			$targetPath = '/';
+		}
+
 		// get previous progress
 		$importTreeStr = $this->config->getUserValue($userId, Application::APP_ID, 'import_tree', '[]');
 		/** @var array $importTree */

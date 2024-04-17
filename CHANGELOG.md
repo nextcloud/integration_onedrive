@@ -4,12 +4,17 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [3.2.1] - 2024-04-18
+
+### Fixed
+- Don't allow shared folder as a target folder for import
+
 ## [3.2.0] - 2024-03-24
 
 ### Changes
 - Added support for NC 29, removed support for NC 26
 
-### Fixes
+### Fixed
 - Fixed potential memory leaks
 - Bumped js libs
 - Updated translations from Transifex
@@ -19,7 +24,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ### Changes
  - enh: Add support nc 28
 
-### Fixes
+### Fixed
  - Fix(l10n): Update translations from Transifex
 
 ## [3.0.0] - 2023-06-30
