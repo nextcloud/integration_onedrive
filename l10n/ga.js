@@ -6,8 +6,10 @@ OC.L10N.register(
     "Bad credentials" : "Dintiúir dona",
     "Bad HTTP method" : "Droch-mhodh HTTP",
     "OAuth access token refused" : "Diúltaíodh comhartha rochtana OAuth",
+    "Connected accounts" : "Cuntais nasctha",
     "Client ID" : "Aitheantas Cliant",
     "Client secret" : "Rún an chliaint",
+    "Connected as {user}" : "Ceangailte mar {user}",
     "Contacts" : "Teagmhálaithe",
     "Calendars" : "Féilirí",
     "Import calendar" : "Iompórtáil féilire"
