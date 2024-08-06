@@ -1,11 +1,11 @@
 OC.L10N.register(
     "integration_onedrive",
     {
-    "Error getting OAuth access token" : "Помилка отримання маркера доступу OAuth",
+    "Error getting OAuth access token" : "Помилка отримання токена доступу OAuth",
     "Error during OAuth exchanges" : "Помилка під час обміну OAuth",
     "Bad credentials" : "Погані облікові дані",
     "Bad HTTP method" : "Поганий метод HTTP",
-    "OAuth access token refused" : "Маркер доступу OAuth відхилено",
+    "OAuth access token refused" : "Токен доступу OAuth відхилено",
     "Connected accounts" : "Підключені облікові записи",
     "Client ID" : "Ідентифікатор клієнта",
     "Client secret" : "Ключ клієнта",
