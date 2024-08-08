@@ -14,7 +14,7 @@
 			{{ t('integration_onedrive', 'Make sure you set the "Redirect URI" to') }}
 			<b> {{ redirect_uri }} </b>
 			<br><br>
-			{{ t('integration_onedrive', 'Give the "Contacts.Read", "Calendars.Read", "MailboxSettings.Read" and "User.Read" API permission to your app.') }}
+			{{ t('integration_onedrive', 'Give the "Contacts.Read", "Calendars.Read", "MailboxSettings.Read", "Files.Read" and "User.Read" API permission to your app.') }}
 			<br>
 			{{ t('integration_onedrive', 'Create a client secret in "Certificates & secrets".') }}
 			{{ t('integration_onedrive', 'Put the OAuth app "Client ID" and "Client secret" below.') }}

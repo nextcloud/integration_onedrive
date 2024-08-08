@@ -18,7 +18,7 @@
     "Azure App registrations page" : "صفحة تسجيلات تطبيق Azure",
     "Set \"Application name\" to a value that will make sense to your Nextcloud users as they will see it when connecting to OneDrive using your OAuth app." : "عيِّن قِيَمة لـ \"اسم التطبيق\" وفقا للقيمة التي ستكون منطقية لمستخدمي نكست كلاود حيث سيشاهدونها عند الاتصال بتطبيق OneDrive باستخدام تطبيق المصادقة OAuth خاصّتك.",
     "Make sure you set the \"Redirect URI\" to" : "تأكد من تعيين \"إعادة توجيه العنوان URI\" إلى ",
-    "Give the \"Contacts.Read\", \"Calendars.Read\", \"MailboxSettings.Read\" and \"User.Read\" API permission to your app." : "امنح \"Contacts.Read\" و \"Calendars.Read\" و \"MailboxSettings.Read\" و \"User.Read\" إذن واجهة برمجة التطبيقات الخاص بتطبيقك.",
+    "Give the \"Contacts.Read\", \"Calendars.Read\", \"MailboxSettings.Read\", \"Files.Read\" and \"User.Read\" API permission to your app." : "امنح \"Contacts.Read\" و \"Calendars.Read\" و \"MailboxSettings.Read\" و \"Files.Read\" و \"User.Read\" إذن واجهة برمجة التطبيقات الخاص بتطبيقك.",
     "Create a client secret in \"Certificates & secrets\"." : "قم بإنشاء سر العميل في \"الشهادات والأسرار\".",
     "Put the OAuth app \"Client ID\" and \"Client secret\" below." : "ادخل في تطبيق OAuth أدناه \"معرّف العميل\" و \"سر العميل\".",
     "Your Nextcloud users will then see a \"Connect to OneDrive\" button in their personal settings." : "سيرى مستخدمو نكست كلود بعد ذلك زر \"الاتصال بتطبيق OneDrive\" في إعداداتهم الشخصية.",

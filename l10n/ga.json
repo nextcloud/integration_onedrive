@@ -18,7 +18,7 @@
     "Azure App registrations page" : "Leathanach clárúcháin Azure Aip",
     "Set \"Application name\" to a value that will make sense to your Nextcloud users as they will see it when connecting to OneDrive using your OAuth app." : "Socraigh \"Ainm an iarratais\" ar luach a dhéanfaidh ciall do d'úsáideoirí Nextcloud mar a fheicfidh siad é agus iad ag nascadh le OneDrive ag baint úsáide as d'aip OAuth.",
     "Make sure you set the \"Redirect URI\" to" : "Bí cinnte go socraíonn tú an \"URI Atreoraithe\" go",
-    "Give the \"Contacts.Read\", \"Calendars.Read\", \"MailboxSettings.Read\" and \"User.Read\" API permission to your app." : "Tabhair cead API \"Contacts.Read\", \"Calendars.Read\", \"MailboxSettings.Read\" agus \"User.Read\" le do aip.",
+    "Give the \"Contacts.Read\", \"Calendars.Read\", \"MailboxSettings.Read\", \"Files.Read\" and \"User.Read\" API permission to your app." : "Tabhair cead API \"Contacts.Read\", \"Calendars.Read\", \"MailboxSettings.Read\", \"Files.Read\" agus \"User.Read\" le do aip.",
     "Create a client secret in \"Certificates & secrets\"." : "Cruthaigh rún cliant i \"Teastais & rúin\".",
     "Put the OAuth app \"Client ID\" and \"Client secret\" below." : "Cuir an aip OAuth \"Cliant ID\" agus \"Rúnda an Chliaint\" thíos.",
     "Your Nextcloud users will then see a \"Connect to OneDrive\" button in their personal settings." : "Feicfidh d’úsáideoirí Nextcloud cnaipe “Ceangail le OneDrive” ina socruithe pearsanta ansin.",
