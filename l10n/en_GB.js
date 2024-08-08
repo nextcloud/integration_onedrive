@@ -20,7 +20,7 @@ OC.L10N.register(
     "Azure App registrations page" : "Azure App registrations page",
     "Set \"Application name\" to a value that will make sense to your Nextcloud users as they will see it when connecting to OneDrive using your OAuth app." : "Set \"Application name\" to a value that will make sense to your Nextcloud users as they will see it when connecting to OneDrive using your OAuth app.",
     "Make sure you set the \"Redirect URI\" to" : "Make sure you set the \"Redirect URI\" to",
-    "Give the \"Contacts.Read\", \"Calendars.Read\", \"MailboxSettings.Read\" and \"User.Read\" API permission to your app." : "Give the \"Contacts.Read\", \"Calendars.Read\", \"MailboxSettings.Read\" and \"User.Read\" API permission to your app.",
+    "Give the \"Contacts.Read\", \"Calendars.Read\", \"MailboxSettings.Read\", \"Files.Read\" and \"User.Read\" API permission to your app." : "Give the \"Contacts.Read\", \"Calendars.Read\", \"MailboxSettings.Read\", \"Files.Read\" and \"User.Read\" API permission to your app.",
     "Create a client secret in \"Certificates & secrets\"." : "Create a client secret in \"Certificates & secrets\".",
     "Put the OAuth app \"Client ID\" and \"Client secret\" below." : "Put the OAuth app \"Client ID\" and \"Client secret\" below.",
     "Your Nextcloud users will then see a \"Connect to OneDrive\" button in their personal settings." : "Your Nextcloud users will then see a \"Connect to OneDrive\" button in their personal settings.",
