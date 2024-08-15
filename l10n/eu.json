@@ -18,7 +18,7 @@
     "Azure App registrations page" : "Azure aplikazioaren saioa hasteko orria",
     "Set \"Application name\" to a value that will make sense to your Nextcloud users as they will see it when connecting to OneDrive using your OAuth app." : "Zehaztu \"Application name\" atalean zure Nextcloud erabiltzaileentzat zentzua izango duen zerbait, beraiek hori ikusiko baitute OneDrive-rekin konektatzen direnean zure OAuth aplikazioaren bidez.",
     "Make sure you set the \"Redirect URI\" to" : "Ziurtatu \"Birbideratze URLa\" ezartzen duzula hona:",
-    "Give the \"Contacts.Read\", \"Calendars.Read\", \"MailboxSettings.Read\" and \"User.Read\" API permission to your app." : "Eman zure aplikazioari \"Contacts.Read\", \"Calendars.Read\", \"MailboxSettings.Read\" eta \"User.Read\" API baimenak.",
+    "Give the \"Contacts.Read\", \"Calendars.Read\", \"MailboxSettings.Read\", \"Files.Read\" and \"User.Read\" API permission to your app." : "Eman zure aplikazioari \"Contacts.Read\", \"Calendars.Read\", \"MailboxSettings.Read\", \"Files.Read\" eta \"User.Read\" API baimenak.",
     "Create a client secret in \"Certificates & secrets\"." : "Sortu bezeroaren sekretua \"Certificates & secrets\" atalean.",
     "Put the OAuth app \"Client ID\" and \"Client secret\" below." : "Jarri OAuth aplikazioaren \"bezero IDa\" eta \"bezero-sekretua\" behean.",
     "Your Nextcloud users will then see a \"Connect to OneDrive\" button in their personal settings." : "Zure Nextcloudeko erabiltzaileek \"Konektatu OneDrive-rekin\" botoia ikusiko dute beraien ezarpen pertsonaletan.",

@@ -20,7 +20,7 @@ OC.L10N.register(
     "Azure App registrations page" : "Azure-App Registrierungsseite",
     "Set \"Application name\" to a value that will make sense to your Nextcloud users as they will see it when connecting to OneDrive using your OAuth app." : "Lege „Anwendungsname“ auf einen Wert fest, der für deine Nextcloud-Benutzer sinnvoll ist, da sie ihn sehen, wenn sie sich mit Ihrer OAuth-App mit OneDrive verbinden.",
     "Make sure you set the \"Redirect URI\" to" : "Stelle sicher, dass die \"Weiterleitungs-URI\" gesetzt ist auf",
-    "Give the \"Contacts.Read\", \"Calendars.Read\", \"MailboxSettings.Read\" and \"User.Read\" API permission to your app." : "Erteile deinerr App die API-Berechtigungen „Contacts.Read“, „Calendars.Read“, „MailboxSettings.Read“ und „User.Read“.",
+    "Give the \"Contacts.Read\", \"Calendars.Read\", \"MailboxSettings.Read\", \"Files.Read\" and \"User.Read\" API permission to your app." : "Erteile deinerr App die API-Berechtigungen „Contacts.Read“, „Calendars.Read“, „MailboxSettings.Read“ und „User.Read“.",
     "Create a client secret in \"Certificates & secrets\"." : "Erstelle unter „Zertifikate & Geheimnisse“ ein Client-Secret.",
     "Put the OAuth app \"Client ID\" and \"Client secret\" below." : "Gib unten die OAuth-App \"Client ID\" und \"Client secret\" ein.",
     "Your Nextcloud users will then see a \"Connect to OneDrive\" button in their personal settings." : "Die Benutzer deiner Nextcloud sehen dann in ihren persönlichen Einstellungen einen „Mit OneDrive verbinden“-Button.",
