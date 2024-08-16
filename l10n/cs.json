@@ -18,7 +18,6 @@
     "Azure App registrations page" : "Stránka pro registrace aplikací v Azure",
     "Set \"Application name\" to a value that will make sense to your Nextcloud users as they will see it when connecting to OneDrive using your OAuth app." : "Hodnotu „Název aplikace“ nastavte na takové, které budou srozumitelné pro vaše Nextcloud uživatele, protože budou viditelné při připojování se k OneDrive pomocí vaší OAuth aplikace.",
     "Make sure you set the \"Redirect URI\" to" : "Ověřte, že je „Redirect URI“ nastavené na",
-    "Give the \"Contacts.Read\", \"Calendars.Read\", \"MailboxSettings.Read\", \"Files.Read\" and \"User.Read\" API permission to your app." : "Své aplikaci udělte oprávnění k API pro „Contacts.Read“, „Calendars.Read“, „MailboxSettings.Read“ a „User.Read“.",
     "Create a client secret in \"Certificates & secrets\"." : "V „Certificates & secrets“ vytvořte tajemství klienta.",
     "Put the OAuth app \"Client ID\" and \"Client secret\" below." : "Níže vložte „Identif. klienta“ a „tajemství klienta“ OAuth aplikace.",
     "Your Nextcloud users will then see a \"Connect to OneDrive\" button in their personal settings." : "Vaši Nextcloud uživatelé pak ve svých osobních nastaveních uvidí tlačítko „Připojit k OneDrive“.",
