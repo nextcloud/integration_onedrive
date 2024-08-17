@@ -18,6 +18,7 @@
     "Azure App registrations page" : "Azure alkalmazásregisztrációs oldal",
     "Set \"Application name\" to a value that will make sense to your Nextcloud users as they will see it when connecting to OneDrive using your OAuth app." : "Állítsa be az „Alkalmazásnév” mezőt egy olyan értékre, amely megfelel a Nextcloud felhasználóinak, mivel ezt fogják látni, amikor a OneDrive-hoz kapcsolódnak az OAuth alkalmazással.",
     "Make sure you set the \"Redirect URI\" to" : "Győződjön meg róla, hogy erre állította be az „Átirányítási URI” értékét:",
+    "Give the \"Contacts.Read\", \"Calendars.Read\", \"MailboxSettings.Read\", \"Files.Read\" and \"User.Read\" API permission to your app." : "Adja meg a „Contacts.Read”, a „Calendars.Read”, a „MailboxSettings.Read”, a „Files.Read” és a „User.Read” API jogosultságokat az alkalmazásához.",
     "Create a client secret in \"Certificates & secrets\"." : "Hozzon létre egy klienstitkot a „Tanúsítványok és titkok” részben.",
     "Put the OAuth app \"Client ID\" and \"Client secret\" below." : "Töltse ki az „Ügyfélazonosító” és a „Klienstitok” mezőket.",
     "Your Nextcloud users will then see a \"Connect to OneDrive\" button in their personal settings." : "A Nextcloud felhasználói ezután látni fogják a „Kapcsolódás a OneDrive-hoz” gombot a személyes beállításaikban.",
