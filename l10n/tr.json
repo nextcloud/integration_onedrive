@@ -18,6 +18,7 @@
     "Azure App registrations page" : "Azure uygulaması oluşturma sayfası",
     "Set \"Application name\" to a value that will make sense to your Nextcloud users as they will see it when connecting to OneDrive using your OAuth app." : "OAuth uygulaması kullanılarak OneDrive ile bağlantı kurulurken Nextcloud kullanıcılarınıza görüntüleneceğinden, \"Uygulama adı\" alanına kullanıcılarınıza anlamlı görünecek şeyler yazın.",
     "Make sure you set the \"Redirect URI\" to" : "\"Yönlendirme adresini\" şuna ayarladığınızdan emin olun",
+    "Give the \"Contacts.Read\", \"Calendars.Read\", \"MailboxSettings.Read\", \"Files.Read\" and \"User.Read\" API permission to your app." : "Uygulamanıza \"Contacts.Read\", \"Calendars.Read\", \"MailboxSettings.Read\", \"Files.Read\" ve \"User.Read\" API izinlerini verin.",
     "Create a client secret in \"Certificates & secrets\"." : "\"Sertifikalar ve parolalar\" bölümünden bir istemci parolası oluşturun.",
     "Put the OAuth app \"Client ID\" and \"Client secret\" below." : "OAuth uygulaması \"İstemci kimliği\" ve \"İstemci parolası\" bilgilerini aşağıya ekleyin.",
     "Your Nextcloud users will then see a \"Connect to OneDrive\" button in their personal settings." : "Bundan sonra Nextcloud kullanıcılarınız kişisel ayarlarında \"OneDrive bağlantısı kur\" seçeneğini görecek.",
