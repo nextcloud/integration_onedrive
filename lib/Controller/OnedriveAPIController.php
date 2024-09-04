@@ -28,12 +28,12 @@ class OnedriveAPIController extends Controller {
 	private string $accessToken;
 
 	public function __construct(string $appName,
-								IRequest $request,
-								private IConfig $config,
-								private OnedriveStorageAPIService $onedriveStorageApiService,
-								private OnedriveCalendarAPIService $onedriveCalendarApiService,
-								private OnedriveContactAPIService $onedriveContactApiService,
-								private ?string $userId) {
+		IRequest $request,
+		private IConfig $config,
+		private OnedriveStorageAPIService $onedriveStorageApiService,
+		private OnedriveCalendarAPIService $onedriveCalendarApiService,
+		private OnedriveContactAPIService $onedriveContactApiService,
+		private ?string $userId) {
 		parent::__construct($appName, $request);
 		$this->accessToken = $this->config->getUserValue($this->userId, Application::APP_ID, 'token');
 	}
