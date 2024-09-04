@@ -18,7 +18,7 @@
     "Azure App registrations page" : "Azure 應用程式註冊頁面",
     "Set \"Application name\" to a value that will make sense to your Nextcloud users as they will see it when connecting to OneDrive using your OAuth app." : "將「應用程式名稱」設置為對 Nextcloud 用戶有意義的值，因為他們在使用 OAuth 應用程式連接到 OneDrive 時會看到它。",
     "Make sure you set the \"Redirect URI\" to" : "確保您將「重新導向 URI」設定為",
-    "Give the \"Contacts.Read\", \"Calendars.Read\", \"MailboxSettings.Read\" and \"User.Read\" API permission to your app." : "為您的應用程式授予 “Contacts.Read”、“Calendars.Read”、“MailboxSettings.Read” 和 “User.Read” API 權限。",
+    "Give the \"Contacts.Read\", \"Calendars.Read\", \"MailboxSettings.Read\", \"Files.Read\" and \"User.Read\" API permission to your app." : "向您的應用程式授予「Contacts.Read」、「Calendars.Read」、「MailboxSettings.Read」、「Files.Read」和「User.Read」API 權限。",
     "Create a client secret in \"Certificates & secrets\"." : "在“證書和密碼”中創建一個客戶端密碼。",
     "Put the OAuth app \"Client ID\" and \"Client secret\" below." : "在下方放置 OAuth 應用程式「客戶端 ID」與「客戶端密碼」。",
     "Your Nextcloud users will then see a \"Connect to OneDrive\" button in their personal settings." : "然後，您的 Nextcloud 用戶將在其個人設置中看到【連接到 OneDrive】按鈕。",
