@@ -34,14 +34,14 @@ use OCP\IURLGenerator;
 class ConfigController extends Controller {
 
 	public function __construct(string $appName,
-								IRequest $request,
-								private IConfig $config,
-								private IURLGenerator $urlGenerator,
-								private IL10N $l,
-								private IInitialState $initialStateService,
-								private IContactManager $contactsManager,
-								private OnedriveAPIService $onedriveAPIService,
-								private ?string $userId) {
+		IRequest $request,
+		private IConfig $config,
+		private IURLGenerator $urlGenerator,
+		private IL10N $l,
+		private IInitialState $initialStateService,
+		private IContactManager $contactsManager,
+		private OnedriveAPIService $onedriveAPIService,
+		private ?string $userId) {
 		parent::__construct($appName, $request);
 	}
 
