@@ -16,6 +16,8 @@ use OCA\Onedrive\AppInfo\Application;
 use OCA\Onedrive\Service\OnedriveAPIService;
 use OCP\AppFramework\Controller;
 use OCP\AppFramework\Http;
+use OCP\AppFramework\Http\Attribute\NoAdminRequired;
+use OCP\AppFramework\Http\Attribute\NoCSRFRequired;
 use OCP\AppFramework\Http\DataResponse;
 use OCP\AppFramework\Http\RedirectResponse;
 use OCP\AppFramework\Http\TemplateResponse;
@@ -31,61 +33,25 @@ use OCP\IURLGenerator;
 
 class ConfigController extends Controller {
 
-	/**
-	 * @var string|null
-	 */
-	private $userId;
-	/**
-	 * @var IConfig
-	 */
-	private $config;
-	/**
-	 * @var IContactManager
-	 */
-	private $contactsManager;
-	/**
-	 * @var IURLGenerator
-	 */
-	private $urlGenerator;
-	/**
-	 * @var OnedriveAPIService
-	 */
-	private $onedriveAPIService;
-	/**
-	 * @var IL10N
-	 */
-	private $l;
-	/**
-	 * @var IInitialState
-	 */
-	private $initialStateService;
-
 	public function __construct(string $appName,
-		IRequest $request,
-		IConfig $config,
-		IURLGenerator $urlGenerator,
-		IL10N $l,
-		IInitialState $initialStateService,
-		IContactManager $contactsManager,
-		OnedriveAPIService $onedriveAPIService,
-		?string $userId) {
+								IRequest $request,
+								private IConfig $config,
+								private IURLGenerator $urlGenerator,
+								private IL10N $l,
+								private IInitialState $initialStateService,
+								private IContactManager $contactsManager,
+								private OnedriveAPIService $onedriveAPIService,
+								private ?string $userId) {
 		parent::__construct($appName, $request);
-		$this->l = $l;
-		$this->userId = $userId;
-		$this->config = $config;
-		$this->contactsManager = $contactsManager;
-		$this->urlGenerator = $urlGenerator;
-		$this->onedriveAPIService = $onedriveAPIService;
-		$this->initialStateService = $initialStateService;
 	}
 
 	/**
-	 * @NoAdminRequired
 	 * Set config values
 	 *
 	 * @param array<string,string> $values key/value pairs to store in user preferences
 	 * @return DataResponse
 	 */
+	#[NoAdminRequired]
 	public function setConfig(array $values): DataResponse {
 		if ($this->userId === null) {
 			return new DataResponse([], Http::STATUS_BAD_REQUEST);
@@ -121,27 +87,21 @@ class ConfigController extends Controller {
 		return new DataResponse(1);
 	}
 
-	/**
-	 * @NoAdminRequired
-	 * @NoCSRFRequired
-	 *
-	 * @param string $username
-	 * @return TemplateResponse
-	 */
+	#[NoAdminRequired]
+	#[NoCSRFRequired]
 	public function popupSuccessPage(string $username): TemplateResponse {
 		$this->initialStateService->provideInitialState('popup-data', ['user_name' => $username]);
 		return new TemplateResponse(Application::APP_ID, 'popupSuccess', [], TemplateResponse::RENDER_AS_GUEST);
 	}
 
 	/**
-	 * @NoAdminRequired
-	 * @NoCSRFRequired
-	 *
 	 * Receive oauth code and get oauth access token
 	 *
 	 * @param string $code request code to use when requesting oauth token
 	 * @return RedirectResponse to user settings
 	 */
+	#[NoAdminRequired]
+	#[NoCSRFRequired]
 	public function oauthRedirect(string $code = ''): RedirectResponse {
 		/** @psalm-suppress DeprecatedMethod */
 		$clientID = $this->config->getAppValue(Application::APP_ID, 'client_id');
@@ -201,11 +161,11 @@ class ConfigController extends Controller {
 	}
 
 	/**
-	 * @NoAdminRequired
 	 * Get local address book list
 	 *
 	 * @return DataResponse
 	 */
+	#[NoAdminRequired]
 	public function getLocalAddressBooks(): DataResponse {
 		$addressBooks = $this->contactsManager->getUserAddressBooks();
 		$result = [];

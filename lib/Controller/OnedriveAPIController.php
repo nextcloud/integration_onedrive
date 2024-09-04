@@ -18,58 +18,27 @@ use OCA\Onedrive\Service\OnedriveStorageAPIService;
 use OCP\AppFramework\Controller;
 
 use OCP\AppFramework\Http;
+use OCP\AppFramework\Http\Attribute\NoAdminRequired;
 use OCP\AppFramework\Http\DataResponse;
 use OCP\IConfig;
 use OCP\IRequest;
 
 class OnedriveAPIController extends Controller {
 
-	/**
-	 * @var OnedriveContactAPIService
-	 */
-	private $onedriveContactApiService;
-	/**
-	 * @var IConfig
-	 */
-	private $config;
-	/**
-	 * @var OnedriveStorageAPIService
-	 */
-	private $onedriveStorageApiService;
-	/**
-	 * @var OnedriveCalendarAPIService
-	 */
-	private $onedriveCalendarApiService;
-	/**
-	 * @var string|null
-	 */
-	private $userId;
-	/**
-	 * @var string
-	 */
-	private $accessToken;
+	private string $accessToken;
 
 	public function __construct(string $appName,
-		IRequest $request,
-		IConfig $config,
-		OnedriveStorageAPIService $onedriveStorageApiService,
-		OnedriveCalendarAPIService $onedriveCalendarApiService,
-		OnedriveContactAPIService $onedriveContactApiService,
-		?string $userId) {
+								IRequest $request,
+								private IConfig $config,
+								private OnedriveStorageAPIService $onedriveStorageApiService,
+								private OnedriveCalendarAPIService $onedriveCalendarApiService,
+								private OnedriveContactAPIService $onedriveContactApiService,
+								private ?string $userId) {
 		parent::__construct($appName, $request);
-		$this->config = $config;
-		$this->onedriveStorageApiService = $onedriveStorageApiService;
-		$this->onedriveCalendarApiService = $onedriveCalendarApiService;
-		$this->onedriveContactApiService = $onedriveContactApiService;
-		$this->userId = $userId;
 		$this->accessToken = $this->config->getUserValue($this->userId, Application::APP_ID, 'token');
 	}
 
-	/**
-	 * @NoAdminRequired
-	 *
-	 * @return DataResponse
-	 */
+	#[NoAdminRequired]
 	public function getStorageSize(): DataResponse {
 		if ($this->accessToken === '' || $this->userId === null) {
 			return new DataResponse([], Http::STATUS_BAD_REQUEST);
@@ -84,11 +53,7 @@ class OnedriveAPIController extends Controller {
 		return $response;
 	}
 
-	/**
-	 * @NoAdminRequired
-	 *
-	 * @return DataResponse
-	 */
+	#[NoAdminRequired]
 	public function importOnedrive(): DataResponse {
 		if ($this->accessToken === '' || $this->userId === null) {
 			return new DataResponse([], Http::STATUS_BAD_REQUEST);
@@ -103,11 +68,7 @@ class OnedriveAPIController extends Controller {
 		return $response;
 	}
 
-	/**
-	 * @NoAdminRequired
-	 *
-	 * @return DataResponse
-	 */
+	#[NoAdminRequired]
 	public function getImportOnedriveInformation(): DataResponse {
 		if ($this->accessToken === '' || $this->userId === null) {
 			return new DataResponse([], Http::STATUS_BAD_REQUEST);
@@ -121,11 +82,7 @@ class OnedriveAPIController extends Controller {
 		]);
 	}
 
-	/**
-	 * @NoAdminRequired
-	 *
-	 * @return DataResponse
-	 */
+	#[NoAdminRequired]
 	public function getCalendarList(): DataResponse {
 		if ($this->accessToken === '' || $this->userId === null) {
 			return new DataResponse([], Http::STATUS_BAD_REQUEST);
@@ -140,14 +97,7 @@ class OnedriveAPIController extends Controller {
 		return $response;
 	}
 
-	/**
-	 * @NoAdminRequired
-	 *
-	 * @param string $calId
-	 * @param string $calName
-	 * @param ?string $color
-	 * @return DataResponse
-	 */
+	#[NoAdminRequired]
 	public function importCalendar(string $calId, string $calName, ?string $color = null): DataResponse {
 		if ($this->accessToken === '' || $this->userId === null) {
 			return new DataResponse([], Http::STATUS_BAD_REQUEST);
@@ -162,11 +112,7 @@ class OnedriveAPIController extends Controller {
 		return $response;
 	}
 
-	/**
-	 * @NoAdminRequired
-	 *
-	 * @return DataResponse
-	 */
+	#[NoAdminRequired]
 	public function getContactNumber(): DataResponse {
 		if ($this->accessToken === '' || $this->userId === null) {
 			return new DataResponse([], Http::STATUS_BAD_REQUEST);
@@ -181,11 +127,7 @@ class OnedriveAPIController extends Controller {
 		return $response;
 	}
 
-	/**
-	 * @NoAdminRequired
-	 *
-	 * @return DataResponse
-	 */
+	#[NoAdminRequired]
 	public function importContacts(): DataResponse {
 		if ($this->accessToken === '' || $this->userId === null) {
 			return new DataResponse([], Http::STATUS_BAD_REQUEST);
