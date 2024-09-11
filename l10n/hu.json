@@ -64,7 +64,6 @@
     "Choose where to write imported files" : "Válassza ki az importált fájlok helyét",
     "_{amount} file imported ({formImported}) ({progress}%)_::_{amount} files imported ({formImported}) ({progress}%)_" : ["{amount} fájl importálva ({formImported}) ({progress}%)","{amount} fájl importálva ({formImported}) ({progress}%)"],
     "_{number} event successfully imported in {name}_::_{number} events successfully imported in {name}_" : ["{number} esemény sikeresen importálva a következőbe: {name}","{number} esemény sikeresen importálva a következőbe: {name}"],
-    "_{nbAdded} contact created, {nbUpdated} updated, {nbSkipped} skipped, {nbFailed} failed_::_{nbAdded} contacts created, {nbUpdated} updated, {nbSkipped} skipped, {nbFailed} failed_" : ["{nbAdded} névjegy létrehozva, {nbUpdated} frissítve, {nbSkipped} kihagyva, {nbFailed} sikertelen","{nbAdded} névjegy létrehozva, {nbUpdated} frissítve, {nbSkipped} kihagyva, {nbFailed} sikertelen"],
     "Last Onedrive import job at {date}" : "Az utolsó OneDrive importálási feladat ideje: {date}"
 },"pluralForm" :"nplurals=2; plural=(n != 1);"
 }

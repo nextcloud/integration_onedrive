@@ -62,7 +62,6 @@
     "Choose where to write imported files" : "Aukeratu non idatzi inportatutako fitxategiak",
     "_{amount} file imported ({formImported}) ({progress}%)_::_{amount} files imported ({formImported}) ({progress}%)_" : ["Fitxategi {amount} inportatu da ({formImported}) ({progress}%)","{amount} fitxategi inportatu dira ({formImported}) ({progress}%)"],
     "_{number} event successfully imported in {name}_::_{number} events successfully imported in {name}_" : ["Gertaera {number} ondo inportatu da {name}-ra","{number} gertaera ondo inportatu dira {name}-ra"],
-    "_{nbAdded} contact created, {nbUpdated} updated, {nbSkipped} skipped, {nbFailed} failed_::_{nbAdded} contacts created, {nbUpdated} updated, {nbSkipped} skipped, {nbFailed} failed_" : ["Kontaktu {nbAdded} sortu da, {nbUpdated} eguneratu, {nbSkipped} saltatu, {nbFailed}ek huts egin du.","{nbAdded} kontaktu sortu dira, {nbUpdated} eguneratu, {nbSkipped} saltatu eta {nbFailed}(e)k huts egin dute."],
     "Last Onedrive import job at {date}" : "Egindako azken OneDrive inportazioa: {date}"
 },"pluralForm" :"nplurals=2; plural=(n != 1);"
 }

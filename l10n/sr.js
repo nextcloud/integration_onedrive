@@ -66,7 +66,6 @@ OC.L10N.register(
     "Choose where to write imported files" : "Изаберите где желите да увезете фајлове",
     "_{amount} file imported ({formImported}) ({progress}%)_::_{amount} files imported ({formImported}) ({progress}%)_" : ["увезен је {amount} фајл ({formImported}) ({progress}%)","увезена су {amount} фајла ({formImported}) ({progress}%)","увезено је {amount} фајлова ({formImported}) ({progress}%)"],
     "_{number} event successfully imported in {name}_::_{number} events successfully imported in {name}_" : ["успешно је увезен {number} догађај у {name}","успешно су увезена {number} догађаја у {name}","успешно је увезено {number} догађаја у {name}"],
-    "_{nbAdded} contact created, {nbUpdated} updated, {nbSkipped} skipped, {nbFailed} failed_::_{nbAdded} contacts created, {nbUpdated} updated, {nbSkipped} skipped, {nbFailed} failed_" : ["креиран је {nbAdded} контакт, {nbUpdated} ажурирано, {nbSkipped} прескочено, {nbFailed} није успело","креирана су {nbAdded} контакта, {nbUpdated} ажурирано, {nbSkipped} прескочено, {nbFailed} није успело","креирано је {nbAdded} контаката, {nbUpdated} ажурирано, {nbSkipped} прескочено, {nbFailed} није успело"],
     "Last Onedrive import job at {date}" : "Последњи посао увоза Onedrive дана {date}"
 },
 "nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);");

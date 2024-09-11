@@ -65,7 +65,6 @@ OC.L10N.register(
     "Choose where to write imported files" : "Choisissez où écrire les fichiers importés",
     "_{amount} file imported ({formImported}) ({progress}%)_::_{amount} files imported ({formImported}) ({progress}%)_" : ["{amount} fichier importé ({formImported}) ({progress}%)","{amount} fichiers importés ({formImported}) ({progress}%)","{amount} fichiers importés ({formImported}) ({progress}%)"],
     "_{number} event successfully imported in {name}_::_{number} events successfully imported in {name}_" : ["{number} événement importé avec succès dans {name}","{number} événements importés avec succès dans {name}","{number} événements importés avec succès dans {name}"],
-    "_{nbAdded} contact created, {nbUpdated} updated, {nbSkipped} skipped, {nbFailed} failed_::_{nbAdded} contacts created, {nbUpdated} updated, {nbSkipped} skipped, {nbFailed} failed_" : ["{nbAdded} contact·s créé·s, {nbUpdated} actualisé·s, {nbSkipped} ignoré·s, {nbFailed} échoué·s","{nbAdded} contact·s créé·s, {nbUpdated} actualisé·s, {nbSkipped} ignoré·s, {nbFailed} échoué·s","{nbAdded} contact·s créé·s, {nbUpdated} actualisé·s, {nbSkipped} ignoré·s, {nbFailed} échoué·s"],
     "Last Onedrive import job at {date}" : "Dernière tâche d'importation OneDrive le {date}"
 },
 "nplurals=3; plural=(n == 0 || n == 1) ? 0 : n != 0 && n % 1000000 == 0 ? 1 : 2;");
