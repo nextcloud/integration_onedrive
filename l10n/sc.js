@@ -8,7 +8,7 @@ OC.L10N.register(
     "OAuth access token refused" : "Token de intrada OAuth refudadu",
     "Connected accounts" : "Contos connètidos",
     "Data migration" : "Tramudadura de datos",
-    "Make sure you set the \"Redirect URI\" to" : "Segura·ti de impostare \"URI de ri-aderetada\" a ",
+    "Make sure you set the \"Redirect URI\" to" : "Assegura·ti de cunfigurare s'\"URI de ri-aderetada\" comente",
     "Put the OAuth app \"Client ID\" and \"Client secret\" below." : "Pone su «ID de su cliente» e su «Segretu de cliente» de s'aplicatzione OAuth sighende.",
     "Client ID" : "ID cliente",
     "Client secret" : "Segretu de su cliente",
