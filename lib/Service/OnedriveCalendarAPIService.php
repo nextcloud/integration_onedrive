@@ -154,7 +154,7 @@ class OnedriveCalendarAPIService {
 
 		$categories = $this->getCategories($userId);
 
-		$newCalName = trim($calName) . ' (' . $this->l10n->t('Microsoft Calendar import') .')';
+		$newCalName = trim($calName) . ' (' . $this->l10n->t('Microsoft Calendar import') . ')';
 		/** @var ?string $ncCalId */
 		$ncCalId = $this->calendarExists($userId, $newCalName);
 		if (is_null($ncCalId)) {
@@ -322,7 +322,7 @@ class OnedriveCalendarAPIService {
 				} else {
 					$this->logger->warning('Error when creating calendar event "' . ($e['subject'] ?? 'no title') . '" ' . $ex->getMessage(), ['app' => Application::APP_ID]);
 				}
-			} catch (Exception | Throwable $ex) {
+			} catch (Exception|Throwable $ex) {
 				$this->logger->warning('Error when creating calendar event "' . ($e['subject'] ?? 'no title') . '" ' . $ex->getMessage(), ['app' => Application::APP_ID]);
 			}
 		}
@@ -346,7 +346,7 @@ class OnedriveCalendarAPIService {
 	private function getCalendarEvents(string $userId, string $calId): Generator {
 		$params = [];
 		do {
-			$result = $this->onedriveApiService->request($userId, 'me/calendars/'.$calId.'/events', $params);
+			$result = $this->onedriveApiService->request($userId, 'me/calendars/' . $calId . '/events', $params);
 			if (isset($result['error']) || !isset($result['value'])) {
 				return $result;
 			}

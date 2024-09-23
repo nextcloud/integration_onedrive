@@ -4,6 +4,14 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [3.3.0] - 2024-09-24
+
+### Changes
+- Bumped js libs
+
+### Fixed
+- Added a `ratelimit` response processing handler so that it doesn't fail when loading large amounts of data. Thanks to @baywet
+
 ## [3.2.2] - 2024-07-24
 
 ### Changes

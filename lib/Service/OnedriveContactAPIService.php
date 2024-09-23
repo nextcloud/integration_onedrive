@@ -416,7 +416,7 @@ class OnedriveContactAPIService {
 					]
 				);
 				$vCard->add($prop);
-			} catch (Exception | Throwable $ex) {
+			} catch (Exception|Throwable $ex) {
 				$this->logger->warning('Error when setting contact photo: ' . $ex->getMessage(), ['app' => Application::APP_ID]);
 			}
 		}
