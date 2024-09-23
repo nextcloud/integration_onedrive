@@ -20,6 +20,9 @@
     </PossiblyNullArgument>
   </file>
   <file src="lib/Service/OnedriveAPIService.php">
+    <MixedArgumentTypeCoercion occurrences="1">
+      <code>KiotaMiddleware::retry()</code>
+    </MixedArgumentTypeCoercion>
     <MixedInferredReturnType occurrences="2">
       <code>array{body?: resource|string, headers?: array, error?: string}</code>
       <code>array{error?: string}</code>
@@ -195,9 +198,6 @@
       <code>$folder</code>
       <code>$folder</code>
     </ArgumentTypeCoercion>
-    <DocblockTypeContradiction occurrences="1">
-      <code>$resource === false</code>
-    </DocblockTypeContradiction>
     <MixedArgument occurrences="10">
       <code>$fileItem['@microsoft.graph.downloadUrl']</code>
       <code>$fileItem['lastModifiedDateTime']</code>

@@ -292,7 +292,6 @@ class OnedriveAPIService {
 
 	private function getKiotaHandlerStack(): HandlerStack {
 		$handlerStack = HandlerStack::create();
-		// @psalm-suppress MixedArgumentTypeCoercion
 		$handlerStack->push(KiotaMiddleware::retry(), RetryHandler::HANDLER_NAME);
 		return $handlerStack;
 	}
