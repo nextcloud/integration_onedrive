@@ -94,8 +94,6 @@ jobs:
       - name: Build ${{ env.APP_NAME }}
         # Skip if no package.json
         if: ${{ steps.versions.outputs.nodeVersion }}
-        env:
-          NODE_ENV: production
         run: |
           cd ${{ env.APP_NAME }}
           npm ci
