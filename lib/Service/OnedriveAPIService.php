@@ -16,7 +16,11 @@ use Exception;
 use GuzzleHttp\Exception\ClientException;
 use GuzzleHttp\Exception\ConnectException;
 use GuzzleHttp\Exception\ServerException;
+use GuzzleHttp\HandlerStack;
+use Microsoft\Kiota\Http\Middleware\KiotaMiddleware;
+use Microsoft\Kiota\Http\Middleware\RetryHandler;
 use OCA\Onedrive\AppInfo\Application;
+use OCP\Http\Client\IClient;
 use OCP\Http\Client\IClientService;
 use OCP\IConfig;
 use OCP\IL10N;
@@ -27,46 +31,20 @@ use Throwable;
 
 class OnedriveAPIService {
 
-	/**
-	 * @var LoggerInterface
-	 */
-	private $logger;
-	/**
-	 * @var string
-	 */
-	private $appName;
-	/**
-	 * @var IConfig
-	 */
-	private $config;
-	/**
-	 * @var INotificationManager
-	 */
-	private $notificationManager;
-	/**
-	 * @var IL10N
-	 */
-	private $l10n;
-	/**
-	 * @var \OCP\Http\Client\IClient
-	 */
-	private $client;
+	private IClient $client;
 
 	/**
 	 * Service to make requests to OneDrive v3 (JSON) API
 	 */
-	public function __construct(string $appName,
-		LoggerInterface $logger,
-		IL10N $l10n,
-		IConfig $config,
-		INotificationManager $notificationManager,
-		IClientService $clientService) {
-		$this->appName = $appName;
-		$this->logger = $logger;
-		$this->config = $config;
-		$this->notificationManager = $notificationManager;
+	public function __construct(
+		string $appName,
+		private LoggerInterface $logger,
+		private IL10N $l10n,
+		private IConfig $config,
+		private INotificationManager $notificationManager,
+		IClientService $clientService,
+	) {
 		$this->client = $clientService->newClient();
-		$this->l10n = $l10n;
 	}
 
 	/**
@@ -101,6 +79,7 @@ class OnedriveAPIService {
 				'headers' => [
 					'User-Agent' => 'Nextcloud Dropbox integration',
 				],
+				'handler' => $this->getKiotaHandlerStack(),
 			];
 
 			$response = $this->client->get($url, $options);
@@ -123,14 +102,14 @@ class OnedriveAPIService {
 			}
 
 			return ['success' => true];
-		} catch (ServerException | ClientException $e) {
+		} catch (ServerException|ClientException $e) {
 			// $response = $e->getResponse();
-			$this->logger->warning('OneDrive API error : '.$e->getMessage(), ['app' => Application::APP_ID]);
+			$this->logger->warning('OneDrive API error : ' . $e->getMessage(), ['app' => Application::APP_ID]);
 			return ['error' => $e->getMessage()];
 		} catch (ConnectException $e) {
 			$this->logger->error('OneDrive API request connection error: ' . $e->getMessage(), ['app' => Application::APP_ID]);
 			return ['error' => $e->getMessage()];
-		} catch (Exception | Throwable $e) {
+		} catch (Exception|Throwable $e) {
 			$this->logger->error('OneDrive API request connection error: ' . $e->getMessage(), ['app' => Application::APP_ID]);
 			return ['error' => $e->getMessage()];
 		}
@@ -156,6 +135,7 @@ class OnedriveAPIService {
 					'Authorization' => 'bearer ' . $accessToken,
 					'User-Agent' => 'Nextcloud OneDrive integration'
 				],
+				'handler' => $this->getKiotaHandlerStack(),
 			];
 			if ($method === 'POST') {
 				$options['headers']['Content-Type'] = 'application/json';
@@ -201,11 +181,11 @@ class OnedriveAPIService {
 					];
 				}
 			}
-		} catch (ServerException | ClientException $e) {
-			$this->logger->warning('OneDrive API error : '.$e->getResponse()->getBody(), ['app' => Application::APP_ID]);
+		} catch (ServerException|ClientException $e) {
+			$this->logger->warning('OneDrive API error : ' . $e->getResponse()->getBody(), ['app' => Application::APP_ID]);
 			return ['error' => $e->getResponse()->getBody()];
 		} catch (ConnectException $e) {
-			$this->logger->warning('OneDrive API connection error : '.$e->getMessage(), ['app' => Application::APP_ID]);
+			$this->logger->warning('OneDrive API connection error : ' . $e->getMessage(), ['app' => Application::APP_ID]);
 			return ['error' => $e->getMessage()];
 		}
 	}
@@ -258,8 +238,8 @@ class OnedriveAPIService {
 				}
 				return json_decode($body, true);
 			}
-		} catch (ConnectException | ServerException | ClientException $e) {
-			$this->logger->warning('OneDrive OAuth error : '.$e->getMessage(), ['app' => Application::APP_ID]);
+		} catch (ConnectException|ServerException|ClientException $e) {
+			$this->logger->warning('OneDrive OAuth error : ' . $e->getMessage(), ['app' => Application::APP_ID]);
 			return ['error' => $e->getMessage()];
 		}
 	}
@@ -269,7 +249,7 @@ class OnedriveAPIService {
 		$expireAt = $this->config->getUserValue($userId, Application::APP_ID, 'token_expires_at');
 		if ($refreshToken !== '' && $expireAt !== '') {
 			$nowTs = (new DateTime())->getTimestamp();
-			$expireAt = (int) $expireAt;
+			$expireAt = (int)$expireAt;
 			// if token expires in less than 2 minutes or has already expired
 			if ($nowTs > $expireAt - 120) {
 				$this->refreshToken($userId);
@@ -299,7 +279,7 @@ class OnedriveAPIService {
 			$this->config->setUserValue($userId, Application::APP_ID, 'token', $result['access_token']);
 			if (isset($result['expires_in'])) {
 				$nowTs = (new DateTime())->getTimestamp();
-				$expiresAt = $nowTs + (int) $result['expires_in'];
+				$expiresAt = $nowTs + (int)$result['expires_in'];
 				$this->config->setUserValue($userId, Application::APP_ID, 'token_expires_at', (string)$expiresAt);
 			}
 		} else {
@@ -308,5 +288,11 @@ class OnedriveAPIService {
 		}
 
 		return $result;
+	}
+
+	private function getKiotaHandlerStack(): HandlerStack {
+		$handlerStack = HandlerStack::create();
+		$handlerStack->push(KiotaMiddleware::retry(), RetryHandler::HANDLER_NAME);
+		return $handlerStack;
 	}
 }

@@ -24,6 +24,8 @@ use OCP\IURLGenerator;
 use OCP\IUserSession;
 use Psr\Container\ContainerInterface;
 
+require_once __DIR__ . '/../../vendor/autoload.php';
+
 class Application extends App implements IBootstrap {
 
 	public const APP_ID = 'integration_onedrive';

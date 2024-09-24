@@ -88,7 +88,7 @@ class Notifier implements INotifier {
 			case 'import_onedrive_finished':
 				/** @var array{nbImported?: string, targetPath: string} $p */
 				$p = $notification->getSubjectParameters();
-				$nbImported = (int) ($p['nbImported'] ?? 0);
+				$nbImported = (int)($p['nbImported'] ?? 0);
 				$targetPath = $p['targetPath'];
 				$content = $l->n('%n file was imported from OneDrive storage.', '%n files were imported from OneDrive storage.', $nbImported);
 

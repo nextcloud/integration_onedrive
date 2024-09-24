@@ -33,7 +33,8 @@ use OCP\IURLGenerator;
 
 class ConfigController extends Controller {
 
-	public function __construct(string $appName,
+	public function __construct(
+		string $appName,
 		IRequest $request,
 		private IConfig $config,
 		private IURLGenerator $urlGenerator,
@@ -41,7 +42,8 @@ class ConfigController extends Controller {
 		private IInitialState $initialStateService,
 		private IContactManager $contactsManager,
 		private OnedriveAPIService $onedriveAPIService,
-		private ?string $userId) {
+		private ?string $userId,
+	) {
 		parent::__construct($appName, $request);
 	}
 
@@ -130,8 +132,8 @@ class ConfigController extends Controller {
 				$this->config->setUserValue($this->userId, Application::APP_ID, 'scope', $result['scope'] ?? '');
 				if (isset($result['expires_in'])) {
 					$nowTs = (new DateTime())->getTimestamp();
-					$expiresAt = $nowTs + (int) $result['expires_in'];
-					$this->config->setUserValue($this->userId, Application::APP_ID, 'token_expires_at', (string) $expiresAt);
+					$expiresAt = $nowTs + (int)$result['expires_in'];
+					$this->config->setUserValue($this->userId, Application::APP_ID, 'token_expires_at', (string)$expiresAt);
 				}
 
 				$this->config->setUserValue($this->userId, Application::APP_ID, 'user_id', $result['user_id'] ?? '');

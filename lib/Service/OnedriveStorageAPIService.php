@@ -177,11 +177,11 @@ class OnedriveStorageAPIService {
 		/** @var array $importTree */
 		$importTree = ($importTreeStr === '[]' || $importTreeStr === '') ? [] : json_decode($importTreeStr, true);
 		// import by batch of 500 MB
-		$alreadyImportedSize = (float) $this->config->getUserValue($userId, Application::APP_ID, 'imported_size', '0');
-		$alreadyImportedNumber = (int) $this->config->getUserValue($userId, Application::APP_ID, 'nb_imported_files', '0');
+		$alreadyImportedSize = (float)$this->config->getUserValue($userId, Application::APP_ID, 'imported_size', '0');
+		$alreadyImportedNumber = (int)$this->config->getUserValue($userId, Application::APP_ID, 'nb_imported_files', '0');
 		try {
 			$result = $this->importFiles($userId, $targetPath, 500000000, $alreadyImportedSize, $alreadyImportedNumber, $importTree);
-		} catch (Exception | Throwable $e) {
+		} catch (Exception|Throwable $e) {
 			$result = [
 				'error' => 'Unknow job failure. ' . $e->getMessage(),
 			];
@@ -309,8 +309,8 @@ class OnedriveStorageAPIService {
 					$newDownloadedSize += ($size ?? 0);
 					if (!is_null($size) && $size > 0) {
 						$newNbDownloaded++;
-						$this->config->setUserValue($userId, Application::APP_ID, 'imported_size', (string) ($alreadyImportedSize + $newDownloadedSize));
-						$this->config->setUserValue($userId, Application::APP_ID, 'nb_imported_files', (string) ($alreadyImportedNumber + $newNbDownloaded));
+						$this->config->setUserValue($userId, Application::APP_ID, 'imported_size', (string)($alreadyImportedSize + $newDownloadedSize));
+						$this->config->setUserValue($userId, Application::APP_ID, 'nb_imported_files', (string)($alreadyImportedNumber + $newNbDownloaded));
 						$ts = (new DateTime())->getTimestamp();
 						$this->config->setUserValue($userId, Application::APP_ID, 'last_onedrive_import_timestamp', (string)$ts);
 					}
@@ -438,7 +438,7 @@ class OnedriveStorageAPIService {
 					$savedFile->touch();
 				}
 				$stat = $savedFile->stat();
-				return (float) ($stat['size'] ?? 0);
+				return (float)($stat['size'] ?? 0);
 			} else {
 				// there was an error
 				$this->logger->warning('OneDrive error downloading file ' . $fileName . ' : ' . $res['error'], ['app' => Application::APP_ID]);
