@@ -1,3 +1,7 @@
+<!--
+  - SPDX-FileCopyrightText: 2020 Nextcloud GmbH and Nextcloud contributors
+  - SPDX-License-Identifier: CC0-1.0
+-->
 # Microsoft OneDrive integration into Nextcloud
 
 🗔 OneDrive integration allows you to automatically import your files into Nextcloud.
