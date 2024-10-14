@@ -61,7 +61,7 @@
     "Failed to import calendar" : "فشل استيراد التقويم",
     "Failed to get number of contacts" : "فشل في الحصول على عدد من جهات الاتصال",
     "Failed to get address book list" : "تعذّر الحصول على قائمة دفاتر العناوين",
-    "Choose where to write imported files" : "حدِّد إلى أين ستتم كتابة الملفات المستوردة",
+    "Choose where to write imported files" : "تحديد إلى أين ستتم كتابة الملفات المستوردة",
     "_{amount} file imported ({formImported}) ({progress}%)_::_{amount} files imported ({formImported}) ({progress}%)_" : ["تم استيراد {amount} ملفات ({formImported}) ({progress}٪)","تم استيراد {amount} ملف ({formImported}) ({progress}٪)","تم استيراد {amount} ملفات ({formImported}) ({progress}٪)","تم استيراد {amount} ملفات ({formImported}) ({progress}٪)","تم استيراد {amount} ملفات ({formImported}) ({progress}٪)","تم استيراد {amount} ملفات ({formImported}) ({progress}٪)"],
     "_{number} event successfully imported in {name}_::_{number} events successfully imported in {name}_" : ["تم استيراد {number} أحداث بنجاح في {name}","تم استيراد {number} حدث بنجاح في {name}","تم استيراد {number} أحداث بنجاح في {name}","تم استيراد {number} أحداث بنجاح في {name}","تم استيراد {number} أحداث بنجاح في {name}","تم استيراد {number} أحداث بنجاح في {name}"],
     "Last Onedrive import job at {date}" : "آخر مهمة استيراد لتطبيق OneDrive في {date}"
