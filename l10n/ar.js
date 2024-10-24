@@ -5,7 +5,7 @@ OC.L10N.register(
     "Error getting OAuth access token" : "حدث خطأ أثناء محاولة الحصول على أَمَارَة token للتصديق المفتوح OAuth",
     "Error during OAuth exchanges" : "خطأ أثناء تبادل OAuth.",
     "OneDrive" : "OneDrive",
-    "_%n file was imported from OneDrive storage._::_%n files were imported from OneDrive storage._" : ["%n ملفات تم استيرادها من المخزن السحابي جوجل درايف","%n ملف تم استيراده من المخزن السحابي جوجل درايف","%n ملفات تم استيرادها من المخزن السحابي جوجل درايف","%n ملفات تم استيرادها من المخزن السحابي جوجل درايف","%n ملفات تم استيرادها من المخزن السحابي جوجل درايف","%n ملف تمّ استيرادها من المخزن السحابي Google Drive"],
+    "_%n file was imported from OneDrive storage._::_%n files were imported from OneDrive storage._" : ["%n ملفات تم استيرادها من المخزن السحابي جوجل درايف","%n ملف تم استيراده من المخزن السحابي جوجل درايف","%n ملفات تم استيرادها من المخزن السحابي جوجل درايف","%n ملفات تم استيرادها من المخزن السحابي جوجل درايف","%n ملف تم استيرادها من المخزن السحابي جوجل درايف","%n ملف تمّ استيرادها من المخزن السحابي Google Drive"],
     "Bad credentials" : "معلومات تسجيل الدخول غير صحيحة",
     "Bad HTTP method" : "دالة HTTP  غير صحيحة",
     "OAuth access token refused" : "أمارة token مرفوضة",
