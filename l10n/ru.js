@@ -25,6 +25,7 @@ OC.L10N.register(
     "Contacts" : "Контакты",
     "Calendars" : "Календари",
     "Import calendar" : "Импорт календаря",
+    "Sign in with OneDrive" : "Войти через OneDrive",
     "Starting importing files in {targetPath} directory" : "Начало импорта файлов в каталог {targetPath}",
     "Failed to get calendar list" : "Не удалось получить список календарей",
     "Failed to get address book list" : "Не удалось получить список адресных книг",
