@@ -25,6 +25,7 @@ use OCP\IL10N;
 
 use OCP\IRequest;
 use OCP\IURLGenerator;
+use OCP\Security\ICrypto;
 
 class ConfigController extends Controller {
 
@@ -37,6 +38,7 @@ class ConfigController extends Controller {
 		private IInitialState $initialStateService,
 		private IContactManager $contactsManager,
 		private OnedriveAPIService $onedriveAPIService,
+		private ICrypto $crypto,
 		private ?string $userId,
 	) {
 		parent::__construct($appName, $request);
@@ -54,6 +56,9 @@ class ConfigController extends Controller {
 			return new DataResponse([], Http::STATUS_BAD_REQUEST);
 		}
 		foreach ($values as $key => $value) {
+			if (in_array($key, ['token', 'refresh_token']) && $value !== '') {
+				$value = $this->crypto->encrypt($value);
+			}
 			$this->config->setUserValue($this->userId, Application::APP_ID, $key, $value);
 		}
 		$result = [];
@@ -78,6 +83,9 @@ class ConfigController extends Controller {
 	 */
 	public function setAdminConfig(array $values): DataResponse {
 		foreach ($values as $key => $value) {
+			if (in_array($key, ['client_secret', 'token', 'refresh_token']) && $value !== '') {
+				$value = $this->crypto->encrypt($value);
+			}
 			/** @psalm-suppress DeprecatedMethod */
 			$this->config->setAppValue(Application::APP_ID, $key, $value);
 		}
@@ -104,6 +112,7 @@ class ConfigController extends Controller {
 		$clientID = $this->config->getAppValue(Application::APP_ID, 'client_id');
 		/** @psalm-suppress DeprecatedMethod */
 		$clientSecret = $this->config->getAppValue(Application::APP_ID, 'client_secret');
+		$clientSecret = $clientSecret === '' ? '' : $this->crypto->decrypt($clientSecret);
 
 		// anyway, reset state
 		$this->config->setUserValue($this->userId, Application::APP_ID, 'oauth_state', '');
@@ -121,9 +130,11 @@ class ConfigController extends Controller {
 			]);
 			if (isset($result['access_token'], $result['refresh_token'])) {
 				$accessToken = $result['access_token'];
-				$this->config->setUserValue($this->userId, Application::APP_ID, 'token', $accessToken);
+				$encryptedAccessToken = $accessToken === '' ? '' : $this->crypto->encrypt($accessToken);
+				$this->config->setUserValue($this->userId, Application::APP_ID, 'token', $encryptedAccessToken);
 				$refreshToken = $result['refresh_token'];
-				$this->config->setUserValue($this->userId, Application::APP_ID, 'refresh_token', $refreshToken);
+				$encryptedRefreshToken = $refreshToken === '' ? '' : $this->crypto->encrypt($refreshToken);
+				$this->config->setUserValue($this->userId, Application::APP_ID, 'refresh_token', $encryptedRefreshToken);
 				$this->config->setUserValue($this->userId, Application::APP_ID, 'scope', $result['scope'] ?? '');
 				if (isset($result['expires_in'])) {
 					$nowTs = (new DateTime())->getTimestamp();

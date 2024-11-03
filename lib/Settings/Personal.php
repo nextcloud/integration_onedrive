@@ -16,37 +16,13 @@ use OCP\Settings\ISettings;
 
 class Personal implements ISettings {
 
-	/**
-	 * @var IConfig
-	 */
-	private $config;
-	/**
-	 * @var IRootFolder
-	 */
-	private $root;
-	/**
-	 * @var IUserManager
-	 */
-	private $userManager;
-	/**
-	 * @var IInitialState
-	 */
-	private $initialStateService;
-	/**
-	 * @var string
-	 */
-	private $userId;
-
-	public function __construct(IConfig $config,
-		IRootFolder $root,
-		IUserManager $userManager,
-		IInitialState $initialStateService,
-		string $userId) {
-		$this->config = $config;
-		$this->root = $root;
-		$this->userManager = $userManager;
-		$this->initialStateService = $initialStateService;
-		$this->userId = $userId;
+	public function __construct(
+		private IConfig $config,
+		private IRootFolder $root,
+		private IUserManager $userManager,
+		private IInitialState $initialStateService,
+		private string $userId,
+	) {
 	}
 
 	/**
@@ -73,7 +49,7 @@ class Personal implements ISettings {
 		$onedriveOutputDir = $this->config->getUserValue($this->userId, Application::APP_ID, 'onedrive_output_dir', '/OneDrive import');
 
 		$userConfig = [
-			'token' => $token,
+			'token' => $token !== '' ? 'dummyToken' : '',
 			'client_id' => $clientID,
 			'client_secret' => $clientSecret,
 			'use_popup' => ($usePopup === '1'),
