@@ -17,6 +17,7 @@
         "nextcloud/coding-standard": "^1",
         "psalm/phar": "^4.3",
         "nextcloud/ocp": "dev-master",
+		"guzzlehttp/guzzle": "^7.5.1",
         "sabre/dav": "^4.4.0"
     },
     "config": {
