@@ -17,6 +17,7 @@ use OCP\AppFramework\Http\Attribute\NoAdminRequired;
 use OCP\AppFramework\Http\DataResponse;
 use OCP\IConfig;
 use OCP\IRequest;
+use OCP\Security\ICrypto;
 
 class OnedriveAPIController extends Controller {
 
@@ -29,10 +30,12 @@ class OnedriveAPIController extends Controller {
 		private OnedriveStorageAPIService $onedriveStorageApiService,
 		private OnedriveCalendarAPIService $onedriveCalendarApiService,
 		private OnedriveContactAPIService $onedriveContactApiService,
+		private ICrypto $crypto,
 		private ?string $userId,
 	) {
 		parent::__construct($appName, $request);
-		$this->accessToken = $this->config->getUserValue($this->userId, Application::APP_ID, 'token');
+		$accessToken = $this->config->getUserValue($this->userId, Application::APP_ID, 'token');
+		$this->accessToken = $accessToken === '' ? '' : $this->crypto->decrypt($accessToken);
 	}
 
 	#[NoAdminRequired]

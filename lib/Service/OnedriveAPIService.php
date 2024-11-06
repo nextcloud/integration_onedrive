@@ -21,6 +21,7 @@ use OCP\IConfig;
 use OCP\IL10N;
 use OCP\Notification\IManager as INotificationManager;
 
+use OCP\Security\ICrypto;
 use Psr\Log\LoggerInterface;
 use Throwable;
 
@@ -32,10 +33,10 @@ class OnedriveAPIService {
 	 * Service to make requests to OneDrive v3 (JSON) API
 	 */
 	public function __construct(
-		string $appName,
 		private LoggerInterface $logger,
 		private IL10N $l10n,
 		private IConfig $config,
+		private ICrypto $crypto,
 		private INotificationManager $notificationManager,
 		IClientService $clientService,
 	) {
@@ -123,6 +124,7 @@ class OnedriveAPIService {
 		bool $jsonResponse = true): array {
 		$this->checkTokenExpiration($userId);
 		$accessToken = $this->config->getUserValue($userId, Application::APP_ID, 'token');
+		$accessToken = $accessToken === '' ? '' : $this->crypto->decrypt($accessToken);
 		try {
 			$url = 'https://graph.microsoft.com/v1.0/' . $endPoint;
 			$options = [
@@ -241,6 +243,7 @@ class OnedriveAPIService {
 
 	private function checkTokenExpiration(string $userId): void {
 		$refreshToken = $this->config->getUserValue($userId, Application::APP_ID, 'refresh_token');
+		$refreshToken = $refreshToken === '' ? '' : $this->crypto->decrypt($refreshToken);
 		$expireAt = $this->config->getUserValue($userId, Application::APP_ID, 'token_expires_at');
 		if ($refreshToken !== '' && $expireAt !== '') {
 			$nowTs = (new DateTime())->getTimestamp();
@@ -258,8 +261,10 @@ class OnedriveAPIService {
 		$clientId = $this->config->getAppValue(Application::APP_ID, 'client_id');
 		/** @psalm-suppress DeprecatedMethod */
 		$clientSecret = $this->config->getAppValue(Application::APP_ID, 'client_secret');
+		$clientSecret = $clientSecret === '' ? '' : $this->crypto->decrypt($clientSecret);
 		$redirectUri = $this->config->getUserValue($userId, Application::APP_ID, 'redirect_uri');
 		$refreshToken = $this->config->getUserValue($userId, Application::APP_ID, 'refresh_token');
+		$refreshToken = $refreshToken === '' ? '' : $this->crypto->decrypt($refreshToken);
 		/** @var array{access_token?: string, expires_in?: string} $result */
 		$result = $this->requestOAuthAccessToken([
 			'client_id' => $clientId,
@@ -271,7 +276,9 @@ class OnedriveAPIService {
 
 		if (isset($result['access_token'])) {
 			$this->logger->debug('OneDrive access token successfully refreshed', ['app' => Application::APP_ID]);
-			$this->config->setUserValue($userId, Application::APP_ID, 'token', $result['access_token']);
+			$accessToken = $result['access_token'];
+			$encryptedToken = $accessToken === '' ? '' : $this->crypto->encrypt($accessToken);
+			$this->config->setUserValue($userId, Application::APP_ID, 'token', $encryptedToken);
 			if (isset($result['expires_in'])) {
 				$nowTs = (new DateTime())->getTimestamp();
 				$expiresAt = $nowTs + (int)$result['expires_in'];
