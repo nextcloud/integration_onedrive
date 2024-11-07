@@ -56,6 +56,10 @@ class ConfigController extends Controller {
 			return new DataResponse([], Http::STATUS_BAD_REQUEST);
 		}
 		foreach ($values as $key => $value) {
+			if ($key === 'token' && $value === 'dummyToken') {
+				continue;  // Skip writing if 'token' equals 'dummyToken'
+			}
+
 			if (in_array($key, ['token', 'refresh_token']) && $value !== '') {
 				$value = $this->crypto->encrypt($value);
 			}
@@ -83,6 +87,10 @@ class ConfigController extends Controller {
 	 */
 	public function setAdminConfig(array $values): DataResponse {
 		foreach ($values as $key => $value) {
+			if (($key === 'client_secret' && $value === 'dummySecret') || ($key === 'token' && $value === 'dummyToken')) {
+				continue;  // Skip writing if 'client_secret' equals 'dummySecret' or 'token' equals 'dummyToken'
+			}
+
 			if (in_array($key, ['client_secret', 'token', 'refresh_token']) && $value !== '') {
 				$value = $this->crypto->encrypt($value);
 			}
