@@ -65,6 +65,7 @@ import { generateUrl } from '@nextcloud/router'
 import axios from '@nextcloud/axios'
 import { delay } from '../utils.js'
 import { showSuccess, showError } from '@nextcloud/dialogs'
+import { confirmPassword } from '@nextcloud/password-confirmation'
 
 export default {
 	name: 'AdminSettings',
@@ -96,14 +97,27 @@ export default {
 		},
 		onInput() {
 			delay(() => {
-				this.saveOptions({ client_id: this.state.client_id, client_secret: this.state.client_secret })
+				const values = {
+					client_id: this.state.client_id,
+				}
+				if (this.state.client_secret !== 'dummySecret') {
+					values.client_secret = this.state.client_secret
+				}
+				this.saveOptions(values, true)
+
 			}, 2000)()
 		},
-		saveOptions(values) {
+		async saveOptions(values, sensitive = false) {
+			if (sensitive) {
+				await confirmPassword()
+			}
 			const req = {
 				values,
 			}
-			const url = generateUrl('/apps/integration_onedrive/admin-config')
+			const url = sensitive
+				? generateUrl('/apps/integration_onedrive/sensitive-admin-config')
+				: generateUrl('/apps/integration_onedrive/admin-config')
+
 			axios.put(url, req)
 				.then((response) => {
 					showSuccess(t('integration_onedrive', 'OneDrive admin options saved'))

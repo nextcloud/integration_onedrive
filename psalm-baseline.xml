@@ -12,9 +12,17 @@
     </MixedMethodCall>
   </file>
   <file src="lib/Controller/ConfigController.php">
-    <MixedArgument occurrences="1">
+    <DeprecatedMethod occurrences="1">
+      <code>setAppValue</code>
+    </DeprecatedMethod>
+    <MixedArgument occurrences="3">
       <code>$info['displayName'] ?? '??'</code>
+      <code>$value</code>
+      <code>$value</code>
     </MixedArgument>
+    <MixedAssignment occurrences="1">
+      <code>$value</code>
+    </MixedAssignment>
     <PossiblyNullArgument occurrences="1">
       <code>$this-&gt;userId</code>
     </PossiblyNullArgument>

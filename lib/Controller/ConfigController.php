@@ -13,6 +13,7 @@ use OCP\AppFramework\Controller;
 use OCP\AppFramework\Http;
 use OCP\AppFramework\Http\Attribute\NoAdminRequired;
 use OCP\AppFramework\Http\Attribute\NoCSRFRequired;
+use OCP\AppFramework\Http\Attribute\PasswordConfirmationRequired;
 use OCP\AppFramework\Http\DataResponse;
 use OCP\AppFramework\Http\RedirectResponse;
 use OCP\AppFramework\Http\TemplateResponse;
@@ -87,17 +88,28 @@ class ConfigController extends Controller {
 	 */
 	public function setAdminConfig(array $values): DataResponse {
 		foreach ($values as $key => $value) {
-			if (($key === 'client_secret' && $value === 'dummySecret') || ($key === 'token' && $value === 'dummyToken')) {
-				continue;  // Skip writing if 'client_secret' equals 'dummySecret' or 'token' equals 'dummyToken'
+			if ($key === 'token' && $value === 'dummyToken') {
+				continue;  // Skip writing if 'token' equals 'dummyToken'
 			}
 
-			if (in_array($key, ['client_secret', 'token', 'refresh_token']) && $value !== '') {
+			if (in_array($key, ['token', 'refresh_token']) && $value !== '') {
 				$value = $this->crypto->encrypt($value);
 			}
 			/** @psalm-suppress DeprecatedMethod */
 			$this->config->setAppValue(Application::APP_ID, $key, $value);
 		}
 		return new DataResponse(1);
+	}
+
+	#[PasswordConfirmationRequired]
+	public function setSensitiveAdminConfig(array $values): DataResponse {
+		foreach ($values as $key => $value) {
+			if (in_array($key, ['client_secret'], true) && $value !== '') {
+				$value = $this->crypto->encrypt($value);
+			}
+			$this->config->setAppValue(Application::APP_ID, $key, $value);
+		}
+		return new DataResponse([]);
 	}
 
 	#[NoAdminRequired]
