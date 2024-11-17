@@ -8,6 +8,14 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [3.3.1] - 2024-11-28
+
+### Changed
+- Bumped js libs
+
+### Fixed
+- Encrypt secrets in the database and not expose them to UI
+
 ## [3.3.0] - 2024-09-24
 
 ### Changes
