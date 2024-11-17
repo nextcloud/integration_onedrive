@@ -46,7 +46,7 @@ jobs:
       - name: Install dependencies
         run: |
           composer require --dev nextcloud/ocp:${{ matrix.server-versions }} --with-all-dependencies
-          composer require --dev guzzlehttp/guzzle
+          composer require --dev guzzlehttp/guzzle:^7.5.1
           composer i
 
       - name: Run coding standards check
