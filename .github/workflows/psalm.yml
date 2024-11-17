@@ -47,7 +47,12 @@ jobs:
         run: |
           composer require --dev nextcloud/ocp:${{ matrix.server-versions }} --with-all-dependencies
           composer i
-          composer require guzzlehttp/guzzle:^7.5.1 --dev --ignore-platform-reqs --no-scripts
+
+      - name: Manually install Guzzle
+        run: |
+          git clone https://github.com/guzzle/guzzle.git vendor/guzzlehttp/guzzle
+          cd vendor/guzzlehttp/guzzle
+          composer install --no-dev
 
       - name: Run coding standards check
         run: composer run psalm
