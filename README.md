@@ -4,6 +4,8 @@
 -->
 # Microsoft OneDrive integration into Nextcloud
 
+[![REUSE status](https://api.reuse.software/badge/github.com/nextcloud/integration_onedrive)](https://api.reuse.software/info/github.com/nextcloud/integration_onedrive)
+
 🗔 OneDrive integration allows you to automatically import your files into Nextcloud.
 
 **Note: This app does not work with OneDrive for Business**
