@@ -58,7 +58,7 @@ OC.L10N.register(
     "Failed to save OneDrive OAuth state" : "Produciuse un fallo ao gardar o estado do OAuth de OneDrive",
     "Failed to get OneDrive storage information" : "Produciuse un fallo ao obter información do almacenamento de OneDrive",
     "Starting importing files in {targetPath} directory" : "Comezando a importar ficheiros no directorio {targetPath}",
-    "Failed to start importing Onedrive storage" : "Produciuse un fallo ao comezar a importar dende o almacenamento de OneDrive",
+    "Failed to start importing Onedrive storage" : "Produciuse un fallo ao comezar a importar desde o almacenamento de OneDrive",
     "Failed to get calendar list" : "Produciuse un fallo ao obter a lista de calendarios",
     "Failed to import calendar" : "Produciuse un fallo ao importar o calendario",
     "Failed to get number of contacts" : "Produciuse un fallo ao obter o número de contactos",
