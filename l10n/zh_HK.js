@@ -47,7 +47,7 @@ OC.L10N.register(
     "Import Contacts in Nextcloud" : "將 Contacts 匯入 Nextcloud",
     "Calendars" : "日曆",
     "Import calendar" : "導入日曆",
-    "Import job is currently running" : "導入作業當前正在運行",
+    "Import job is currently running" : "導入作業目前正在運行",
     "Import job is scheduled" : "已排程匯入",
     "Onedrive import process will begin soon" : "Onedrive 導入後台作業進程即將開始。",
     "Connected to OneDrive!" : "已連線至 OneDrive！",
