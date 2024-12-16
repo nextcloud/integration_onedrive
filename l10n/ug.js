@@ -33,7 +33,7 @@ OC.L10N.register(
     "Enable navigation link" : "يول باشلاش ئۇلانمىسىنى قوزغىتىڭ",
     "Ask your Nextcloud administrator to configure OneDrive OAuth settings in order to use this integration." : "Nextcloud باشقۇرغۇچىڭىزدىن بۇ بىرلەشتۈرۈشنى ئىشلىتىش ئۈچۈن OneDrive OAuth تەڭشىكىنى تەڭشەشنى سوراڭ.",
     "Connect to OneDrive" : "OneDrive غا ئۇلاڭ",
-    "Connected as {user}" : "{ئىشلەتكۈچى as قىلىپ ئۇلاندى",
+    "Connected as {user}" : "{user} as قىلىپ ئۇلاندى",
     "Disconnect from OneDrive" : "OneDrive دىن ئۈزۈڭ",
     "Onedrive storage" : "Onedrive ساقلاش",
     "Import directory" : "مۇندەرىجە ئەكىرىڭ",
@@ -42,7 +42,7 @@ OC.L10N.register(
     "Your Onedrive storage is bigger than your remaining space left ({formSpace})" : "Onedrive ساقلاش بوشلۇقىڭىز قالغان بوشلۇقتىن چوڭ ({formSpace})",
     "Cancel Onedrive files import" : "Onedrive ھۆججىتىنى ئىمپورت قىلىشنى ئەمەلدىن قالدۇرۇڭ",
     "Contacts" : "ئالاقەداشلار",
-    "{amount} contacts" : "{سومما} ئالاقىلىشىش",
+    "{amount} contacts" : "{amount} ئالاقىلىشىش",
     "Import Contacts in Nextcloud" : "Nextcloud دىكى ئالاقىداشلارنى ئەكىرىڭ",
     "Calendars" : "كالېندار",
     "Import calendar" : "كالېندارنى ئەكىرىش",
@@ -63,6 +63,6 @@ OC.L10N.register(
     "Failed to get number of contacts" : "ئالاقىلىشىش قېتىم سانىغا ئېرىشەلمىدى",
     "Failed to get address book list" : "ئادرېس كىتاب تىزىملىكىگە ئېرىشەلمىدى",
     "Choose where to write imported files" : "ئىمپورت قىلىنغان ھۆججەتلەرنى قەيەرگە يېزىشنى تاللاڭ",
-    "Last Onedrive import job at {date}" : "ئەڭ ئاخىرقى Onedrive ئىمپورت خىزمىتى {چېسلا}"
+    "Last Onedrive import job at {date}" : "ئەڭ ئاخىرقى Onedrive ئىمپورت خىزمىتى {date}"
 },
 "nplurals=2; plural=(n != 1);");
