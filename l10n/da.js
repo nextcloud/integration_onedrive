@@ -1,9 +1,10 @@
 OC.L10N.register(
     "integration_onedrive",
     {
+    "Bad credentials" : "Forkerte legitimationsoplysninger",
     "Connected accounts" : "Forbundne konti",
-    "Client ID" : "Klient-ID",
-    "Client secret" : "Klient hemmelighed",
+    "Client ID" : "Klient ID",
+    "Client secret" : "Klienthemmelighed",
     "Connect to OneDrive" : "Forbind til OneDrive",
     "Connected as {user}" : "Forbundet som {user}",
     "Contacts" : "Kontakter",
