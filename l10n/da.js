@@ -2,6 +2,7 @@ OC.L10N.register(
     "integration_onedrive",
     {
     "Bad credentials" : "Forkerte legitimationsoplysninger",
+    "Bad HTTP method" : "Dårlig HTTP-metode",
     "Connected accounts" : "Forbundne konti",
     "Client ID" : "Klient ID",
     "Client secret" : "Klienthemmelighed",

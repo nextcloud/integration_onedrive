@@ -1,5 +1,6 @@
 { "translations": {
     "Bad credentials" : "Forkerte legitimationsoplysninger",
+    "Bad HTTP method" : "Dårlig HTTP-metode",
     "Connected accounts" : "Forbundne konti",
     "Client ID" : "Klient ID",
     "Client secret" : "Klienthemmelighed",
