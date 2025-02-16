@@ -6,6 +6,7 @@ OC.L10N.register(
     "Connected accounts" : "Forbundne konti",
     "Client ID" : "Klient ID",
     "Client secret" : "Klienthemmelighed",
+    "Enable navigation link" : "Enable navigation link",
     "Connect to OneDrive" : "Forbind til OneDrive",
     "Connected as {user}" : "Forbundet som {user}",
     "Contacts" : "Kontakter",
