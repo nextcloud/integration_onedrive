@@ -19,6 +19,7 @@ OC.L10N.register(
     "Contacts" : "Kontakty",
     "Calendars" : "Kalendáre",
     "Import calendar" : "Importovať kalendár",
+    "Import job is currently running" : "Importovanie práve prebieha",
     "Starting importing files in {targetPath} directory" : "Spúšťa sa import súborov do adresára {targetPath}",
     "Failed to get calendar list" : "Nepodarilo sa získať zoznam kalendárov.",
     "Failed to get address book list" : "Nepodarilo sa získať zoznam adresárov",
