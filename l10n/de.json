@@ -30,7 +30,7 @@
     "OneDrive admin options saved" : "OneDrive-Verwaltungseinstellungen gespeichert",
     "Failed to save OneDrive admin options" : "Fehler beim Speichern der OneDrive-Verwaltungseinstellungen",
     "Enable navigation link" : "Navigations-Link aktivieren",
-    "Ask your Nextcloud administrator to configure OneDrive OAuth settings in order to use this integration." : "Bitte deinen Nextcloud-Administrator, die OneDrive-OAuth-Einstellungen zu konfigurieren, um diese Integration verwenden zu können.",
+    "Ask your Nextcloud administrator to configure OneDrive OAuth settings in order to use this integration." : "Bitte deine Nextcloud-Administration, die OneDrive-OAuth-Einstellungen zu konfigurieren, um diese Integration verwenden zu können.",
     "Connect to OneDrive" : "Mit OneDrive verbinden",
     "Connected as {user}" : "Verbunden als {user}",
     "Disconnect from OneDrive" : "Von OneDrive trennen",
