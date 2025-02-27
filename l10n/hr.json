@@ -10,15 +10,15 @@
     "Put the OAuth app \"Client ID\" and \"Client secret\" below." : "U nastavku unesite „ID klijenta“ i „Tajni ključ klijenta“ za aplikaciju OAuth.",
     "Client ID" : "ID klijenta",
     "Client secret" : "Tajni ključ klijenta",
+    "Starting importing files in {targetPath} directory" : "Početak uvoza datoteka u direktorij {targetPath}",
+    "Failed to get calendar list" : "Nije moguće dobiti popis kalendara",
+    "Failed to get address book list" : "Nije moguće dobiti popis adresara",
+    "Choose where to write imported files" : "Odaberite gdje želite zapisivati uvezene datoteke",
     "Enable navigation link" : "Omogući navigacijsku poveznicu",
     "Connected as {user}" : "Povezan kao {user}",
     "Import directory" : "Uvezi direktorij",
     "Contacts" : "Kontakti",
     "Calendars" : "Kalendari",
-    "Import calendar" : "Uvezi kalendar",
-    "Starting importing files in {targetPath} directory" : "Početak uvoza datoteka u direktorij {targetPath}",
-    "Failed to get calendar list" : "Nije moguće dobiti popis kalendara",
-    "Failed to get address book list" : "Nije moguće dobiti popis adresara",
-    "Choose where to write imported files" : "Odaberite gdje želite zapisivati uvezene datoteke"
+    "Import calendar" : "Uvezi kalendar"
 },"pluralForm" :"nplurals=3; plural=n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2;"
 }

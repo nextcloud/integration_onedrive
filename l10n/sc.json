@@ -10,15 +10,15 @@
     "Put the OAuth app \"Client ID\" and \"Client secret\" below." : "Pone su «ID de su cliente» e su «Segretu de cliente» de s'aplicatzione OAuth sighende.",
     "Client ID" : "ID cliente",
     "Client secret" : "Segretu de su cliente",
+    "Starting importing files in {targetPath} directory" : "Aviamentu de s'importatzione de is archìvios in sa cartella {targetPath}",
+    "Failed to get calendar list" : "No at fatu a otènnere s'elencu de is calendàrios.",
+    "Failed to get address book list" : "No at fatu a otènnere s'elencu d is rubricas",
+    "Choose where to write imported files" : "Sèbera in ue est a pònnere is archìvios importados",
     "Enable navigation link" : "Ativa su ligòngiu de navigatzione",
     "Connected as {user}" : "Connètidu comente {user}",
     "Import directory" : "Importa cartella",
     "Contacts" : "Cuntatos",
     "Calendars" : "Calendàrios",
-    "Import calendar" : "Importa calendàrios",
-    "Starting importing files in {targetPath} directory" : "Aviamentu de s'importatzione de is archìvios in sa cartella {targetPath}",
-    "Failed to get calendar list" : "No at fatu a otènnere s'elencu de is calendàrios.",
-    "Failed to get address book list" : "No at fatu a otènnere s'elencu d is rubricas",
-    "Choose where to write imported files" : "Sèbera in ue est a pònnere is archìvios importados"
+    "Import calendar" : "Importa calendàrios"
 },"pluralForm" :"nplurals=2; plural=(n != 1);"
 }

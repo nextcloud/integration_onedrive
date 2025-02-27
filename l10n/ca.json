@@ -9,14 +9,14 @@
     "Make sure you set the \"Redirect URI\" to" : "Assegureu-vos de definir l'\"URI de redirecció\" a",
     "Client ID" : "ID del client",
     "Client secret" : "Secret del client",
+    "Starting importing files in {targetPath} directory" : "S'està iniciant la importació de fitxers al directori {targetPath}",
+    "Failed to get calendar list" : "No s'ha pogut obtenir la llista de calendaris",
+    "Failed to get address book list" : "No s'ha pogut obtenir la llista de la llibreta d'adreces",
     "Enable navigation link" : "Habilita l'enllaç de navegació",
     "Connected as {user}" : "S'ha connectat com a {user}",
     "Import directory" : "Carpeta d'importació",
     "Contacts" : "Contactes",
     "Calendars" : "Calendaris",
-    "Import calendar" : "Importa un calendari",
-    "Starting importing files in {targetPath} directory" : "S'està iniciant la importació de fitxers al directori {targetPath}",
-    "Failed to get calendar list" : "No s'ha pogut obtenir la llista de calendaris",
-    "Failed to get address book list" : "No s'ha pogut obtenir la llista de la llibreta d'adreces"
+    "Import calendar" : "Importa un calendari"
 },"pluralForm" :"nplurals=2; plural=(n != 1);"
 }

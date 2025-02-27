@@ -13,15 +13,15 @@ OC.L10N.register(
     "Client ID" : "Αναγνωριστικό πελάτη",
     "Client secret" : "Μυστικό πελάτη",
     "Use a popup to authenticate" : "Χρησιμοποιήστε ένα αναδυόμενο παράθυρο για έλεγχο ταυτότητας",
+    "Starting importing files in {targetPath} directory" : "Έναρξη εισαγωγής αρχείων στον κατάλογο {targetPath}",
+    "Failed to get calendar list" : "Αποτυχία λήψης λίστας ημερολογίου",
+    "Failed to get address book list" : "Αποτυχία λήψης λίστας βιβλίου διευθύνσεων",
+    "Choose where to write imported files" : "Επιλέξτε πού να γράψετε τα εισαγόμενα αρχεία",
     "Enable navigation link" : "Ενεργοποίηση συνδέσμου πλοήγησης",
     "Connected as {user}" : "Συνδεδεμένος ως {user}",
     "Import directory" : "Εισαγωγή καταλόγου",
     "Contacts" : "Επαφές",
     "Calendars" : "Ημερολόγια",
-    "Import calendar" : "Εισαγωγή ημερολογίου",
-    "Starting importing files in {targetPath} directory" : "Έναρξη εισαγωγής αρχείων στον κατάλογο {targetPath}",
-    "Failed to get calendar list" : "Αποτυχία λήψης λίστας ημερολογίου",
-    "Failed to get address book list" : "Αποτυχία λήψης λίστας βιβλίου διευθύνσεων",
-    "Choose where to write imported files" : "Επιλέξτε πού να γράψετε τα εισαγόμενα αρχεία"
+    "Import calendar" : "Εισαγωγή ημερολογίου"
 },
 "nplurals=2; plural=(n != 1);");

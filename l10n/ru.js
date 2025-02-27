@@ -18,17 +18,17 @@ OC.L10N.register(
     "Client ID" : "ID клиента",
     "Client secret" : "Клиентский ключ ",
     "Use a popup to authenticate" : "Используйте всплывающее окно для аутентификации",
+    "Sign in with OneDrive" : "Войти через OneDrive",
+    "Starting importing files in {targetPath} directory" : "Начало импорта файлов в каталог {targetPath}",
+    "Failed to get calendar list" : "Не удалось получить список календарей",
+    "Failed to get address book list" : "Не удалось получить список адресных книг",
+    "Choose where to write imported files" : "Выберите, куда сохранять импортированные файлы",
     "Enable navigation link" : "Включить ссылку для навигации",
     "Ask your Nextcloud administrator to configure OneDrive OAuth settings in order to use this integration." : "Попросите администратора Nextcloud настроить параметры OneDrive OAuth для использования этой интеграции.",
     "Connected as {user}" : "Подключено под именем {user}",
     "Import directory" : "Каталог импорта",
     "Contacts" : "Контакты",
     "Calendars" : "Календари",
-    "Import calendar" : "Импорт календаря",
-    "Sign in with OneDrive" : "Войти через OneDrive",
-    "Starting importing files in {targetPath} directory" : "Начало импорта файлов в каталог {targetPath}",
-    "Failed to get calendar list" : "Не удалось получить список календарей",
-    "Failed to get address book list" : "Не удалось получить список адресных книг",
-    "Choose where to write imported files" : "Выберите, куда сохранять импортированные файлы"
+    "Import calendar" : "Импорт календаря"
 },
 "nplurals=4; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<12 || n%100>14) ? 1 : n%10==0 || (n%10>=5 && n%10<=9) || (n%100>=11 && n%100<=14)? 2 : 3);");

@@ -11,16 +11,16 @@
     "Client ID" : "Client ID",
     "Client secret" : "Heslo klienta",
     "Use a popup to authenticate" : "Pre overenie použite kontextové okno",
+    "Import job is currently running" : "Importovanie práve prebieha",
+    "Starting importing files in {targetPath} directory" : "Spúšťa sa import súborov do adresára {targetPath}",
+    "Failed to get calendar list" : "Nepodarilo sa získať zoznam kalendárov.",
+    "Failed to get address book list" : "Nepodarilo sa získať zoznam adresárov",
+    "Choose where to write imported files" : "Vyberte kam zapísať importované súbory",
     "Enable navigation link" : "Povoliť navigačný odkaz",
     "Connected as {user}" : "Pripojený ako {user}",
     "Import directory" : "Importovať adresár",
     "Contacts" : "Kontakty",
     "Calendars" : "Kalendáre",
-    "Import calendar" : "Importovať kalendár",
-    "Import job is currently running" : "Importovanie práve prebieha",
-    "Starting importing files in {targetPath} directory" : "Spúšťa sa import súborov do adresára {targetPath}",
-    "Failed to get calendar list" : "Nepodarilo sa získať zoznam kalendárov.",
-    "Failed to get address book list" : "Nepodarilo sa získať zoznam adresárov",
-    "Choose where to write imported files" : "Vyberte kam zapísať importované súbory"
+    "Import calendar" : "Importovať kalendár"
 },"pluralForm" :"nplurals=4; plural=(n % 1 == 0 && n == 1 ? 0 : n % 1 == 0 && n >= 2 && n <= 4 ? 1 : n % 1 != 0 ? 2: 3);"
 }

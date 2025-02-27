@@ -17,13 +17,13 @@ OC.L10N.register(
     "Client ID" : "客户端ID",
     "Client secret" : "客户端 secret",
     "Use a popup to authenticate" : "使用弹出窗口进行验证",
+    "Failed to get calendar list" : "获取日历列表失败",
+    "Failed to get address book list" : "获取通讯录列表失败",
     "Enable navigation link" : "启用应用图标链接至实例",
     "Connected as {user}" : "以 {user} 身份连接",
     "Import directory" : "导入文件夹",
     "Contacts" : "联系人",
     "Calendars" : "日历",
-    "Import calendar" : "导入日历",
-    "Failed to get calendar list" : "获取日历列表失败",
-    "Failed to get address book list" : "获取通讯录列表失败"
+    "Import calendar" : "导入日历"
 },
 "nplurals=1; plural=0;");

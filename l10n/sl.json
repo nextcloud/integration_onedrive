@@ -15,6 +15,14 @@
     "Client ID" : "ID Odjemalca",
     "Client secret" : "Skrivni ključ odjemalca",
     "Use a popup to authenticate" : "Uporabi pojavno okno za overitev",
+    "Import job is currently running" : "Trenutno poteka opravilo uvažanja podatkov",
+    "Onedrive import process will begin soon" : "Opravilo uvoza datotek z oblaka OneDrive bo kmalu začeta",
+    "Connected to OneDrive!" : "Povezava z OneDrive je vzpostavljena!",
+    "OneDrive OAuth error:" : "Napaka overitve OAuth za OneDrive:",
+    "Starting importing files in {targetPath} directory" : "Začeto je uvažanje datotek v mapo {targetPath}.",
+    "Failed to get calendar list" : "Pridobivanje seznama koledarja je spodletelo",
+    "Failed to get address book list" : "Pridobivanje seznama imenika je spodletelo",
+    "Choose where to write imported files" : "Izbor mesta za shranjevanje uvoženih datotek",
     "Enable navigation link" : "Omogoči povezave za krmarjenje",
     "Connected as {user}" : "Povezan je uporabniški račun {user}",
     "Onedrive storage" : "Shramba Onedrive",
@@ -26,14 +34,6 @@
     "{amount} contacts" : "{amount} stikov",
     "Import Contacts in Nextcloud" : "Uvozi Stike v Nextcloud",
     "Calendars" : "Koledarji",
-    "Import calendar" : "Uvozi koledar",
-    "Import job is currently running" : "Trenutno poteka opravilo uvažanja podatkov",
-    "Onedrive import process will begin soon" : "Opravilo uvoza datotek z oblaka OneDrive bo kmalu začeta",
-    "Connected to OneDrive!" : "Povezava z OneDrive je vzpostavljena!",
-    "OneDrive OAuth error:" : "Napaka overitve OAuth za OneDrive:",
-    "Starting importing files in {targetPath} directory" : "Začeto je uvažanje datotek v mapo {targetPath}.",
-    "Failed to get calendar list" : "Pridobivanje seznama koledarja je spodletelo",
-    "Failed to get address book list" : "Pridobivanje seznama imenika je spodletelo",
-    "Choose where to write imported files" : "Izbor mesta za shranjevanje uvoženih datotek"
+    "Import calendar" : "Uvozi koledar"
 },"pluralForm" :"nplurals=4; plural=(n%100==1 ? 0 : n%100==2 ? 1 : n%100==3 || n%100==4 ? 2 : 3);"
 }

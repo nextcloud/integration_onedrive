@@ -12,15 +12,15 @@ OC.L10N.register(
     "Put the OAuth app \"Client ID\" and \"Client secret\" below." : "Zet de OAuth app \"Client ID\" en \"Client secret\" hieronder.",
     "Client ID" : "Client ID",
     "Client secret" : "Client secret",
+    "Starting importing files in {targetPath} directory" : "Beginnen met importeren bestanden in {targetPath} directory",
+    "Failed to get calendar list" : "Kalenderlijst ophalen mislukt",
+    "Failed to get address book list" : "Adresboekentlijst ophalen mislukt",
+    "Choose where to write imported files" : "Kies waar geïmporteerde bestanden moeten worden weggeschreven",
     "Enable navigation link" : "Inschakelen navigatielink",
     "Connected as {user}" : "Verbonden als {user}",
     "Import directory" : "Importdirectory",
     "Contacts" : "Contacten",
     "Calendars" : "Agenda's",
-    "Import calendar" : "Importeer agenda",
-    "Starting importing files in {targetPath} directory" : "Beginnen met importeren bestanden in {targetPath} directory",
-    "Failed to get calendar list" : "Kalenderlijst ophalen mislukt",
-    "Failed to get address book list" : "Adresboekentlijst ophalen mislukt",
-    "Choose where to write imported files" : "Kies waar geïmporteerde bestanden moeten worden weggeschreven"
+    "Import calendar" : "Importeer agenda"
 },
 "nplurals=2; plural=(n != 1);");
