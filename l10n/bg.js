@@ -47,6 +47,7 @@ OC.L10N.register(
     "_{number} event successfully imported in {name}_::_{number} events successfully imported in {name}_" : ["{number} събития успешно импортирани в {name} ","{number} събития, успешно импортирани в {name} "],
     "Failed to import calendar" : "Неуспешно импортиране на календар",
     "Failed to get number of contacts" : "Неуспешно получаване на броя на контактите",
+    "_{nbAdded} contact created, {nbUpdated} updated, {nbSkipped} skipped, {nbFailed} failed_::_{nbAdded} contacts created, {nbUpdated} updated, {nbSkipped} skipped, {nbFailed} failed_" : ["{nbAdded} създадени контакти, {nbUpdated} актуализирани, {nbSkipped} пропуснати, {nbFailed} неуспешни","{nbAdded} създадени контакти, {nbUpdated} актуализирани, {nbSkipped} пропуснати, {nbFailed} неуспешни"],
     "Failed to get address book list" : "Неуспешно получаване на списък на адресна книга",
     "Choose where to write imported files" : "Изберете къде да запишете импортирани файлове",
     "Enable navigation link" : "Активиране на връзка за навигация",

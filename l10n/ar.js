@@ -48,6 +48,7 @@ OC.L10N.register(
     "_{number} event successfully imported in {name}_::_{number} events successfully imported in {name}_" : ["تم استيراد {number} أحداث بنجاح في {name}","تم استيراد {number} حدث بنجاح في {name}","تم استيراد {number} أحداث بنجاح في {name}","تم استيراد {number} أحداث بنجاح في {name}","تم استيراد {number} أحداث بنجاح في {name}","تم استيراد {number} أحداث بنجاح في {name}"],
     "Failed to import calendar" : "فشل استيراد التقويم",
     "Failed to get number of contacts" : "فشل في الحصول على عدد من جهات الاتصال",
+    "_{nbAdded} contact created, {nbUpdated} updated, {nbSkipped} skipped, {nbFailed} failed_::_{nbAdded} contacts created, {nbUpdated} updated, {nbSkipped} skipped, {nbFailed} failed_" : ["{nb added} تم إنشاء جهات الاتصال ، تحديث {nbUpdated} ، تم تخطي {nbSkipped} ، فشل {nbFailed}","{nb added} تم إنشاء جهة الاتصال ، تحديث {nbUpdated} ، تم تخطي {nbSkipped} ، فشل {nbFailed}","{nb added} تم إنشاء جهات الاتصال ، تحديث {nbUpdated} ، تم تخطي {nbSkipped} ، فشل {nbFailed}","{nb added} تم إنشاء جهات الاتصال ، تحديث {nbUpdated} ، تم تخطي {nbSkipped} ، فشل {nbFailed}","{nb added} تم إنشاء جهات الاتصال ، تحديث {nbUpdated} ، تم تخطي {nbSkipped} ، فشل {nbFailed}","{nb added} تم إنشاء جهات الاتصال ، تحديث {nbUpdated} ، تم تخطي {nbSkipped} ، فشل {nbFailed}"],
     "Failed to get address book list" : "تعذّر الحصول على قائمة دفاتر العناوين",
     "Choose where to write imported files" : "تحديد إلى أين ستتم كتابة الملفات المستوردة",
     "Enable navigation link" : "تميكن رابط التنقُّل",

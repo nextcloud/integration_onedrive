@@ -46,6 +46,7 @@
     "_{number} event successfully imported in {name}_::_{number} events successfully imported in {name}_" : ["{number} událost úspěšně naimportována do {name}","{number} události úspěšně naimportovány do {name}","{number} událostí úspěšně naimportováno do {name}","{number} události úspěšně naimportovány do {name}"],
     "Failed to import calendar" : "Kalendář se nepodařilo naimportovat",
     "Failed to get number of contacts" : "Nepodařilo se spočítat kontakty",
+    "_{nbAdded} contact created, {nbUpdated} updated, {nbSkipped} skipped, {nbFailed} failed_::_{nbAdded} contacts created, {nbUpdated} updated, {nbSkipped} skipped, {nbFailed} failed_" : ["{nbAdded} kontakt vytvořen, {nbUpdated} aktualizováno, {nbSkipped} přeskočeno, {nbFailed} se nezdařilo","{nbAdded} kontakty vytvořeny, {nbUpdated} aktualizováno, {nbSkipped} přeskočeno, {nbFailed} se nezdařilo","{nbAdded} kontaktů vytvořeno, {nbUpdated} aktualizováno, {nbSkipped} přeskočeno, {nbFailed} se nezdařilo","{nbAdded} kontakty vytvořeny, {nbUpdated} aktualizováno, {nbSkipped} přeskočeno, {nbFailed} se nezdařilo"],
     "Failed to get address book list" : "Nepodařilo se získat seznam adresářů kontaktů",
     "Choose where to write imported files" : "Vyberte, kam chcete zapsat importované soubory",
     "Enable navigation link" : "Zapnout navigační odkaz",
