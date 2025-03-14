@@ -3,7 +3,7 @@ OC.L10N.register(
     {
     "Bad credentials" : "Nederīgi pieteikšanās dati",
     "Bad HTTP method" : "Nederīgs HTTP pieprasījuma veids",
-    "Connected accounts" : "Savienotie konti",
+    "Connected accounts" : "Sasaistītie konti",
     "Your Nextcloud users will then see a \"Connect to OneDrive\" button in their personal settings." : "Pēc tam jūsu Nextcloud lietotāji savos personiskajos iestatījumos redzēs pogu \"Savienot ar OneDrive\".",
     "Client ID" : "Klienta ID",
     "Contacts" : "Kontakti",
