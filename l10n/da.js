@@ -1,11 +1,11 @@
 OC.L10N.register(
     "integration_onedrive",
     {
-    "Error getting OAuth access token" : "Fejl ved at få adgang til OAuth",
+    "Error getting OAuth access token" : "Fejl ved anmodning om OAuth adgangsnøgle",
     "Error during OAuth exchanges" : "Fejl under OAuth-udvekslinger",
     "Bad credentials" : "Forkerte legitimationsoplysninger",
     "Bad HTTP method" : "Dårlig HTTP metode",
-    "OAuth access token refused" : "OAuth adgang token nægtet",
+    "OAuth access token refused" : "OAuth adgangsnøgle afvist",
     "Connected accounts" : "Forbundne konti",
     "Client ID" : "Klient ID",
     "Client secret" : "Klienthemmelighed",
