@@ -3,6 +3,7 @@ OC.L10N.register(
     {
     "Bad credentials" : "Akkaunt ma'lumotlari xato",
     "Bad HTTP method" : "Yomon HTTP usuli",
+    "Client ID" : "Mijoz identifikatori",
     "Contacts" : "Contacts",
     "Calendars" : "Taqvimlar"
 },

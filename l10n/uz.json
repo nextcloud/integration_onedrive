@@ -1,6 +1,7 @@
 { "translations": {
     "Bad credentials" : "Akkaunt ma'lumotlari xato",
     "Bad HTTP method" : "Yomon HTTP usuli",
+    "Client ID" : "Mijoz identifikatori",
     "Contacts" : "Contacts",
     "Calendars" : "Taqvimlar"
 },"pluralForm" :"nplurals=1; plural=0;"
