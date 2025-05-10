@@ -45,7 +45,7 @@ OC.L10N.register(
     "Starting importing files in {targetPath} directory" : "Beginn des Imports von Dateien in das Verzeichnis {targetPath}",
     "Failed to start importing Onedrive storage" : "Import von OneDrive konnte nicht gestartet werden",
     "Failed to get calendar list" : "Kalenderliste konnte nicht abgerufen werden",
-    "_{number} event successfully imported in {name}_::_{number} events successfully imported in {name}_" : ["{number} Termin erfolgreich nach {name} importiert","{number} Termine erfolgreich nach {name} importiert"],
+    "_{number} event successfully imported in {name}_::_{number} events successfully imported in {name}_" : ["{number} Termin nach {name} importiert","{number} Termine nach {name} importiert"],
     "Failed to import calendar" : "Kalender konnte nicht importiert werden",
     "Failed to get number of contacts" : "Anzahl der Kontakte konnte nicht abgerufen werden",
     "_{nbAdded} contact created, {nbUpdated} updated, {nbSkipped} skipped, {nbFailed} failed_::_{nbAdded} contacts created, {nbUpdated} updated, {nbSkipped} skipped, {nbFailed} failed_" : ["{nbAdded} Kontakt erstellt, {nbUpdated} aktualisiert, {nbSkipped} übersprungen, {nbFailed} fehlgeschlagen","{nbAdded} Kontakte erstellt, {nbUpdated} aktualisiert, {nbSkipped} übersprungen, {nbFailed} fehlgeschlagen"],
