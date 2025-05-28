@@ -21,11 +21,9 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        php-versions: ['8.0', '8.1']
-        server-versions: ['v27.x.x']
+        php-versions: ['8.1', '8.2']
+        server-versions: ['v29.x.x', 'v30.x.x', 'v31.x.x']
         include:
-          - php-versions: '8.2'
-            server-versions: 'v28.x.x'
           - php-versions: '8.3'
             server-versions: 'dev-master'
 
