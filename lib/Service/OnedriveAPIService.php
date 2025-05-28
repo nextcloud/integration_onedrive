@@ -70,7 +70,7 @@ class OnedriveAPIService {
 	public function fileRequest(string $url, $resource): array {
 		try {
 			$options = [
-				'stream' => true,
+				'sink' => $resource,
 				'timeout' => 0,
 				'headers' => [
 					'User-Agent' => 'Nextcloud Dropbox integration',
@@ -84,22 +84,8 @@ class OnedriveAPIService {
 			if ($respCode >= 400) {
 				return ['error' => $this->l10n->t('Bad credentials')];
 			}
-
-			$body = $response->getBody();
-			if (is_string($body)) {
-				fwrite($resource, $body);
-			} else {
-				while (!feof($body)) {
-					// write ~5 MB chunks
-					$chunk = fread($body, 5000000);
-					fwrite($resource, $chunk);
-				}
-				fclose($body);
-			}
-
 			return ['success' => true];
 		} catch (ServerException|ClientException $e) {
-			// $response = $e->getResponse();
 			$this->logger->warning('OneDrive API error : ' . $e->getMessage(), ['app' => Application::APP_ID]);
 			return ['error' => $e->getMessage()];
 		} catch (ConnectException $e) {
@@ -294,6 +280,7 @@ class OnedriveAPIService {
 
 	private function getKiotaHandlerStack(): HandlerStack {
 		$handlerStack = HandlerStack::create();
+		/** @psalm-suppress MixedArgumentTypeCoercion */
 		$handlerStack->push(KiotaMiddleware::retry(), RetryHandler::HANDLER_NAME);
 		return $handlerStack;
 	}
