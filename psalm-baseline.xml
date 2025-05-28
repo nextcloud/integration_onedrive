@@ -28,17 +28,50 @@
     </PossiblyNullArgument>
   </file>
   <file src="lib/Service/OnedriveAPIService.php">
-    <MixedArgumentTypeCoercion occurrences="1">
-      <code>KiotaMiddleware::retry()</code>
-    </MixedArgumentTypeCoercion>
-    <MixedInferredReturnType occurrences="2">
+    <LessSpecificReturnStatement occurrences="3">
+      <code>['error' =&gt; $e-&gt;getMessage()]</code>
+      <code>['error' =&gt; $e-&gt;getMessage()]</code>
+      <code>['error' =&gt; $e-&gt;getResponse()-&gt;getBody()]</code>
+    </LessSpecificReturnStatement>
+    <MixedInferredReturnType occurrences="3">
+      <code>HandlerStack</code>
       <code>array{body?: resource|string, headers?: array, error?: string}</code>
       <code>array{error?: string}</code>
     </MixedInferredReturnType>
+    <MixedMethodCall occurrences="2">
+      <code>getBody</code>
+      <code>getBody</code>
+    </MixedMethodCall>
+    <MixedOperand occurrences="1">
+      <code>$e-&gt;getResponse()-&gt;getBody()</code>
+    </MixedOperand>
     <MixedReturnStatement occurrences="2">
       <code>json_decode($body, true)</code>
       <code>json_decode($body, true) ?: []</code>
     </MixedReturnStatement>
+    <UndefinedClass occurrences="21">
+      <code>$e</code>
+      <code>$e</code>
+      <code>$e</code>
+      <code>$e</code>
+      <code>$e</code>
+      <code>$e</code>
+      <code>$e</code>
+      <code>$e</code>
+      <code>$e</code>
+      <code>$e</code>
+      <code>ClientException</code>
+      <code>ClientException</code>
+      <code>ClientException</code>
+      <code>ConnectException</code>
+      <code>ConnectException</code>
+      <code>ConnectException</code>
+      <code>HandlerStack</code>
+      <code>HandlerStack</code>
+      <code>ServerException</code>
+      <code>ServerException</code>
+      <code>ServerException</code>
+    </UndefinedClass>
   </file>
   <file src="lib/Service/OnedriveCalendarAPIService.php">
     <LessSpecificReturnStatement occurrences="1">
@@ -206,37 +239,27 @@
       <code>$folder</code>
       <code>$folder</code>
     </ArgumentTypeCoercion>
-    <MixedArgument occurrences="10">
+    <MixedArgument occurrences="7">
       <code>$fileItem['@microsoft.graph.downloadUrl']</code>
       <code>$fileItem['lastModifiedDateTime']</code>
       <code>$fileName</code>
       <code>$fileName</code>
-      <code>$item</code>
       <code>$remoteFolderInfo['lastModifiedDateTime']</code>
       <code>$result['@odata.nextLink']</code>
       <code>$result['@odata.nextLink']</code>
-      <code>$result['@odata.nextLink']</code>
-      <code>$result['@odata.nextLink']</code>
     </MixedArgument>
-    <MixedArrayAccess occurrences="3">
+    <MixedArrayAccess occurrences="1">
       <code>$downloadResult['totalSeenNumber']</code>
-      <code>$item['name']</code>
-      <code>$item['name']</code>
     </MixedArrayAccess>
-    <MixedAssignment occurrences="8">
+    <MixedAssignment occurrences="5">
       <code>$fileName</code>
-      <code>$item</code>
-      <code>$item</code>
-      <code>$item</code>
       <code>$newDownloadedSize</code>
       <code>$newNbDownloaded</code>
       <code>$newTotalSeenNumber</code>
       <code>$state</code>
     </MixedAssignment>
-    <MixedOperand occurrences="4">
+    <MixedOperand occurrences="2">
       <code>$fileName</code>
-      <code>$item['name']</code>
-      <code>$item['name']</code>
       <code>$res['error']</code>
     </MixedOperand>
     <PossiblyUndefinedVariable occurrences="1">
