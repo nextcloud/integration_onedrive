@@ -25,6 +25,17 @@ use OCP\PreConditionNotMetException;
 use Psr\Log\LoggerInterface;
 use Throwable;
 
+/**
+ * @psalm-type OneDriveItem = array{
+ *   "name": string,
+ *   "file"?: array<string,mixed>,
+ *   "folder"?: array<string,mixed>,
+ *   "@microsoft.graph.downloadUrl"?: string,
+ *   "@odata.nextLink"?: string,
+ *   "lastModifiedDateTime"?: string
+ * }
+ */
+
 class OnedriveStorageAPIService {
 	/**
 	 * @var string
@@ -264,26 +275,37 @@ class OnedriveStorageAPIService {
 		];
 	}
 
-	private function downloadDir(string $userId, Folder $topFolder,
-		?int $maxDownloadSize, int $downloadedSize, int $totalSeenNumber,
-		int $nbDownloaded, string $path, float $alreadyImportedSize, int $alreadyImportedNumber,
-		array &$importTree): array {
+	private function downloadDir(
+		string $userId,
+		Folder $topFolder,
+		?int $maxDownloadSize,
+		int $downloadedSize,
+		int $totalSeenNumber,
+		int $nbDownloaded,
+		string $path,
+		float $alreadyImportedSize,
+		int $alreadyImportedNumber,
+		array &$importTree,
+	): array {
 		$newDownloadedSize = $downloadedSize;
 		$newTotalSeenNumber = $totalSeenNumber;
 		$newNbDownloaded = $nbDownloaded;
 
-		// create dir if needed
+		// ensure local folder exists
 		if (!$topFolder->nodeExists($path)) {
 			$folder = $topFolder->newFolder($path);
 		} else {
 			$folder = $topFolder->get($path);
 		}
 
+		// build Graph endpoint
 		$encPath = rawurlencode($path);
-		$reqPath = ($encPath === '')
-			? ''
-			: ':' . $encPath . ':';
+		$reqPath = $encPath === '' ? '' : ':' . $encPath . ':';
 		$endPoint = 'me/drive/root' . $reqPath . '/children';
+
+		// collect sub-folders for recursive traversal
+		/** @var string[] $subDirs */
+		$subDirs = [];
 		$params = [];
 		do {
 			$result = $this->onedriveApiService->request($userId, $endPoint, $params);
@@ -294,75 +316,71 @@ class OnedriveStorageAPIService {
 					'nbDownloaded' => $newNbDownloaded,
 				];
 			}
-			// first get all files
+
+			/** @var OneDriveItem $item */
 			foreach ($result['value'] as $item) {
 				if (isset($item['file'])) {
 					$newTotalSeenNumber++;
 					$size = $this->getFile($folder, $item);
-					$newDownloadedSize += ($size ?? 0);
-					if (!is_null($size) && $size > 0) {
-						$newNbDownloaded++;
-						$this->config->setUserValue($userId, Application::APP_ID, 'imported_size', (string)($alreadyImportedSize + $newDownloadedSize));
-						$this->config->setUserValue($userId, Application::APP_ID, 'nb_imported_files', (string)($alreadyImportedNumber + $newNbDownloaded));
-						$ts = (new DateTime())->getTimestamp();
-						$this->config->setUserValue($userId, Application::APP_ID, 'last_onedrive_import_timestamp', (string)$ts);
-					}
-					if (!is_null($maxDownloadSize) && $newDownloadedSize >= $maxDownloadSize) {
-						throw new MaxDownloadSizeReachedException('Yep');
+					if ($size !== null) {
+						$newDownloadedSize += $size;
+						if ($size > 0) {
+							$newNbDownloaded++;
+							$this->config->setUserValue($userId, Application::APP_ID, 'imported_size', (string)($alreadyImportedSize + $newDownloadedSize));
+							$this->config->setUserValue($userId, Application::APP_ID, 'nb_imported_files', (string)($alreadyImportedNumber + $newNbDownloaded));
+							$this->config->setUserValue($userId, Application::APP_ID, 'last_onedrive_import_timestamp', (string)(new \DateTime())->getTimestamp());
+						}
+						if ($maxDownloadSize !== null && $newDownloadedSize >= $maxDownloadSize) {
+							throw new MaxDownloadSizeReachedException('Download size limit reached');
+						}
 					}
 				}
+				// folders: remember for recursion
+				if (isset($item['folder'])) {
+					$subDirs[] = $item['name'];
+					// mark for progress tracking
+					$subPath = ltrim($path . '/' . $item['name']);
+					$importTree[$subPath] = 'todo';
+				}
 			}
-			// REMOVE this directory from unfinished list
-			if (array_key_exists($path, $importTree)) {
+
+			// if this directory was marked unfinished, remove it now
+			if (isset($importTree[$path])) {
 				unset($importTree[$path]);
 			}
+
+			// prepare next page if any
 			if (isset($result['@odata.nextLink'])
 				&& $result['@odata.nextLink']
-				&& preg_match('/\$skiptoken=/i', $result['@odata.nextLink'])) {
+				&& preg_match('/\$skiptoken=/i', $result['@odata.nextLink'])
+			) {
 				$params['$skiptoken'] = preg_replace('/.*\$skiptoken=/', '', $result['@odata.nextLink']);
+			} else {
+				break;
 			}
-		} while (isset($result['@odata.nextLink']) && $result['@odata.nextLink']);
+		} while (true);
 
-		// DIRECTORIES
-		$params = [
-			'filter' => 'folder ne null',
-		];
-		do {
-			$result = $this->onedriveApiService->request($userId, $endPoint, $params);
-			if (isset($result['error']) || !isset($result['value']) || !is_array($result['value'])) {
-				return [
-					'downloadedSize' => $newDownloadedSize,
-					'totalSeenNumber' => $newTotalSeenNumber,
-					'nbDownloaded' => $newNbDownloaded,
-				];
-			}
-			// store directories we have to do
-			foreach ($result['value'] as $item) {
-				if (isset($item['folder'])) {
-					$subDirPath = $path . '/' . $item['name'];
-					$importTree[$subDirPath] = 'todo';
-				}
-			}
-			// then explore sub directories
-			foreach ($result['value'] as $item) {
-				if (isset($item['folder'])) {
-					$subDownloadResult = $this->downloadDir(
-						$userId, $topFolder, $maxDownloadSize, (int)$newDownloadedSize, (int)$newTotalSeenNumber, (int)$newNbDownloaded,
-						$path . '/' . $item['name'], $alreadyImportedSize, $alreadyImportedNumber, $importTree
-					);
-					$newDownloadedSize = $subDownloadResult['downloadedSize'];
-					$newTotalSeenNumber = $subDownloadResult['totalSeenNumber'];
-					$newNbDownloaded = $subDownloadResult['nbDownloaded'];
-				}
-			}
-			if (isset($result['@odata.nextLink'])
-				&& $result['@odata.nextLink']
-				&& preg_match('/\$skiptoken=/i', $result['@odata.nextLink'])) {
-				$params['$skiptoken'] = preg_replace('/.*\$skiptoken=/', '', $result['@odata.nextLink']);
-			}
-		} while (isset($result['@odata.nextLink']) && $result['@odata.nextLink']);
+		// recurse into each sub-directory
+		foreach ($subDirs as $dirName) {
+			$subResult = $this->downloadDir(
+				$userId,
+				$topFolder,
+				$maxDownloadSize,
+				(int)$newDownloadedSize,
+				(int)$newTotalSeenNumber,
+				(int)$newNbDownloaded,
+				$path . '/' . $dirName,
+				$alreadyImportedSize,
+				$alreadyImportedNumber,
+				$importTree
+			);
+			// update totals from recursive call
+			$newDownloadedSize = $subResult['downloadedSize'];
+			$newTotalSeenNumber = $subResult['totalSeenNumber'];
+			$newNbDownloaded = $subResult['nbDownloaded'];
+		}
 
-		// update last modified date when directory is fully downloaded (because creating children triggers a touch as well)
+		// update directory timestamp to match remote lastModifiedDateTime
 		$this->touchFolder($userId, $folder, $path);
 
 		return [
