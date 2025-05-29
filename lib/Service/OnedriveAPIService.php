@@ -16,6 +16,7 @@ use GuzzleHttp\HandlerStack;
 use Microsoft\Kiota\Http\Middleware\KiotaMiddleware;
 use Microsoft\Kiota\Http\Middleware\RetryHandler;
 use OCA\Onedrive\AppInfo\Application;
+use OCP\App\IAppManager;
 use OCP\Http\Client\IClient;
 use OCP\Http\Client\IClientService;
 use OCP\IConfig;
@@ -30,18 +31,27 @@ class OnedriveAPIService {
 
 	private IClient $client;
 
+	private string $userAgent;
+
 	/**
 	 * Service to make requests to OneDrive v3 (JSON) API
 	 */
 	public function __construct(
-		private LoggerInterface $logger,
-		private IL10N $l10n,
-		private IConfig $config,
-		private ICrypto $crypto,
-		private INotificationManager $notificationManager,
-		IClientService $clientService,
+		private readonly LoggerInterface      $logger,
+		private readonly IL10N                $l10n,
+		private readonly IConfig              $config,
+		private readonly ICrypto              $crypto,
+		private readonly INotificationManager $notificationManager,
+		private readonly IAppManager          $appManager,
+		IClientService                        $clientService,
 	) {
 		$this->client = $clientService->newClient();
+
+		$this->userAgent = sprintf(
+			'Nextcloud/%s nextcloud-onedrive/%s',
+			$this->config->getSystemValueString('version', '0.0.0'),
+			$this->appManager->getAppVersion(Application::APP_ID)
+		);
 	}
 
 	/**
@@ -74,7 +84,7 @@ class OnedriveAPIService {
 				'sink' => $resource,
 				'timeout' => 0,
 				'headers' => [
-					'User-Agent' => 'Nextcloud Dropbox integration',
+					'User-Agent' => $this->userAgent,
 				],
 				'handler' => $this->getKiotaHandlerStack(),
 			];
@@ -117,7 +127,7 @@ class OnedriveAPIService {
 			$options = [
 				'headers' => [
 					'Authorization' => 'bearer ' . $accessToken,
-					'User-Agent' => 'Nextcloud OneDrive integration'
+					'User-Agent' => $this->userAgent,
 				],
 				'handler' => $this->getKiotaHandlerStack(),
 			];
@@ -186,7 +196,7 @@ class OnedriveAPIService {
 			$url = 'https://login.live.com/oauth20_token.srf';
 			$options = [
 				'headers' => [
-					'User-Agent' => 'Nextcloud OneDrive integration',
+					'User-Agent' => $this->userAgent,
 					'Content-Type' => 'application/x-www-form-urlencoded',
 				],
 			];
