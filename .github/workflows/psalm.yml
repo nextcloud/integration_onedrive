@@ -23,7 +23,7 @@ jobs:
       fail-fast: false
       matrix:
         php-versions: ['8.1', '8.2']
-        server-versions: ['v29.x.x', 'v30.x.x']
+        server-versions: ['v29.x.x', 'v30.x.x', 'v31.x.x']
 
     name: Nextcloud
     steps:
