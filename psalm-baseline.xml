@@ -1,275 +1,331 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<files psalm-version="4.x-dev@">
+<files psalm-version="5.26.1@d747f6500b38ac4f7dfc5edbcae6e4b637d7add0">
   <file src="lib/AppInfo/Application.php">
-    <DeprecatedClass occurrences="1">
-      <code>$this-&gt;getContainer()</code>
-    </DeprecatedClass>
-    <MixedAssignment occurrences="1">
-      <code>$config</code>
+    <DeprecatedInterface>
+      <code><![CDATA[$this->getContainer()]]></code>
+    </DeprecatedInterface>
+    <MixedAssignment>
+      <code><![CDATA[$config]]></code>
     </MixedAssignment>
-    <MixedMethodCall occurrences="1">
-      <code>getUserValue</code>
+    <MixedMethodCall>
+      <code><![CDATA[getUserValue]]></code>
     </MixedMethodCall>
   </file>
   <file src="lib/Controller/ConfigController.php">
-    <DeprecatedMethod occurrences="1">
-      <code>setAppValue</code>
+    <DeprecatedMethod>
+      <code><![CDATA[setAppValue]]></code>
     </DeprecatedMethod>
-    <MixedArgument occurrences="3">
-      <code>$info['displayName'] ?? '??'</code>
-      <code>$value</code>
-      <code>$value</code>
+    <InvalidArrayOffset>
+      <code><![CDATA[$info['displayName']]]></code>
+    </InvalidArrayOffset>
+    <MixedArgument>
+      <code><![CDATA[$info['displayName'] ?? '??']]></code>
+      <code><![CDATA[$value]]></code>
+      <code><![CDATA[$value]]></code>
     </MixedArgument>
-    <MixedAssignment occurrences="1">
-      <code>$value</code>
+    <MixedAssignment>
+      <code><![CDATA[$value]]></code>
     </MixedAssignment>
-    <PossiblyNullArgument occurrences="1">
-      <code>$this-&gt;userId</code>
+    <PossiblyNullArgument>
+      <code><![CDATA[$this->userId]]></code>
+      <code><![CDATA[$this->userId]]></code>
+      <code><![CDATA[$this->userId]]></code>
+      <code><![CDATA[$this->userId]]></code>
+      <code><![CDATA[$this->userId]]></code>
+      <code><![CDATA[$this->userId]]></code>
+      <code><![CDATA[$this->userId]]></code>
     </PossiblyNullArgument>
   </file>
   <file src="lib/Service/OnedriveAPIService.php">
-    <LessSpecificReturnStatement occurrences="3">
-      <code>['error' =&gt; $e-&gt;getMessage()]</code>
-      <code>['error' =&gt; $e-&gt;getMessage()]</code>
-      <code>['error' =&gt; $e-&gt;getResponse()-&gt;getBody()]</code>
-    </LessSpecificReturnStatement>
-    <MixedInferredReturnType occurrences="3">
-      <code>HandlerStack</code>
-      <code>array{body?: resource|string, headers?: array, error?: string}</code>
-      <code>array{error?: string}</code>
+    <MixedInferredReturnType>
+      <code><![CDATA[HandlerStack]]></code>
+      <code><![CDATA[array{body?: resource|string, headers?: array, error?: string}]]></code>
+      <code><![CDATA[array{error?: string}]]></code>
     </MixedInferredReturnType>
-    <MixedMethodCall occurrences="2">
-      <code>getBody</code>
-      <code>getBody</code>
+    <MixedMethodCall>
+      <code><![CDATA[getBody]]></code>
+      <code><![CDATA[getBody]]></code>
     </MixedMethodCall>
-    <MixedOperand occurrences="1">
-      <code>$e-&gt;getResponse()-&gt;getBody()</code>
+    <MixedOperand>
+      <code><![CDATA[$e->getResponse()->getBody()]]></code>
     </MixedOperand>
-    <MixedReturnStatement occurrences="2">
-      <code>json_decode($body, true)</code>
-      <code>json_decode($body, true) ?: []</code>
+    <MixedReturnStatement>
+      <code><![CDATA[json_decode($body, true)]]></code>
+      <code><![CDATA[json_decode($body, true) ?: []]]></code>
+      <code><![CDATA[json_decode($body, true) ?: []]]></code>
     </MixedReturnStatement>
-    <UndefinedClass occurrences="21">
-      <code>$e</code>
-      <code>$e</code>
-      <code>$e</code>
-      <code>$e</code>
-      <code>$e</code>
-      <code>$e</code>
-      <code>$e</code>
-      <code>$e</code>
-      <code>$e</code>
-      <code>$e</code>
-      <code>ClientException</code>
-      <code>ClientException</code>
-      <code>ClientException</code>
-      <code>ConnectException</code>
-      <code>ConnectException</code>
-      <code>ConnectException</code>
-      <code>HandlerStack</code>
-      <code>HandlerStack</code>
-      <code>ServerException</code>
-      <code>ServerException</code>
-      <code>ServerException</code>
+    <MixedReturnTypeCoercion>
+      <code><![CDATA[['error' => $e->getMessage()]]]></code>
+      <code><![CDATA[['error' => $e->getMessage()]]]></code>
+      <code><![CDATA[['error' => $e->getResponse()->getBody()]]]></code>
+    </MixedReturnTypeCoercion>
+    <UndefinedClass>
+      <code><![CDATA[$e]]></code>
+      <code><![CDATA[$e]]></code>
+      <code><![CDATA[$e]]></code>
+      <code><![CDATA[$e]]></code>
+      <code><![CDATA[$e]]></code>
+      <code><![CDATA[$e]]></code>
+      <code><![CDATA[$e]]></code>
+      <code><![CDATA[$e]]></code>
+      <code><![CDATA[$e]]></code>
+      <code><![CDATA[$e]]></code>
+      <code><![CDATA[$e]]></code>
+      <code><![CDATA[$e]]></code>
+      <code><![CDATA[$e]]></code>
+      <code><![CDATA[$e]]></code>
+      <code><![CDATA[$e]]></code>
+      <code><![CDATA[$e]]></code>
+      <code><![CDATA[$e]]></code>
+      <code><![CDATA[$e]]></code>
+      <code><![CDATA[ClientException]]></code>
+      <code><![CDATA[ClientException]]></code>
+      <code><![CDATA[ClientException]]></code>
+      <code><![CDATA[ConnectException]]></code>
+      <code><![CDATA[ConnectException]]></code>
+      <code><![CDATA[ConnectException]]></code>
+      <code><![CDATA[HandlerStack]]></code>
+      <code><![CDATA[HandlerStack]]></code>
+      <code><![CDATA[ServerException]]></code>
+      <code><![CDATA[ServerException]]></code>
+      <code><![CDATA[ServerException]]></code>
     </UndefinedClass>
   </file>
   <file src="lib/Service/OnedriveCalendarAPIService.php">
-    <LessSpecificReturnStatement occurrences="1">
-      <code>$eventGeneratorReturn</code>
-    </LessSpecificReturnStatement>
-    <MixedArgument occurrences="20">
-      <code>$day</code>
-      <code>$day</code>
-      <code>$day</code>
-      <code>$e['body']['content']</code>
-      <code>$e['categories'][0]</code>
-      <code>$e['createdDateTime']</code>
-      <code>$e['end']['dateTime']</code>
-      <code>$e['end']['dateTime']</code>
-      <code>$e['lastModifiedDateTime']</code>
-      <code>$e['location']['displayName']</code>
-      <code>$e['recurrence']['pattern']['daysOfWeek']</code>
-      <code>$e['recurrence']['pattern']['daysOfWeek']</code>
-      <code>$e['recurrence']['pattern']['daysOfWeek']</code>
-      <code>$e['recurrence']['pattern']['firstDayOfWeek']</code>
-      <code>$e['recurrence']['range']['endDate']</code>
-      <code>$e['start']['dateTime']</code>
-      <code>$e['start']['dateTime']</code>
-      <code>$e['subject']</code>
-      <code>$result['@odata.nextLink']</code>
-      <code>$result['@odata.nextLink']</code>
+    <InvalidArrayOffset>
+      <code><![CDATA[$result['@odata.nextLink']]]></code>
+      <code><![CDATA[$result['value']]]></code>
+      <code><![CDATA[$result['value']]]></code>
+      <code><![CDATA[$result['value']]]></code>
+    </InvalidArrayOffset>
+    <InvalidReturnStatement>
+      <code><![CDATA[$eventGeneratorReturn]]></code>
+      <code><![CDATA[$result]]></code>
+    </InvalidReturnStatement>
+    <InvalidReturnType>
+      <code><![CDATA[array{nbAdded?: int, calName?: string, error?: string}]]></code>
+    </InvalidReturnType>
+    <MixedArgument>
+      <code><![CDATA[$day]]></code>
+      <code><![CDATA[$day]]></code>
+      <code><![CDATA[$day]]></code>
+      <code><![CDATA[$e['body']['content']]]></code>
+      <code><![CDATA[$e['categories'][0]]]></code>
+      <code><![CDATA[$e['createdDateTime']]]></code>
+      <code><![CDATA[$e['end']['dateTime']]]></code>
+      <code><![CDATA[$e['end']['dateTime']]]></code>
+      <code><![CDATA[$e['lastModifiedDateTime']]]></code>
+      <code><![CDATA[$e['location']['displayName']]]></code>
+      <code><![CDATA[$e['recurrence']['pattern']['daysOfWeek']]]></code>
+      <code><![CDATA[$e['recurrence']['pattern']['daysOfWeek']]]></code>
+      <code><![CDATA[$e['recurrence']['pattern']['daysOfWeek']]]></code>
+      <code><![CDATA[$e['recurrence']['pattern']['firstDayOfWeek']]]></code>
+      <code><![CDATA[$e['recurrence']['range']['endDate']]]></code>
+      <code><![CDATA[$e['start']['dateTime']]]></code>
+      <code><![CDATA[$e['start']['dateTime']]]></code>
+      <code><![CDATA[$e['subject']]]></code>
+      <code><![CDATA[$result['@odata.nextLink']]]></code>
+      <code><![CDATA[$result['@odata.nextLink']]]></code>
     </MixedArgument>
-    <MixedArrayAccess occurrences="15">
-      <code>$e['recurrence']['pattern']['dayOfMonth']</code>
-      <code>$e['recurrence']['pattern']['dayOfMonth']</code>
-      <code>$e['recurrence']['pattern']['dayOfMonth']</code>
-      <code>$e['recurrence']['pattern']['dayOfMonth']</code>
-      <code>$e['recurrence']['pattern']['firstDayOfWeek']</code>
-      <code>$e['recurrence']['pattern']['index']</code>
-      <code>$e['recurrence']['pattern']['index']</code>
-      <code>$e['recurrence']['pattern']['interval']</code>
-      <code>$e['recurrence']['pattern']['month']</code>
-      <code>$e['recurrence']['pattern']['type']</code>
-      <code>$e['recurrence']['range']['endDate']</code>
-      <code>$e['recurrence']['range']['numberOfOccurrences']</code>
-      <code>$e['recurrence']['range']['numberOfOccurrences']</code>
-      <code>$v['color']</code>
-      <code>$v['displayName']</code>
+    <MixedArrayAccess>
+      <code><![CDATA[$e['recurrence']['pattern']['firstDayOfWeek']]]></code>
+      <code><![CDATA[$e['recurrence']['pattern']['type']]]></code>
+      <code><![CDATA[$e['recurrence']['range']['endDate']]]></code>
+      <code><![CDATA[$e['recurrence']['range']['numberOfOccurrences']]]></code>
+      <code><![CDATA[$v['color']]]></code>
+      <code><![CDATA[$v['displayName']]]></code>
     </MixedArrayAccess>
-    <MixedArrayOffset occurrences="4">
-      <code>$categories[$e['categories'][0]]</code>
-      <code>$categoryColors[$v['displayName']]</code>
-      <code>$setPositions[$index]</code>
-      <code>$setPositions[$index]</code>
+    <MixedArrayOffset>
+      <code><![CDATA[$categories[$e['categories'][0]]]]></code>
+      <code><![CDATA[$categoryColors[$v['displayName']]]]></code>
+      <code><![CDATA[$setPositions[$index]]]></code>
+      <code><![CDATA[$setPositions[$index]]]></code>
     </MixedArrayOffset>
-    <MixedAssignment occurrences="8">
-      <code>$day</code>
-      <code>$day</code>
-      <code>$day</code>
-      <code>$event</code>
-      <code>$index</code>
-      <code>$index</code>
-      <code>$type</code>
-      <code>$v</code>
+    <MixedAssignment>
+      <code><![CDATA[$day]]></code>
+      <code><![CDATA[$day]]></code>
+      <code><![CDATA[$day]]></code>
+      <code><![CDATA[$event]]></code>
+      <code><![CDATA[$index]]></code>
+      <code><![CDATA[$index]]></code>
+      <code><![CDATA[$type]]></code>
+      <code><![CDATA[$v]]></code>
     </MixedAssignment>
-    <MixedInferredReturnType occurrences="2">
-      <code>?int</code>
-      <code>array{error?: string}</code>
+    <MixedInferredReturnType>
+      <code><![CDATA[?int]]></code>
+      <code><![CDATA[array{error?: string}]]></code>
     </MixedInferredReturnType>
-    <MixedOperand occurrences="12">
-      <code>$categories[$e['categories'][0]]</code>
-      <code>$e['recurrence']['pattern']['dayOfMonth']</code>
-      <code>$e['recurrence']['pattern']['dayOfMonth']</code>
-      <code>$e['recurrence']['pattern']['dayOfMonth']</code>
-      <code>$e['recurrence']['pattern']['interval']</code>
-      <code>$e['recurrence']['pattern']['month']</code>
-      <code>$e['recurrence']['pattern']['month']</code>
-      <code>$e['recurrence']['range']['numberOfOccurrences']</code>
-      <code>$e['reminderMinutesBeforeStart']</code>
-      <code>$e['subject'] ?? 'no title'</code>
-      <code>$e['subject'] ?? 'no title'</code>
-      <code>$e['subject'] ?? 'no title'</code>
+    <MixedOperand>
+      <code><![CDATA[$categories[$e['categories'][0]]]]></code>
+      <code><![CDATA[$e['recurrence']['pattern']['dayOfMonth']]]></code>
+      <code><![CDATA[$e['recurrence']['pattern']['dayOfMonth']]]></code>
+      <code><![CDATA[$e['recurrence']['pattern']['dayOfMonth']]]></code>
+      <code><![CDATA[$e['recurrence']['pattern']['interval']]]></code>
+      <code><![CDATA[$e['recurrence']['pattern']['month']]]></code>
+      <code><![CDATA[$e['recurrence']['pattern']['month']]]></code>
+      <code><![CDATA[$e['recurrence']['range']['numberOfOccurrences']]]></code>
+      <code><![CDATA[$e['reminderMinutesBeforeStart']]]></code>
+      <code><![CDATA[$e['subject'] ?? 'no title']]></code>
+      <code><![CDATA[$e['subject'] ?? 'no title']]></code>
+      <code><![CDATA[$e['subject'] ?? 'no title']]></code>
     </MixedOperand>
-    <MixedReturnStatement occurrences="2">
-      <code>$result['value']</code>
+    <MixedReturnStatement>
+      <code><![CDATA[$result['value']]]></code>
+      <code><![CDATA[is_null($res)
+			? null
+			: $res['id']]]></code>
+      <code><![CDATA[is_null($res)
+			? null
+			: $res['id']]]></code>
     </MixedReturnStatement>
-    <MixedReturnTypeCoercion occurrences="1">
-      <code>array{nbAdded?: int, calName?: string, error?: string}</code>
-    </MixedReturnTypeCoercion>
+    <PossiblyInvalidArgument>
+      <code><![CDATA[str_replace("\n", '\n', $e['location']['displayName'])]]></code>
+      <code><![CDATA[str_replace("\n", '\n', $e['subject'])]]></code>
+    </PossiblyInvalidArgument>
+    <PossiblyInvalidCast>
+      <code><![CDATA[str_replace("\n", '\n', $e['location']['displayName'])]]></code>
+      <code><![CDATA[str_replace("\n", '\n', $e['subject'])]]></code>
+    </PossiblyInvalidCast>
+    <RedundantCondition>
+      <code><![CDATA[$result['@odata.nextLink']]]></code>
+    </RedundantCondition>
+    <RiskyTruthyFalsyComparison>
+      <code><![CDATA[$color]]></code>
+    </RiskyTruthyFalsyComparison>
   </file>
   <file src="lib/Service/OnedriveContactAPIService.php">
-    <MissingParamType occurrences="1">
-      <code>$key</code>
+    <InvalidArrayOffset>
+      <code><![CDATA[$result['@odata.nextLink']]]></code>
+      <code><![CDATA[$result['@odata.nextLink']]]></code>
+      <code><![CDATA[$result['@odata.nextLink']]]></code>
+      <code><![CDATA[$result['@odata.nextLink']]]></code>
+      <code><![CDATA[$result['value']]]></code>
+      <code><![CDATA[$result['value']]]></code>
+      <code><![CDATA[$result['value']]]></code>
+      <code><![CDATA[$result['value']]]></code>
+    </InvalidArrayOffset>
+    <MissingParamType>
+      <code><![CDATA[$key]]></code>
     </MissingParamType>
-    <MixedArgument occurrences="14">
-      <code>$c</code>
-      <code>$c[$addressKey]</code>
-      <code>$c['id']</code>
-      <code>$folder['displayName']</code>
-      <code>$msoftUpdateTime</code>
-      <code>$photo['content']</code>
-      <code>$result['@odata.nextLink']</code>
-      <code>$result['@odata.nextLink']</code>
-      <code>$result['@odata.nextLink']</code>
-      <code>$result['@odata.nextLink']</code>
-      <code>$result['@odata.nextLink']</code>
-      <code>$result['@odata.nextLink']</code>
-      <code>$result['@odata.nextLink']</code>
-      <code>$result['@odata.nextLink']</code>
+    <MixedArgument>
+      <code><![CDATA[$c]]></code>
+      <code><![CDATA[$c[$addressKey]]]></code>
+      <code><![CDATA[$c['id']]]></code>
+      <code><![CDATA[$folder['displayName']]]></code>
+      <code><![CDATA[$msoftUpdateTime]]></code>
+      <code><![CDATA[$photo['content']]]></code>
+      <code><![CDATA[$result['@odata.nextLink']]]></code>
+      <code><![CDATA[$result['@odata.nextLink']]]></code>
+      <code><![CDATA[$result['@odata.nextLink']]]></code>
+      <code><![CDATA[$result['@odata.nextLink']]]></code>
+      <code><![CDATA[$result['@odata.nextLink']]]></code>
+      <code><![CDATA[$result['@odata.nextLink']]]></code>
+      <code><![CDATA[$result['@odata.nextLink']]]></code>
+      <code><![CDATA[$result['@odata.nextLink']]]></code>
     </MixedArgument>
-    <MixedArrayAccess occurrences="7">
-      <code>$address['city']</code>
-      <code>$address['countryOrRegion']</code>
-      <code>$address['postalCode']</code>
-      <code>$address['state']</code>
-      <code>$address['street']</code>
-      <code>$email['address']</code>
-      <code>$existingContact['lastmodified']</code>
+    <MixedArgumentTypeCoercion>
+      <code><![CDATA[$c]]></code>
+    </MixedArgumentTypeCoercion>
+    <MixedArrayAccess>
+      <code><![CDATA[$address['city']]]></code>
+      <code><![CDATA[$address['countryOrRegion']]]></code>
+      <code><![CDATA[$address['postalCode']]]></code>
+      <code><![CDATA[$address['state']]]></code>
+      <code><![CDATA[$address['street']]]></code>
+      <code><![CDATA[$email['address']]]></code>
+      <code><![CDATA[$existingContact['lastmodified']]]></code>
     </MixedArrayAccess>
-    <MixedAssignment occurrences="19">
-      <code>$address</code>
-      <code>$c</code>
-      <code>$city</code>
-      <code>$country</code>
-      <code>$displayName</code>
-      <code>$email</code>
-      <code>$existingContact</code>
-      <code>$familyName</code>
-      <code>$firstName</code>
-      <code>$folder</code>
-      <code>$folder</code>
-      <code>$key</code>
-      <code>$msoftUpdateTime</code>
-      <code>$ph</code>
-      <code>$postalCode</code>
-      <code>$state</code>
-      <code>$streetAddress</code>
-      <code>$type</code>
-      <code>$type</code>
+    <MixedAssignment>
+      <code><![CDATA[$address]]></code>
+      <code><![CDATA[$c]]></code>
+      <code><![CDATA[$city]]></code>
+      <code><![CDATA[$country]]></code>
+      <code><![CDATA[$displayName]]></code>
+      <code><![CDATA[$email]]></code>
+      <code><![CDATA[$existingContact]]></code>
+      <code><![CDATA[$familyName]]></code>
+      <code><![CDATA[$firstName]]></code>
+      <code><![CDATA[$folder]]></code>
+      <code><![CDATA[$folder]]></code>
+      <code><![CDATA[$key]]></code>
+      <code><![CDATA[$msoftUpdateTime]]></code>
+      <code><![CDATA[$ph]]></code>
+      <code><![CDATA[$postalCode]]></code>
+      <code><![CDATA[$state]]></code>
+      <code><![CDATA[$streetAddress]]></code>
     </MixedAssignment>
-    <MixedOperand occurrences="3">
-      <code>$contact['id']</code>
-      <code>$displayName ?? 'no name'</code>
-      <code>$displayName ?? 'no name'</code>
+    <MixedOperand>
+      <code><![CDATA[$displayName ?? 'no name']]></code>
+      <code><![CDATA[$displayName ?? 'no name']]></code>
     </MixedOperand>
-    <PossiblyUndefinedArrayOffset occurrences="3">
-      <code>$result['body']</code>
-      <code>$result['headers']</code>
-      <code>$result['headers']</code>
+    <PossiblyUndefinedArrayOffset>
+      <code><![CDATA[$result['body']]]></code>
     </PossiblyUndefinedArrayOffset>
-    <PropertyNotSetInConstructor occurrences="4">
-      <code>$cdBackend</code>
-      <code>$contactsManager</code>
-      <code>$logger</code>
-      <code>$onedriveApiService</code>
-    </PropertyNotSetInConstructor>
-    <UndefinedClass occurrences="1">
-      <code>CardDavBackend</code>
+    <RedundantCondition>
+      <code><![CDATA[$result['@odata.nextLink']]]></code>
+      <code><![CDATA[$result['@odata.nextLink']]]></code>
+      <code><![CDATA[$result['@odata.nextLink']]]></code>
+      <code><![CDATA[$result['@odata.nextLink']]]></code>
+    </RedundantCondition>
+    <RiskyTruthyFalsyComparison>
+      <code><![CDATA[$displayName]]></code>
+      <code><![CDATA[$familyName]]></code>
+      <code><![CDATA[$firstName]]></code>
+    </RiskyTruthyFalsyComparison>
+    <UndefinedClass>
+      <code><![CDATA[CardDavBackend]]></code>
     </UndefinedClass>
-    <UndefinedDocblockClass occurrences="5">
-      <code>$this-&gt;cdBackend</code>
-      <code>$this-&gt;cdBackend</code>
-      <code>$this-&gt;cdBackend</code>
-      <code>$this-&gt;cdBackend</code>
-      <code>CardDavBackend</code>
+    <UndefinedDocblockClass>
+      <code><![CDATA[$this->cdBackend]]></code>
+      <code><![CDATA[$this->cdBackend]]></code>
+      <code><![CDATA[$this->cdBackend]]></code>
+      <code><![CDATA[$this->cdBackend]]></code>
+      <code><![CDATA[CardDavBackend]]></code>
     </UndefinedDocblockClass>
   </file>
   <file src="lib/Service/OnedriveStorageAPIService.php">
-    <ArgumentTypeCoercion occurrences="2">
-      <code>$folder</code>
-      <code>$folder</code>
+    <ArgumentTypeCoercion>
+      <code><![CDATA[$folder]]></code>
+      <code><![CDATA[$folder]]></code>
     </ArgumentTypeCoercion>
-    <MixedArgument occurrences="7">
-      <code>$fileItem['@microsoft.graph.downloadUrl']</code>
-      <code>$fileItem['lastModifiedDateTime']</code>
-      <code>$fileName</code>
-      <code>$fileName</code>
-      <code>$remoteFolderInfo['lastModifiedDateTime']</code>
-      <code>$result['@odata.nextLink']</code>
-      <code>$result['@odata.nextLink']</code>
+    <InvalidArrayOffset>
+      <code><![CDATA[$remoteFolderInfo['lastModifiedDateTime']]]></code>
+      <code><![CDATA[$result['@odata.nextLink']]]></code>
+      <code><![CDATA[$result['quota']]]></code>
+      <code><![CDATA[$result['quota']]]></code>
+      <code><![CDATA[$result['value']]]></code>
+    </InvalidArrayOffset>
+    <MixedArgument>
+      <code><![CDATA[$fileItem['@microsoft.graph.downloadUrl']]]></code>
+      <code><![CDATA[$fileItem['lastModifiedDateTime']]]></code>
+      <code><![CDATA[$fileName]]></code>
+      <code><![CDATA[$fileName]]></code>
+      <code><![CDATA[$remoteFolderInfo['lastModifiedDateTime']]]></code>
+      <code><![CDATA[$result['@odata.nextLink']]]></code>
+      <code><![CDATA[$result['@odata.nextLink']]]></code>
     </MixedArgument>
-    <MixedArrayAccess occurrences="1">
-      <code>$downloadResult['totalSeenNumber']</code>
+    <MixedArrayAccess>
+      <code><![CDATA[$downloadResult['totalSeenNumber']]]></code>
     </MixedArrayAccess>
-    <MixedAssignment occurrences="5">
-      <code>$fileName</code>
-      <code>$newDownloadedSize</code>
-      <code>$newNbDownloaded</code>
-      <code>$newTotalSeenNumber</code>
-      <code>$state</code>
+    <MixedAssignment>
+      <code><![CDATA[$fileName]]></code>
+      <code><![CDATA[$newDownloadedSize]]></code>
+      <code><![CDATA[$newNbDownloaded]]></code>
+      <code><![CDATA[$newTotalSeenNumber]]></code>
+      <code><![CDATA[$state]]></code>
     </MixedAssignment>
-    <MixedOperand occurrences="2">
-      <code>$fileName</code>
-      <code>$res['error']</code>
+    <MixedOperand>
+      <code><![CDATA[$fileName]]></code>
+      <code><![CDATA[$res['error']]]></code>
     </MixedOperand>
-    <PossiblyUndefinedVariable occurrences="1">
-      <code>$downloadResult</code>
+    <PossiblyUndefinedVariable>
+      <code><![CDATA[$downloadResult]]></code>
     </PossiblyUndefinedVariable>
-    <RedundantConditionGivenDocblockType occurrences="1">
-      <code>is_resource($resource)</code>
+    <RedundantConditionGivenDocblockType>
+      <code><![CDATA[is_resource($resource)]]></code>
     </RedundantConditionGivenDocblockType>
-    <UndefinedDocblockClass occurrences="1">
-      <code>\OC\User\NoUserException</code>
+    <UndefinedDocblockClass>
+      <code><![CDATA[\OC\User\NoUserException]]></code>
     </UndefinedDocblockClass>
   </file>
 </files>

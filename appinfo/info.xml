@@ -21,6 +21,7 @@
     <bugs>https://github.com/nextcloud/integration_onedrive/issues</bugs>
     <screenshot>https://github.com/nextcloud/integration_onedrive/raw/main/img/screenshot1.jpg</screenshot>
     <dependencies>
+		<php min-version="8.1"/>
         <nextcloud min-version="29" max-version="32"/>
     </dependencies>
     <settings>

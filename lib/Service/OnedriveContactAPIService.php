@@ -1,4 +1,5 @@
 <?php
+
 /**
  * SPDX-FileCopyrightText: 2020 Nextcloud GmbH and Nextcloud contributors
  * SPDX-License-Identifier: AGPL-3.0-or-later
@@ -246,17 +247,36 @@ class OnedriveContactAPIService {
 		];
 	}
 
+	/**
+	 * @param  string $userId
+	 * @param  array{ id: string } $contact
+	 * @return array{type: string, content: mixed}|null
+	 */
 	private function getContactPhoto(string $userId, array $contact): ?array {
 		$endPoint = 'me/contacts/' . $contact['id'] . '/photo/$value';
 		$result = $this->onedriveApiService->request($userId, $endPoint, [], 'GET', false);
+
 		if (isset($result['error'])) {
 			return null;
 		}
-		if (is_array($result['headers']['Content-Type']) && count($result['headers']['Content-Type']) > 0) {
-			$type = $result['headers']['Content-Type'][0];
-		} else {
-			$type = $result['headers']['Content-Type'];
+
+		if (!isset($result['headers']['Content-Type'])) {
+			return null;
 		}
+
+		/** @var string|string[] $contentType */
+		$contentType = $result['headers']['Content-Type'];
+
+		if (is_array($contentType)) {
+			$type = $contentType[0] ?? '';
+		} else {
+			$type = $contentType;
+		}
+
+		if ($type === '') {
+			return null;
+		}
+
 		return [
 			'type' => $type,
 			'content' => $result['body'],
