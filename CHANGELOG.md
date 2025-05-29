@@ -8,6 +8,18 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [3.4.0] - 2025-05-29
+
+### Changed
+- Added support for NC 32, removed support for NC 28
+
+### Fixed
+- Removed non-existing filter which lead to error in syncing. Thanks to @floriantraber
+- Updated PHP packages to fix conflicts with Server, which leads to broken `webdav`. Thanks to @stefanclark
+- Changed UserAgent to comply with RFC 9110. Thanks to @baywet
+- Optimized directory listing to use less requests
+- Refactored to use direct file downloading to remove `memory exceed` errors
+
 ## [3.3.1] - 2024-11-28
 
 ### Changed
