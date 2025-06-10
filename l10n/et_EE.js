@@ -1,6 +1,8 @@
 OC.L10N.register(
     "integration_onedrive",
     {
+    "Error getting OAuth access token" : "Viga OAuth tunnusloa laadimisel",
+    "Error during OAuth exchanges" : "Viga OAuth andmevahetusel",
     "Bad credentials" : "Vale kasutajanimi, salasõna või tunnusluba",
     "Bad HTTP method" : "Vigane HTTP-meetod",
     "Connected accounts" : "Ühendatud kasutajakontod",
