@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<files psalm-version="6.7.1@a2f190972555ea01b0cfcc1913924d6c5fc1a64e">
+  <file src="lib/Controller/ConfigController.php">
+    <InvalidArrayOffset>
+      <code><![CDATA[$info['displayName']]]></code>
+    </InvalidArrayOffset>
+  </file>
+  <file src="lib/Service/OnedriveCalendarAPIService.php">
+    <InvalidArrayOffset>
+      <code><![CDATA[$result['@odata.nextLink']]]></code>
+      <code><![CDATA[$result['value']]]></code>
+      <code><![CDATA[$result['value']]]></code>
+      <code><![CDATA[$result['value']]]></code>
+    </InvalidArrayOffset>
+    <InvalidReturnStatement>
+      <code><![CDATA[$eventGeneratorReturn]]></code>
+      <code><![CDATA[$result]]></code>
+    </InvalidReturnStatement>
+    <InvalidReturnType>
+      <code><![CDATA[array{nbAdded?: int, calName?: string, error?: string}]]></code>
+    </InvalidReturnType>
+    <RedundantCondition>
+      <code><![CDATA[$result['@odata.nextLink']]]></code>
+    </RedundantCondition>
+  </file>
+  <file src="lib/Service/OnedriveContactAPIService.php">
+    <InvalidArrayOffset>
+      <code><![CDATA[$result['@odata.nextLink']]]></code>
+      <code><![CDATA[$result['@odata.nextLink']]]></code>
+      <code><![CDATA[$result['@odata.nextLink']]]></code>
+      <code><![CDATA[$result['@odata.nextLink']]]></code>
+      <code><![CDATA[$result['value']]]></code>
+      <code><![CDATA[$result['value']]]></code>
+      <code><![CDATA[$result['value']]]></code>
+      <code><![CDATA[$result['value']]]></code>
+    </InvalidArrayOffset>
+    <RedundantCondition>
+      <code><![CDATA[$result['@odata.nextLink']]]></code>
+      <code><![CDATA[$result['@odata.nextLink']]]></code>
+      <code><![CDATA[$result['@odata.nextLink']]]></code>
+      <code><![CDATA[$result['@odata.nextLink']]]></code>
+    </RedundantCondition>
+  </file>
+  <file src="lib/Service/OnedriveStorageAPIService.php">
+    <InvalidArrayOffset>
+      <code><![CDATA[$remoteFolderInfo['lastModifiedDateTime']]]></code>
+      <code><![CDATA[$result['@odata.nextLink']]]></code>
+      <code><![CDATA[$result['quota']]]></code>
+      <code><![CDATA[$result['quota']]]></code>
+      <code><![CDATA[$result['value']]]></code>
+    </InvalidArrayOffset>
+    <UndefinedDocblockClass>
+      <code><![CDATA[\OC\User\NoUserException]]></code>
+    </UndefinedDocblockClass>
+  </file>
+</files>

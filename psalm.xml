@@ -1,48 +1,45 @@
 <?xml version="1.0"?>
 <psalm
-    errorLevel="1"
-    resolveFromConfigFile="true"
-    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xmlns="https://getpsalm.org/schema/config"
-    xsi:schemaLocation="https://getpsalm.org/schema/config vendor/vimeo/psalm/config.xsd"
-    errorBaseline="psalm-baseline.xml"
+	errorBaseline="tests/psalm-baseline.xml"
+	errorLevel="4"
+	findUnusedBaselineEntry="true"
+	findUnusedCode="false"
+	resolveFromConfigFile="true"
+	ensureOverrideAttribute="false"
+	phpVersion="8.1"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns="https://getpsalm.org/schema/config"
+	xsi:schemaLocation="https://getpsalm.org/schema/config vendor-bin/psalm/vendor/vimeo/psalm/config.xsd"
 >
-    <stubs>
-        <file name="tests/stub.phpstub" preloadClasses="true"/>
-    </stubs>
-    <projectFiles>
-        <directory name="lib" />
-        <ignoreFiles>
-            <directory name="vendor" />
-        </ignoreFiles>
-    </projectFiles>
-    <extraFiles>
-        <directory name="vendor" />
-    </extraFiles>
-    <issueHandlers>
-        <UndefinedClass>
-            <errorLevel type="suppress">
-                <referencedClass name="Doctrine\DBAL\Platforms\MySQLPlatform" />
-                <referencedClass name="Doctrine\DBAL\Platforms\PostgreSQL94Platform" />
-                <referencedClass name="Doctrine\DBAL\Platforms\SqlitePlatform" />
-                <referencedClass name="Doctrine\DBAL\Types\Type" />
-                <referencedClass name="Doctrine\DBAL\Types\Types" />
-                <referencedClass name="OC" />
-                <referencedClass name="Sabre" />
-                <referencedClass name="OC_Util" />
-                <referencedClass name="OC\Security\CSP\ContentSecurityPolicyNonceManager" />
-                <referencedClass name="Psr\Http\Client\ClientExceptionInterface" />
-            </errorLevel>
-        </UndefinedClass>
-        <UndefinedDocblockClass>
-            <errorLevel type="suppress">
-                <referencedClass name="Doctrine\DBAL\Driver\Statement" />
-                <referencedClass name="Doctrine\DBAL\Platforms\AbstractPlatform" />
-                <referencedClass name="Doctrine\DBAL\Schema\Schema" />
-                <referencedClass name="Doctrine\DBAL\Schema\SchemaException" />
-                <referencedClass name="Doctrine\DBAL\Schema\Table" />
-                <referencedClass name="OC\Security\CSP\ContentSecurityPolicyNonceManager" />
-            </errorLevel>
-        </UndefinedDocblockClass>
-    </issueHandlers>
+	<stubs>
+		<file name="tests/stub.phpstub" preloadClasses="true"/>
+	</stubs>
+	<projectFiles>
+		<directory name="lib" />
+		<ignoreFiles>
+			<directory name="vendor" />
+		</ignoreFiles>
+	</projectFiles>
+	<extraFiles>
+		<directory name="vendor" />
+	</extraFiles>
+	<issueHandlers>
+		<LessSpecificReturnStatement errorLevel="error"/>
+		<LessSpecificReturnType errorLevel="error"/>
+		<LessSpecificImplementedReturnType errorLevel="error"/>
+		<MoreSpecificReturnType errorLevel="error"/>
+		<UndefinedClass>
+			<errorLevel type="suppress">
+				<referencedClass name="Symfony\Component\Console\Command\Command" />
+				<referencedClass name="GuzzleHttp\Exception\ServerException" />
+				<referencedClass name="GuzzleHttp\Exception\ClientException" />
+				<referencedClass name="GuzzleHttp\Exception\ConnectException" />
+				<referencedClass name="GuzzleHttp\HandlerStack" />
+				<referencedClass name="OC" />
+				<referencedClass name="OC_Util" />
+				<referencedClass name="OC\Collaboration\Reference\LinkReferenceProvider" />
+				<referencedClass name="OCA\DAV\CardDAV\CardDavBackend" />
+			</errorLevel>
+		</UndefinedClass>
+	</issueHandlers>
 </psalm>

@@ -19,39 +19,23 @@ use Sabre\DAV\Exception\BadRequest;
 use Throwable;
 
 class OnedriveCalendarAPIService {
+	private IL10N $l10n;
 
-	/**
-	 * @var IL10N
-	 */
-	private $l10n;
-	/**
-	 * @var string
-	 */
-	private $appName;
-	/**
-	 * @var LoggerInterface
-	 */
-	private $logger;
-	/**
-	 * @var CalDavBackend
-	 */
-	private $caldavBackend;
-	/**
-	 * @var OnedriveColorService
-	 */
-	private $colorService;
-	/**
-	 * @var OnedriveAPIService
-	 */
-	private $onedriveApiService;
 
-	public function __construct(string $appName,
+	private LoggerInterface $logger;
+
+	private CalDavBackend $caldavBackend;
+
+	private OnedriveColorService $colorService;
+
+	private OnedriveAPIService $onedriveApiService;
+
+	public function __construct(
 		LoggerInterface $logger,
 		IL10N $l10n,
 		CalDavBackend $caldavBackend,
 		OnedriveColorService $colorService,
 		OnedriveAPIService $onedriveApiService) {
-		$this->appName = $appName;
 		$this->logger = $logger;
 		$this->l10n = $l10n;
 		$this->caldavBackend = $caldavBackend;
@@ -234,7 +218,7 @@ class OnedriveCalendarAPIService {
 					}
 					if (isset($e['recurrence']['pattern']['index'])) {
 						$index = $e['recurrence']['pattern']['index'];
-						$parts[] = 'BYSETPOS=' . $setPositions[$index];
+						$parts[] = 'BYSETPOS=' . (string)$setPositions[$index];
 					}
 				} elseif ($type === 'absoluteMonthly') {
 					$parts[] = 'FREQ=MONTHLY';
@@ -258,7 +242,7 @@ class OnedriveCalendarAPIService {
 					}
 					if (isset($e['recurrence']['pattern']['index'])) {
 						$index = $e['recurrence']['pattern']['index'];
-						$parts[] = 'BYSETPOS=' . $setPositions[$index];
+						$parts[] = 'BYSETPOS=' . (string)$setPositions[$index];
 					}
 				} elseif ($type === 'absoluteYearly') {
 					$parts[] = 'FREQ=YEARLY';

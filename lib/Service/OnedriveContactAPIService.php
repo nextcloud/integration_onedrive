@@ -24,22 +24,13 @@ function startsWith(string $haystack, string $needle): bool {
 }
 
 class OnedriveContactAPIService {
-	/**
-	 * @var LoggerInterface
-	 */
-	private $logger;
-	/**
-	 * @var IContactManager
-	 */
-	private $contactsManager;
-	/**
-	 * @var CardDavBackend
-	 */
-	private $cdBackend;
-	/**
-	 * @var OnedriveAPIService
-	 */
-	private $onedriveApiService;
+	private LoggerInterface $logger;
+
+	private IContactManager $contactsManager;
+
+	private CardDavBackend $cdBackend;
+
+	private OnedriveAPIService $onedriveApiService;
 
 	private const ADDRESS_TYPES = [
 		'homeAddress' => 'HOME',
