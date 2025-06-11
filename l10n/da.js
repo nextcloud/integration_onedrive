@@ -15,6 +15,6 @@ OC.L10N.register(
     "Contacts" : "Kontakter",
     "{amount} contacts" : "{amount} kontakter",
     "Calendars" : "Kalendere",
-    "Import calendar" : "Importer kalender"
+    "Import calendar" : "Importér kalender"
 },
 "nplurals=2; plural=(n != 1);");
