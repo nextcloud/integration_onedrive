@@ -56,7 +56,7 @@ OC.L10N.register(
     "Connect to OneDrive" : "Mit OneDrive verbinden",
     "Connected as {user}" : "Verbunden als {user}",
     "Disconnect from OneDrive" : "Von OneDrive trennen",
-    "Onedrive storage" : "Ondrive Speicher",
+    "Onedrive storage" : "Onedrive Speicher",
     "Import directory" : "Import-Verzeichnis",
     "Onedrive storage ({formSize})" : "Onedrive Speicher ({formSize})",
     "Import Onedrive files" : "Onedrive Dateien importieren",
