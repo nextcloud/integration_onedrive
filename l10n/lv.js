@@ -6,6 +6,7 @@ OC.L10N.register(
     "Connected accounts" : "Sasaistītie konti",
     "Your Nextcloud users will then see a \"Connect to OneDrive\" button in their personal settings." : "Pēc tam jūsu Nextcloud lietotāji savos personiskajos iestatījumos redzēs pogu \"Savienot ar OneDrive\".",
     "Client ID" : "Klienta ID",
+    "Connected as {user}" : "Savienojies kā {user}",
     "Contacts" : "Kontakti",
     "Calendars" : "Kalendāri",
     "Import calendar" : "Importēt kalendāru"
