@@ -7,6 +7,7 @@ OC.L10N.register(
     "Bad HTTP method" : "Поганий метод HTTP",
     "OAuth access token refused" : "Токен доступу OAuth відхилено",
     "Connected accounts" : "Підключені облікові записи",
+    "Data migration" : "Перенесення даних",
     "Client ID" : "Ідентифікатор клієнта",
     "Client secret" : "Ключ клієнта",
     "Contacts" : "Контакти",
