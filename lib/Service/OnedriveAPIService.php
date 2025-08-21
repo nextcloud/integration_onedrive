@@ -169,6 +169,10 @@ class OnedriveAPIService {
 					}
 					return json_decode($body, true) ?: [];
 				} else {
+					if ($body === null) {
+						$body = '';
+					}
+					/** @var resource|string $body */
 					return [
 						'body' => $body,
 						'headers' => $response->getHeaders(),
