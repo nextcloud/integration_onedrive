@@ -16,6 +16,7 @@
     "Client ID" : "ID клиента",
     "Client secret" : "Клиентский ключ ",
     "Use a popup to authenticate" : "Используйте всплывающее окно для аутентификации",
+    "Import job is currently running" : "Задание импорта в настоящее время выполняется",
     "Sign in with OneDrive" : "Войти через OneDrive",
     "Starting importing files in {targetPath} directory" : "Начало импорта файлов в каталог {targetPath}",
     "Failed to get calendar list" : "Не удалось получить список календарей",
