@@ -11,6 +11,7 @@
     "Client ID" : "Αναγνωριστικό πελάτη",
     "Client secret" : "Μυστικό πελάτη",
     "Use a popup to authenticate" : "Χρησιμοποιήστε ένα αναδυόμενο παράθυρο για έλεγχο ταυτότητας",
+    "Import job is currently running" : "Η εργασία εισαγωγής εκτελείται αυτήν τη στιγμή",
     "Starting importing files in {targetPath} directory" : "Έναρξη εισαγωγής αρχείων στον κατάλογο {targetPath}",
     "Failed to get calendar list" : "Αποτυχία λήψης λίστας ημερολογίου",
     "Failed to get address book list" : "Αποτυχία λήψης λίστας βιβλίου διευθύνσεων",
