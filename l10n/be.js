@@ -1,7 +1,9 @@
 OC.L10N.register(
     "integration_onedrive",
     {
+    "Error getting OAuth access token" : "Памылка атрымання токена доступу OAuth",
     "OneDrive" : "OneDrive",
+    "OAuth access token refused" : "Токен доступу OAuth адхілены",
     "Client ID" : "Ідэнтыфікатар кліента",
     "Contacts" : "Кантакты",
     "Calendars" : "Календары"
