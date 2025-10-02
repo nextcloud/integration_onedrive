@@ -1,7 +1,7 @@
 OC.L10N.register(
     "integration_onedrive",
     {
-    "Microsoft OneDrive" : " Microsoft Onedrive",
+    "Microsoft OneDrive" : " Microsoft OneDrive",
     "Error getting OAuth access token" : "Fejl ved anmodning om OAuth adgangsnøgle",
     "Error during OAuth exchanges" : "Fejl under OAuth-udvekslinger",
     "OneDrive" : "OneDrive",
@@ -9,10 +9,10 @@ OC.L10N.register(
     "Bad credentials" : "Forkerte legitimationsoplysninger",
     "Bad HTTP method" : "Dårlig HTTP metode",
     "OAuth access token refused" : "OAuth adgangsnøgle afvist",
-    "Microsoft Calendar import" : "Import fra Microsoft kalender",
+    "Microsoft Calendar import" : "Importér fra Microsoft kalender",
     "Connected accounts" : "Forbundne konti",
     "Data migration" : "Datamigrering",
-    "OneDrive integration" : "Integration med Onedrive",
+    "OneDrive integration" : "Integration med OneDrive",
     "Integration of Microsoft OneDrive" : "Integration af Microsoft OneDrive",
     "Microsoft OneDrive integration allows you to automatically import your OneDrive files into Nextcloud." : "Integration med Microsoft Onedrive tillader dig automatisk at importere dine filer til Nextcloud. ",
     "OneDrive admin options saved" : "Administrationsindstillinger til OneDrive gemt",
