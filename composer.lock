@@ -217,6 +217,7 @@
                 "issues": "https://github.com/doctrine/annotations/issues",
                 "source": "https://github.com/doctrine/annotations/tree/2.0.2"
             },
+            "abandoned": true,
             "time": "2024-09-05T10:17:24+00:00"
         },
         {
@@ -298,16 +299,16 @@
         },
         {
             "name": "microsoft/kiota-abstractions",
-            "version": "1.5.0",
+            "version": "1.5.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/microsoft/kiota-abstractions-php.git",
-                "reference": "53beaf41d810cd757a89f55152aa686aa74565bb"
+                "reference": "20c37dece3902cea4116fca931e908e5554ba408"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/microsoft/kiota-abstractions-php/zipball/53beaf41d810cd757a89f55152aa686aa74565bb",
-                "reference": "53beaf41d810cd757a89f55152aa686aa74565bb",
+                "url": "https://api.github.com/repos/microsoft/kiota-abstractions-php/zipball/20c37dece3902cea4116fca931e908e5554ba408",
+                "reference": "20c37dece3902cea4116fca931e908e5554ba408",
                 "shasum": ""
             },
             "require": {
@@ -342,29 +343,29 @@
             ],
             "description": "Abstractions for Kiota",
             "support": {
-                "source": "https://github.com/microsoft/kiota-abstractions-php/tree/1.5.0"
+                "source": "https://github.com/microsoft/kiota-abstractions-php/tree/1.5.1"
             },
-            "time": "2025-02-17T16:44:43+00:00"
+            "time": "2025-10-08T16:34:18+00:00"
         },
         {
             "name": "microsoft/kiota-http-guzzle",
-            "version": "1.5.0",
+            "version": "1.5.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/microsoft/kiota-http-guzzle-php.git",
-                "reference": "4a9c4b69819712af5c62c2b978a0123ecf8f1208"
+                "reference": "adb261be0bf44d69fac670db262e0d2006a55c01"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/microsoft/kiota-http-guzzle-php/zipball/4a9c4b69819712af5c62c2b978a0123ecf8f1208",
-                "reference": "4a9c4b69819712af5c62c2b978a0123ecf8f1208",
+                "url": "https://api.github.com/repos/microsoft/kiota-http-guzzle-php/zipball/adb261be0bf44d69fac670db262e0d2006a55c01",
+                "reference": "adb261be0bf44d69fac670db262e0d2006a55c01",
                 "shasum": ""
             },
             "require": {
                 "ext-json": "*",
                 "ext-zlib": "*",
                 "guzzlehttp/guzzle": "^7.4.5",
-                "microsoft/kiota-abstractions": "^1.5.0",
+                "microsoft/kiota-abstractions": "^1.5.1",
                 "php": "^7.4 || ^8.0"
             },
             "require-dev": {
@@ -389,9 +390,9 @@
             ],
             "description": "Kiota HTTP Request Adapter implementation",
             "support": {
-                "source": "https://github.com/microsoft/kiota-http-guzzle-php/tree/1.5.0"
+                "source": "https://github.com/microsoft/kiota-http-guzzle-php/tree/1.5.1"
             },
-            "time": "2025-02-19T06:27:54+00:00"
+            "time": "2025-10-08T16:48:12+00:00"
         },
         {
             "name": "nyholm/psr7",
@@ -539,20 +540,20 @@
         },
         {
             "name": "open-telemetry/api",
-            "version": "1.3.0",
+            "version": "1.7.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/opentelemetry-php/api.git",
-                "reference": "4e3bb38e069876fb73c2ce85c89583bf2b28cd86"
+                "reference": "610b79ad9d6d97e8368bcb6c4d42394fbb87b522"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/opentelemetry-php/api/zipball/4e3bb38e069876fb73c2ce85c89583bf2b28cd86",
-                "reference": "4e3bb38e069876fb73c2ce85c89583bf2b28cd86",
+                "url": "https://api.github.com/repos/opentelemetry-php/api/zipball/610b79ad9d6d97e8368bcb6c4d42394fbb87b522",
+                "reference": "610b79ad9d6d97e8368bcb6c4d42394fbb87b522",
                 "shasum": ""
             },
             "require": {
-                "open-telemetry/context": "^1.0",
+                "open-telemetry/context": "^1.4",
                 "php": "^8.1",
                 "psr/log": "^1.1|^2.0|^3.0",
                 "symfony/polyfill-php82": "^1.26"
@@ -568,7 +569,7 @@
                     ]
                 },
                 "branch-alias": {
-                    "dev-main": "1.1.x-dev"
+                    "dev-main": "1.7.x-dev"
                 }
             },
             "autoload": {
@@ -605,20 +606,20 @@
                 "issues": "https://github.com/open-telemetry/opentelemetry-php/issues",
                 "source": "https://github.com/open-telemetry/opentelemetry-php"
             },
-            "time": "2025-05-07T12:32:21+00:00"
+            "time": "2025-10-02T23:44:28+00:00"
         },
         {
             "name": "open-telemetry/context",
-            "version": "1.2.1",
+            "version": "1.4.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/opentelemetry-php/context.git",
-                "reference": "1eb2b837ee9362db064a6b65d5ecce15a9f9f020"
+                "reference": "d4c4470b541ce72000d18c339cfee633e4c8e0cf"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/opentelemetry-php/context/zipball/1eb2b837ee9362db064a6b65d5ecce15a9f9f020",
-                "reference": "1eb2b837ee9362db064a6b65d5ecce15a9f9f020",
+                "url": "https://api.github.com/repos/opentelemetry-php/context/zipball/d4c4470b541ce72000d18c339cfee633e4c8e0cf",
+                "reference": "d4c4470b541ce72000d18c339cfee633e4c8e0cf",
                 "shasum": ""
             },
             "require": {
@@ -664,27 +665,27 @@
                 "issues": "https://github.com/open-telemetry/opentelemetry-php/issues",
                 "source": "https://github.com/open-telemetry/opentelemetry-php"
             },
-            "time": "2025-05-07T23:36:50+00:00"
+            "time": "2025-09-19T00:05:49+00:00"
         },
         {
             "name": "open-telemetry/sdk",
-            "version": "1.5.0",
+            "version": "1.9.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/opentelemetry-php/sdk.git",
-                "reference": "cd0d7367599717fc29e04eb8838ec061e6c2c657"
+                "reference": "8986bcbcbea79cb1ba9e91c1d621541ad63d6b3e"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/opentelemetry-php/sdk/zipball/cd0d7367599717fc29e04eb8838ec061e6c2c657",
-                "reference": "cd0d7367599717fc29e04eb8838ec061e6c2c657",
+                "url": "https://api.github.com/repos/opentelemetry-php/sdk/zipball/8986bcbcbea79cb1ba9e91c1d621541ad63d6b3e",
+                "reference": "8986bcbcbea79cb1ba9e91c1d621541ad63d6b3e",
                 "shasum": ""
             },
             "require": {
                 "ext-json": "*",
                 "nyholm/psr7-server": "^1.1",
-                "open-telemetry/api": "~1.0 || ~1.1",
-                "open-telemetry/context": "^1.0",
+                "open-telemetry/api": "^1.7",
+                "open-telemetry/context": "^1.4",
                 "open-telemetry/sem-conv": "^1.0",
                 "php": "^8.1",
                 "php-http/discovery": "^1.14",
@@ -696,7 +697,7 @@
                 "ramsey/uuid": "^3.0 || ^4.0",
                 "symfony/polyfill-mbstring": "^1.23",
                 "symfony/polyfill-php82": "^1.26",
-                "tbachert/spi": "^1.0.1"
+                "tbachert/spi": "^1.0.5"
             },
             "suggest": {
                 "ext-gmp": "To support unlimited number of synchronous metric readers",
@@ -706,12 +707,19 @@
             "type": "library",
             "extra": {
                 "spi": {
+                    "OpenTelemetry\\API\\Configuration\\ConfigEnv\\EnvComponentLoader": [
+                        "OpenTelemetry\\API\\Instrumentation\\Configuration\\General\\ConfigEnv\\EnvComponentLoaderHttpConfig",
+                        "OpenTelemetry\\API\\Instrumentation\\Configuration\\General\\ConfigEnv\\EnvComponentLoaderPeerConfig"
+                    ],
+                    "OpenTelemetry\\SDK\\Common\\Configuration\\Resolver\\ResolverInterface": [
+                        "OpenTelemetry\\SDK\\Common\\Configuration\\Resolver\\SdkConfigurationResolver"
+                    ],
                     "OpenTelemetry\\API\\Instrumentation\\AutoInstrumentation\\HookManagerInterface": [
                         "OpenTelemetry\\API\\Instrumentation\\AutoInstrumentation\\ExtensionHookManager"
                     ]
                 },
                 "branch-alias": {
-                    "dev-main": "1.0.x-dev"
+                    "dev-main": "1.9.x-dev"
                 }
             },
             "autoload": {
@@ -754,20 +762,20 @@
                 "issues": "https://github.com/open-telemetry/opentelemetry-php/issues",
                 "source": "https://github.com/open-telemetry/opentelemetry-php"
             },
-            "time": "2025-05-22T02:33:34+00:00"
+            "time": "2025-10-02T23:44:28+00:00"
         },
         {
             "name": "open-telemetry/sem-conv",
-            "version": "1.32.0",
+            "version": "1.37.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/opentelemetry-php/sem-conv.git",
-                "reference": "16585cc0dbc3032a318e274043454679430d2ebf"
+                "reference": "8da7ec497c881e39afa6657d72586e27efbd29a1"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/opentelemetry-php/sem-conv/zipball/16585cc0dbc3032a318e274043454679430d2ebf",
-                "reference": "16585cc0dbc3032a318e274043454679430d2ebf",
+                "url": "https://api.github.com/repos/opentelemetry-php/sem-conv/zipball/8da7ec497c881e39afa6657d72586e27efbd29a1",
+                "reference": "8da7ec497c881e39afa6657d72586e27efbd29a1",
                 "shasum": ""
             },
             "require": {
@@ -811,7 +819,7 @@
                 "issues": "https://github.com/open-telemetry/opentelemetry-php/issues",
                 "source": "https://github.com/open-telemetry/opentelemetry-php"
             },
-            "time": "2025-05-05T03:58:53+00:00"
+            "time": "2025-09-03T12:08:10+00:00"
         },
         {
             "name": "ortic/color-converter",
@@ -1381,21 +1389,20 @@
         },
         {
             "name": "ramsey/uuid",
-            "version": "4.8.1",
+            "version": "4.9.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/ramsey/uuid.git",
-                "reference": "fdf4dd4e2ff1813111bd0ad58d7a1ddbb5b56c28"
+                "reference": "81f941f6f729b1e3ceea61d9d014f8b6c6800440"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/ramsey/uuid/zipball/fdf4dd4e2ff1813111bd0ad58d7a1ddbb5b56c28",
-                "reference": "fdf4dd4e2ff1813111bd0ad58d7a1ddbb5b56c28",
+                "url": "https://api.github.com/repos/ramsey/uuid/zipball/81f941f6f729b1e3ceea61d9d014f8b6c6800440",
+                "reference": "81f941f6f729b1e3ceea61d9d014f8b6c6800440",
                 "shasum": ""
             },
             "require": {
-                "brick/math": "^0.8.8 || ^0.9 || ^0.10 || ^0.11 || ^0.12 || ^0.13",
-                "ext-json": "*",
+                "brick/math": "^0.8.8 || ^0.9 || ^0.10 || ^0.11 || ^0.12 || ^0.13 || ^0.14",
                 "php": "^8.0",
                 "ramsey/collection": "^1.2 || ^2.0"
             },
@@ -1454,22 +1461,22 @@
             ],
             "support": {
                 "issues": "https://github.com/ramsey/uuid/issues",
-                "source": "https://github.com/ramsey/uuid/tree/4.8.1"
+                "source": "https://github.com/ramsey/uuid/tree/4.9.1"
             },
-            "time": "2025-06-01T06:28:46+00:00"
+            "time": "2025-09-04T20:59:21+00:00"
         },
         {
             "name": "stduritemplate/stduritemplate",
-            "version": "2.0.5",
+            "version": "2.0.6",
             "source": {
                 "type": "git",
                 "url": "https://github.com/std-uritemplate/std-uritemplate-php.git",
-                "reference": "57f10976540d2fba3df5475c84dad6243eb3f36e"
+                "reference": "8d0f9938e977fdb9964f5d9465323923782f56d5"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/std-uritemplate/std-uritemplate-php/zipball/57f10976540d2fba3df5475c84dad6243eb3f36e",
-                "reference": "57f10976540d2fba3df5475c84dad6243eb3f36e",
+                "url": "https://api.github.com/repos/std-uritemplate/std-uritemplate-php/zipball/8d0f9938e977fdb9964f5d9465323923782f56d5",
+                "reference": "8d0f9938e977fdb9964f5d9465323923782f56d5",
                 "shasum": ""
             },
             "require": {
@@ -1493,9 +1500,9 @@
             ],
             "description": "Std UriTemplate, RFC 6570 implementation",
             "support": {
-                "source": "https://github.com/std-uritemplate/std-uritemplate-php/tree/2.0.5"
+                "source": "https://github.com/std-uritemplate/std-uritemplate-php/tree/2.0.6"
             },
-            "time": "2025-05-14T13:10:06+00:00"
+            "time": "2025-09-30T09:07:54+00:00"
         },
         {
             "name": "symfony/deprecation-contracts",
@@ -1822,7 +1829,7 @@
         },
         {
             "name": "symfony/polyfill-php82",
-            "version": "v1.32.0",
+            "version": "v1.33.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/polyfill-php82.git",
@@ -1878,7 +1885,7 @@
                 "shim"
             ],
             "support": {
-                "source": "https://github.com/symfony/polyfill-php82/tree/v1.32.0"
+                "source": "https://github.com/symfony/polyfill-php82/tree/v1.33.0"
             },
             "funding": [
                 {
@@ -1887,6 +1894,10 @@
                 },
                 {
                     "url": "https://github.com/fabpot",
+                    "type": "github"
+                },
+                {
+                    "url": "https://github.com/nicolas-grekas",
                     "type": "github"
                 },
                 {
@@ -1981,16 +1992,16 @@
         },
         {
             "name": "tbachert/spi",
-            "version": "v1.0.3",
+            "version": "v1.0.5",
             "source": {
                 "type": "git",
                 "url": "https://github.com/Nevay/spi.git",
-                "reference": "506a79c98e1a51522e76ee921ccb6c62d52faf3a"
+                "reference": "e7078767866d0a9e0f91d3f9d42a832df5e39002"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/Nevay/spi/zipball/506a79c98e1a51522e76ee921ccb6c62d52faf3a",
-                "reference": "506a79c98e1a51522e76ee921ccb6c62d52faf3a",
+                "url": "https://api.github.com/repos/Nevay/spi/zipball/e7078767866d0a9e0f91d3f9d42a832df5e39002",
+                "reference": "e7078767866d0a9e0f91d3f9d42a832df5e39002",
                 "shasum": ""
             },
             "require": {
@@ -2008,7 +2019,7 @@
             "extra": {
                 "class": "Nevay\\SPI\\Composer\\Plugin",
                 "branch-alias": {
-                    "dev-main": "0.2.x-dev"
+                    "dev-main": "1.0.x-dev"
                 },
                 "plugin-optional": true
             },
@@ -2027,9 +2038,9 @@
             ],
             "support": {
                 "issues": "https://github.com/Nevay/spi/issues",
-                "source": "https://github.com/Nevay/spi/tree/v1.0.3"
+                "source": "https://github.com/Nevay/spi/tree/v1.0.5"
             },
-            "time": "2025-04-02T19:38:14+00:00"
+            "time": "2025-06-29T15:42:06+00:00"
         }
     ],
     "packages-dev": [
