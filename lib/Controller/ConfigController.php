@@ -174,8 +174,8 @@ class ConfigController extends Controller {
 					);
 				} else {
 					return new RedirectResponse(
-						$this->urlGenerator->linkToRoute('settings.PersonalSettings.index', ['section' => 'migration']) .
-						'?onedriveToken=success'
+						$this->urlGenerator->linkToRoute('settings.PersonalSettings.index', ['section' => 'migration'])
+						. '?onedriveToken=success'
 					);
 				}
 			}
@@ -184,8 +184,8 @@ class ConfigController extends Controller {
 			$result = $this->l->t('Error during OAuth exchanges');
 		}
 		return new RedirectResponse(
-			$this->urlGenerator->linkToRoute('settings.PersonalSettings.index', ['section' => 'migration']) .
-			'?onedriveToken=error&message=' . urlencode($result)
+			$this->urlGenerator->linkToRoute('settings.PersonalSettings.index', ['section' => 'migration'])
+			. '?onedriveToken=error&message=' . urlencode($result)
 		);
 	}
 

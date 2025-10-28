@@ -37,13 +37,13 @@ class OnedriveAPIService {
 	 * Service to make requests to OneDrive v3 (JSON) API
 	 */
 	public function __construct(
-		private readonly LoggerInterface      $logger,
-		private readonly IL10N                $l10n,
-		private readonly IConfig              $config,
-		private readonly ICrypto              $crypto,
+		private readonly LoggerInterface $logger,
+		private readonly IL10N $l10n,
+		private readonly IConfig $config,
+		private readonly ICrypto $crypto,
 		private readonly INotificationManager $notificationManager,
-		private readonly IAppManager          $appManager,
-		IClientService                        $clientService,
+		private readonly IAppManager $appManager,
+		IClientService $clientService,
 	) {
 		$this->client = $clientService->newClient();
 

@@ -288,7 +288,7 @@ class OnedriveStorageAPIService {
 		int $alreadyImportedNumber,
 		array &$importTree,
 	): array {
-		$newDownloadedSize = (float) $downloadedSize;
+		$newDownloadedSize = (float)$downloadedSize;
 		$newTotalSeenNumber = $totalSeenNumber;
 		$newNbDownloaded = $nbDownloaded;
 
