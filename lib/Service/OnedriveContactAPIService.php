@@ -239,8 +239,8 @@ class OnedriveContactAPIService {
 	}
 
 	/**
-	 * @param  string $userId
-	 * @param  array{ id: string } $contact
+	 * @param string $userId
+	 * @param array{ id: string } $contact
 	 * @return array{type: string, content: mixed}|null
 	 */
 	private function getContactPhoto(string $userId, array $contact): ?array {
