@@ -8,6 +8,14 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [3.5.0] - 2025-11-13
+
+### Added
+- Added support for Nextcloud 33
+
+### Changed
+- Update dependencies & translations
+
 ## [3.4.0] - 2025-05-29
 
 ### Changed
