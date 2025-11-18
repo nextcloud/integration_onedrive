@@ -7,6 +7,7 @@ OC.L10N.register(
     "Bad HTTP method" : "Vigane HTTP-meetod",
     "OAuth access token refused" : "OAuthi tunnusluba pole õige.",
     "Connected accounts" : "Ühendatud kasutajakontod",
+    "Data migration" : "Andmete ümbertõstmine",
     "Client ID" : "Kliendi ID",
     "Client secret" : "Kliendi salasõna",
     "Use a popup to authenticate" : "Kasuta autentimiseks hüpikakent",
