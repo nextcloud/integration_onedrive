@@ -1,7 +1,26 @@
 { "translations": {
+    "Error getting OAuth access token" : "ຜິດພາດໃນການຮັບ OAuth access token",
+    "Error during OAuth exchanges" : "ເກີດຂໍ້ຜິດພາດໃນລະຫວ່າງການແລກປ່ຽນ OAuth",
+    "Bad credentials" : "ຂໍ້ມູນຢືນຢັນຕົວຕົນບໍ່ຖືກຕ້ອງ",
+    "Bad HTTP method" : "HTTP method ບໍ່ຖືກຕ້ອງ",
+    "OAuth access token refused" : "OAuth access token ຖືກປະຕິເສດ",
+    "Connected accounts" : "ບັນຊີທີ່ເຊື່ອມຕໍ່",
+    "Data migration" : "ການຍ້າຍຂໍ້ມູນ",
+    "Make sure you set the \"Redirect URI\" to" : "ກວດສອບໃຫ້ແນ່ໃຈວ່າທ່ານໄດ້ຕັ້ງຄ່າ \"Redirect URI\" ເປັນ",
+    "Put the OAuth app \"Client ID\" and \"Client secret\" below." : "ໃສ່ \"Client ID\" ແລະ \"Client secret\" ຂອງແອັບ OAuth ດ້ານລຸ່ມນີ້.",
     "Client ID" : "Client ID",
     "Client secret" : "Client secret",
+    "Use a popup to authenticate" : "ໃຊ້ປັອບອັບເພື່ອຢືນຢັນຕົວຕົນ",
+    "Import job is currently running" : "ວຽກການນຳເຂົ້າກຳລັງດຳເນີນການຢູ່",
+    "Starting importing files in {targetPath} directory" : "ກຳລັງເລີ່ມນຳເຂົ້າໄຟລ໌ໃນໄດເລກະທໍຣີ {targetPath}",
+    "Failed to get calendar list" : "ດຶງລາຍການປະຕິທິນບໍ່ສຳເລັດ",
+    "Failed to get address book list" : "ດຶງລາຍການປຶ້ມທີ່ຢູ່ບໍ່ສຳເລັດ",
+    "Choose where to write imported files" : "ເລືອກບ່ອນທີ່ຈະບັນທຶກໄຟລ໌ທີ່ນຳເຂົ້າ",
+    "Enable navigation link" : "ເປີດໃຊ້ລິ້ງນຳທາງ",
+    "Connected as {user}" : "ເຊື່ອມຕໍ່ໃນຊື່ {user}",
+    "Import directory" : "ໄດເລກະທໍຣີການນຳເຂົ້າ",
     "Contacts" : "ຕິດຕໍ່",
-    "Calendars" : "Calendars"
+    "Calendars" : "Calendars",
+    "Import calendar" : "ນຳເຂົ້າປະຕິທິນ"
 },"pluralForm" :"nplurals=1; plural=0;"
 }
