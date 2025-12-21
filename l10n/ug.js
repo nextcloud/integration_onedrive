@@ -5,6 +5,7 @@ OC.L10N.register(
     "Error getting OAuth access token" : "OAuth زىيارەت بەلگىسىگە ئېرىشىشتە خاتالىق",
     "Error during OAuth exchanges" : "OAuth ئالماشتۇرۇش جەريانىدا خاتالىق",
     "OneDrive" : "OneDrive",
+    "_%n file was imported from OneDrive storage._::_%n files were imported from OneDrive storage._" : ["OneDrive ساقلىغۇچتىن %n ھۆججەت كىرگۈزۈلدى","OneDrive ساقلىغۇچتىن %n ھۆججەت كىرگۈزۈلدى"],
     "Bad credentials" : "ناچار كىنىشكا",
     "Bad HTTP method" : "ناچار HTTP ئۇسۇلى",
     "OAuth access token refused" : "OAuth زىيارەت بەلگىسى رەت قىلىندى",
@@ -44,8 +45,10 @@ OC.L10N.register(
     "Starting importing files in {targetPath} directory" : "ھۆججەتلەرنى {targetPath} مۇندەرىجىسىگە ئەكىرىشنى باشلاش",
     "Failed to start importing Onedrive storage" : "Onedrive ساقلاشنى ئىمپورتلاشنى باشلىمىدى",
     "Failed to get calendar list" : "كالېندار تىزىملىكىگە ئېرىشەلمىدى",
+    "_{number} event successfully imported in {name}_::_{number} events successfully imported in {name}_" : ["{number} پائالىيەتلەر {name} غا مۇۋەپپەقىيەتلىك ئىمپورت قىلىندى","{number} پائالىيەتلەر {name} غا مۇۋەپپەقىيەتلىك ئىمپورت قىلىندى"],
     "Failed to import calendar" : "كالېندارنى ئەكىرىش مەغلۇب بولدى",
     "Failed to get number of contacts" : "ئالاقىلىشىش قېتىم سانىغا ئېرىشەلمىدى",
+    "_{nbAdded} contact created, {nbUpdated} updated, {nbSkipped} skipped, {nbFailed} failed_::_{nbAdded} contacts created, {nbUpdated} updated, {nbSkipped} skipped, {nbFailed} failed_" : ["{nbAdded} ئالاقىداش قۇرۇلدى، {nbUpdated} يېڭىلاندى، {nbSkipped} ئۆتكۈزۋېتىلدى، {nbFailed} مەغلۇپ بولدى","{nbAdded} ئالاقىداش قۇرۇلدى، {nbUpdated} يېڭىلاندى، {nbSkipped} ئۆتكۈزۋېتىلدى، {nbFailed} مەغلۇپ بولدى"],
     "Failed to get address book list" : "ئادرېس كىتاب تىزىملىكىگە ئېرىشەلمىدى",
     "Choose where to write imported files" : "ئىمپورت قىلىنغان ھۆججەتلەرنى قەيەرگە يېزىشنى تاللاڭ",
     "Enable navigation link" : "يول باشلاش ئۇلانمىسىنى قوزغىتىڭ",
@@ -63,6 +66,7 @@ OC.L10N.register(
     "{amount} contacts" : "{amount} ئالاقىلىشىش",
     "Import Contacts in Nextcloud" : "Nextcloud دىكى ئالاقىداشلارنى ئەكىرىڭ",
     "Calendars" : "كالېندار",
-    "Import calendar" : "كالېندارنى ئەكىرىش"
+    "Import calendar" : "كالېندارنى ئەكىرىش",
+    "_{amount} file imported ({formImported}) ({progress}%)_::_{amount} files imported ({formImported}) ({progress}%)_" : ["{amount} ھۆججەت كىرگۈزۈلدى ({formImported}) (%{progress})","{amount} ھۆججەت كىرگۈزۈلدى ({formImported})  (%{progress})"]
 },
 "nplurals=2; plural=(n != 1);");
