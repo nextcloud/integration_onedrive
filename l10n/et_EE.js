@@ -8,6 +8,7 @@ OC.L10N.register(
     "OAuth access token refused" : "OAuthi tunnusluba pole õige.",
     "Connected accounts" : "Ühendatud kasutajakontod",
     "Data migration" : "Andmete ümbertõstmine",
+    "Put the OAuth app \"Client ID\" and \"Client secret\" below." : "Sisesta alljärgnevalt OAuthi rakenduse klienditunnus („Client ID“) ja kliendisaladus („Client secret“).",
     "Client ID" : "Kliendi ID",
     "Client secret" : "Kliendi salasõna",
     "Use a popup to authenticate" : "Kasuta autentimiseks hüpikakent",
