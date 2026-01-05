@@ -1,0 +1,50 @@
+<!--
+  - SPDX-FileCopyrightText: 2020 Nextcloud GmbH and Nextcloud contributors
+  - SPDX-License-Identifier: AGPL-3.0-or-later
+-->
+
+<template>
+	<span :aria-hidden="!title"
+		:aria-label="title"
+		class="material-design-icon onedrive-icon"
+		role="img"
+		v-bind="$attrs"
+		@click="$emit('click', $event)">
+		<svg
+			:fill="fillColor"
+			:width="size"
+			:height="size"
+			enable-background="new 0 0 1030.04 659.922"
+			version="1.1"
+			viewBox="0 0 1030 1030"
+			xml:space="preserve"
+			xmlns="http://www.w3.org/2000/svg">
+			<g>
+				<path d="m622.29 621.31 212.61-203.33c-44.164-172.21-219.57-276.01-391.78-231.84-77.55 19.888-144.91 67.962-188.92 134.84 3.291-0.083 368.08 300.33 368.08 300.33z" fill="#fcfcfc" />
+				<path d="m392.78 359.26-0.01 0.035c-40.626-25.162-87.479-38.462-135.27-38.397-1.104 0-2.189 0.07-3.291 0.083-142.14 1.761-255.95 118.42-254.19 260.56 0.638 51.562 16.749 101.74 46.244 144.04l318.53-39.894 244.21-196.92z" fill="#eee" />
+				<path d="m834.9 417.99c-4.674-0.312-9.371-0.528-14.123-0.528-28.523-0.028-56.749 5.798-82.93 17.117l-6e-3 -0.022-128.84 54.22 142.04 175.46 253.93 61.728c54.799-101.73 16.752-228.62-84.98-283.42-26.287-14.16-55.301-22.529-85.091-24.546v-1e-3z" fill="#cfcfcf" />
+				<path d="m46.264 725.58c48.095 69.149 127.01 110.36 211.24 110.32h563.28c76.946 0.022 147.69-42.202 184.2-109.94l-395.98-237.19z" fill="#c4c4c4" />
+			</g>
+		</svg>
+	</span>
+</template>
+
+<script>
+export default {
+	name: 'OnedriveIcon',
+	props: {
+		title: {
+			type: String,
+			default: '',
+		},
+		fillColor: {
+			type: String,
+			default: 'currentColor',
+		},
+		size: {
+			type: Number,
+			default: 24,
+		},
+	},
+}
+</script>

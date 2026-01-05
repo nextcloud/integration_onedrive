@@ -6,22 +6,20 @@
 <template>
 	<div id="onedrive_prefs" class="section">
 		<h2>
-			<a class="icon icon-onedrive-settings" />
+			<OnedriveIcon />
 			{{ t('integration_onedrive', 'Microsoft OneDrive integration') }}
 		</h2>
-		<div id="toggle-onedrive-navigation-link">
-			<input
-				id="onedrive-link"
-				type="checkbox"
-				class="checkbox"
-				:checked="state.navigation_enabled"
-				@input="onNavigationChange">
-			<label for="onedrive-link">{{ t('integration_onedrive', 'Enable navigation link') }}</label>
+		<div class="header">
+			<NcFormBoxSwitch
+				:model-value="state.navigation_enabled"
+				@update:model-value="onNavigationChange">
+				{{ t('integration_onedrive', 'Enable navigation link') }}
+			</NcFormBoxSwitch>
+			<br>
+			<NcNoteCard v-if="!showOAuth && !connected" type="info">
+				{{ t('integration_onedrive', 'Ask your Nextcloud administrator to configure OneDrive OAuth settings in order to use this integration.') }}
+			</NcNoteCard>
 		</div>
-		<br>
-		<p v-if="!showOAuth && !connected" class="settings-hint">
-			{{ t('integration_onedrive', 'Ask your Nextcloud administrator to configure OneDrive OAuth settings in order to use this integration.') }}
-		</p>
 		<div v-if="showOAuth" id="onedrive-content">
 			<NcButton v-if="!connected"
 				@click="onOAuthClick">
@@ -118,7 +116,7 @@
 					<h3>{{ t('integration_onedrive', 'Calendars') }}</h3>
 					<div v-for="cal in calendars" :key="cal.id" class="onedrive-grid-form">
 						<label>
-							<NcAppNavigationIconBullet slot="icon" :color="getCalendarColor(cal)" />
+							<NcAppNavigationIconBullet :color="getCalendarColor(cal)" />
 							{{ getCalendarLabel(cal) }}
 						</label>
 						<NcButton
@@ -145,10 +143,13 @@ import PencilIcon from 'vue-material-design-icons/Pencil.vue'
 import FolderIcon from 'vue-material-design-icons/Folder.vue'
 import CalendarBlankIcon from 'vue-material-design-icons/CalendarBlank.vue'
 
+import OnedriveIcon from './icons/OnedriveIcon.vue'
 import GroupIcon from './icons/GroupIcon.vue'
 
 import NcButton from '@nextcloud/vue/components/NcButton'
 import NcAppNavigationIconBullet from '@nextcloud/vue/components/NcAppNavigationIconBullet'
+import NcFormBoxSwitch from '@nextcloud/vue/components/NcFormBoxSwitch'
+import NcNoteCard from '@nextcloud/vue/components/NcNoteCard'
 
 import { loadState } from '@nextcloud/initial-state'
 import { generateUrl } from '@nextcloud/router'
@@ -161,9 +162,12 @@ export default {
 	name: 'PersonalSettings',
 
 	components: {
+		OnedriveIcon,
 		GroupIcon,
 		NcAppNavigationIconBullet,
 		NcButton,
+		NcFormBoxSwitch,
+		NcNoteCard,
 		CloseIcon,
 		CheckIcon,
 		LoginVariantIcon,
@@ -253,8 +257,8 @@ export default {
 			this.state.user_name = ''
 			this.saveOptions({ user_name: this.state.user_name })
 		},
-		onNavigationChange(e) {
-			this.state.navigation_enabled = e.target.checked
+		onNavigationChange(newValue) {
+			this.state.navigation_enabled = newValue
 			this.saveOptions({ navigation_enabled: this.state.navigation_enabled ? '1' : '0' })
 		},
 		saveOptions(values) {
@@ -534,6 +538,21 @@ export default {
 
 <style scoped lang="scss">
 #onedrive_prefs {
+	h2 {
+		display: flex;
+		align-items: center;
+		gap: 8px;
+		justify-content: start;
+	}
+
+	.header {
+		display: flex;
+		flex-direction: column;
+		gap: 4px;
+		max-width: 800px;
+		margin-left: 40px;
+	}
+
 	.onedrive-grid-form label {
 		line-height: 38px;
 	}
@@ -543,7 +562,6 @@ export default {
 	}
 
 	.onedrive-grid-form {
-		max-width: 600px;
 		display: grid;
 		grid-template: 1fr / 1fr 1fr;
 
@@ -594,6 +612,7 @@ export default {
 
 	#onedrive-content {
 		margin-left: 40px;
+		max-width: 800px;
 
 		h3 {
 			font-weight: bold;
@@ -601,12 +620,12 @@ export default {
 
 		#onedrive-contacts > button,
 		#import-storage > button {
-			width: 300px;
+			width: 50%;
 		}
 
 		#onedrive-contacts > label,
 		#import-storage label {
-			width: 300px;
+			width: 50%;
 			display: flex;
 			align-items: center;
 
@@ -652,7 +671,7 @@ export default {
 			align-items: center;
 
 			> * {
-				width: 300px;
+				width: 50%;
 			}
 
 			> label {
