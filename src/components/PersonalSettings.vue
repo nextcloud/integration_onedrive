@@ -46,7 +46,7 @@
 					<h3>{{ t('integration_onedrive', 'Onedrive storage') }}</h3>
 					<div v-if="!importingOnedrive" class="output-selection">
 						<label for="onedrive-output">
-							<FolderIcon :size="20" class="folder-icon" />
+							<FolderOutlineIcon :size="20" class="folder-icon" />
 							{{ t('integration_onedrive', 'Import directory') }}
 						</label>
 						<input id="onedrive-output"
@@ -62,13 +62,13 @@
 					</div>
 					<div class="size-import">
 						<label>
-							<FolderIcon :size="20" class="folder-icon" />
+							<FolderOutlineIcon :size="20" class="folder-icon" />
 							{{ t('integration_onedrive', 'Onedrive storage ({formSize})', { formSize: myHumanFileSize(storageSize, true) }) }}
 						</label>
 						<NcButton v-if="enoughSpaceForOnedrive && !importingOnedrive"
 							@click="onImportOnedrive">
 							<template #icon>
-								<FolderIcon :size="20" class="folder-icon" />
+								<FolderOutlineIcon :size="20" class="folder-icon" />
 							</template>
 							{{ t('integration_onedrive', 'Import Onedrive files') }}
 						</NcButton>
@@ -97,14 +97,14 @@
 					<h3>{{ t('integration_onedrive', 'Contacts') }}</h3>
 					<div class="onedrive-contacts-import">
 						<label>
-							<GroupIcon :size="16" class="inline-icon" />
+							<AccountMultipleOutlineIcon :size="20" class="inline-icon" />
 							{{ t('integration_onedrive', '{amount} contacts', { amount: nbContacts }) }}
 						</label>
 						<NcButton id="onedrive-import-contacts"
 							:class="{ loading: importingContacts }"
 							@click="onImportContacts">
 							<template #icon>
-								<GroupIcon :size="20" />
+								<AccountMultipleOutlineIcon :size="20" />
 							</template>
 							{{ t('integration_onedrive', 'Import Contacts in Nextcloud') }}
 						</NcButton>
@@ -140,11 +140,11 @@ import CloseIcon from 'vue-material-design-icons/Close.vue'
 import CheckIcon from 'vue-material-design-icons/Check.vue'
 import LoginVariantIcon from 'vue-material-design-icons/LoginVariant.vue'
 import PencilIcon from 'vue-material-design-icons/Pencil.vue'
-import FolderIcon from 'vue-material-design-icons/Folder.vue'
+import FolderOutlineIcon from 'vue-material-design-icons/FolderOutline.vue'
 import CalendarBlankIcon from 'vue-material-design-icons/CalendarBlank.vue'
+import AccountMultipleOutlineIcon from 'vue-material-design-icons/AccountMultipleOutline.vue'
 
 import OnedriveIcon from './icons/OnedriveIcon.vue'
-import GroupIcon from './icons/GroupIcon.vue'
 
 import NcButton from '@nextcloud/vue/components/NcButton'
 import NcAppNavigationIconBullet from '@nextcloud/vue/components/NcAppNavigationIconBullet'
@@ -163,7 +163,6 @@ export default {
 
 	components: {
 		OnedriveIcon,
-		GroupIcon,
 		NcAppNavigationIconBullet,
 		NcButton,
 		NcFormBoxSwitch,
@@ -172,8 +171,9 @@ export default {
 		CheckIcon,
 		LoginVariantIcon,
 		PencilIcon,
-		FolderIcon,
+		FolderOutlineIcon,
 		CalendarBlankIcon,
+		AccountMultipleOutlineIcon,
 	},
 
 	props: [],
