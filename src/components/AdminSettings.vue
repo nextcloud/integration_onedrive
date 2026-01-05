@@ -48,17 +48,17 @@
 				:placeholder="t('integration_onedrive', 'Client secret of your OneDrive application')"
 				@input="onInput"
 				@focus="readonly = false">
-			<NcCheckboxRadioSwitch
-				:checked.sync="state.use_popup"
-				@update:checked="onUsePopupChanged">
+			<NcFormBoxSwitch
+				v-model="state.use_popup"
+				@update:model-value="onUsePopupChanged">
 				{{ t('integration_google', 'Use a popup to authenticate') }}
-			</NcCheckboxRadioSwitch>
+			</NcFormBoxSwitch>
 		</div>
 	</div>
 </template>
 
 <script>
-import { NcCheckboxRadioSwitch } from '@nextcloud/vue'
+import NcFormBoxSwitch from '@nextcloud/vue/components/NcFormBoxSwitch'
 
 import { loadState } from '@nextcloud/initial-state'
 import { generateUrl } from '@nextcloud/router'
@@ -71,7 +71,7 @@ export default {
 	name: 'AdminSettings',
 
 	components: {
-		NcCheckboxRadioSwitch,
+		NcFormBoxSwitch,
 	},
 
 	props: [],
@@ -125,7 +125,7 @@ export default {
 				.catch((error) => {
 					showError(
 						t('integration_onedrive', 'Failed to save OneDrive admin options')
-						+ ': ' + error.response?.request?.responseText
+						+ ': ' + error.response?.request?.responseText,
 					)
 				})
 				.then(() => {

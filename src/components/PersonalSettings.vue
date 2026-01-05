@@ -147,7 +147,8 @@ import CalendarBlankIcon from 'vue-material-design-icons/CalendarBlank.vue'
 
 import GroupIcon from './icons/GroupIcon.vue'
 
-import { NcAppNavigationIconBullet, NcButton } from '@nextcloud/vue'
+import NcButton from '@nextcloud/vue/components/NcButton'
+import NcAppNavigationIconBullet from '@nextcloud/vue/components/NcAppNavigationIconBullet'
 
 import { loadState } from '@nextcloud/initial-state'
 import { generateUrl } from '@nextcloud/router'
@@ -271,7 +272,7 @@ export default {
 				.catch((error) => {
 					showError(
 						t('integration_onedrive', 'Failed to save OneDrive options')
-						+ ': ' + error.response?.request?.responseText
+						+ ': ' + error.response?.request?.responseText,
 					)
 				})
 				.then(() => {
@@ -305,7 +306,7 @@ export default {
 					const ssoWindow = window.open(
 						requestUrl,
 						t('integration_onedrive', 'Sign in with OneDrive'),
-						'toolbar=no, menubar=no, width=600, height=700'
+						'toolbar=no, menubar=no, width=600, height=700',
 					)
 					ssoWindow.focus()
 					window.addEventListener('message', (event) => {
@@ -319,7 +320,7 @@ export default {
 			}).catch((error) => {
 				showError(
 					t('integration_onedrive', 'Failed to save OneDrive OAuth state')
-					+ ': ' + error.response?.request?.responseText
+					+ ': ' + error.response?.request?.responseText,
 				)
 			})
 		},
@@ -334,7 +335,7 @@ export default {
 				.catch((error) => {
 					showError(
 						t('integration_onedrive', 'Failed to get OneDrive storage information')
-						+ ': ' + error.response?.request?.responseText
+						+ ': ' + error.response?.request?.responseText,
 					)
 				})
 				.then(() => {
@@ -374,14 +375,14 @@ export default {
 				.then((response) => {
 					const targetPath = response.data.targetPath
 					showSuccess(
-						t('integration_onedrive', 'Starting importing files in {targetPath} directory', { targetPath })
+						t('integration_onedrive', 'Starting importing files in {targetPath} directory', { targetPath }),
 					)
 					this.getOnedriveImportValues(true)
 				})
 				.catch((error) => {
 					showError(
 						t('integration_onedrive', 'Failed to start importing Onedrive storage')
-						+ ': ' + error.response?.request?.responseText
+						+ ': ' + error.response?.request?.responseText,
 					)
 				})
 				.then(() => {
@@ -422,7 +423,7 @@ export default {
 				.catch((error) => {
 					showError(
 						t('integration_onedrive', 'Failed to get calendar list')
-						+ ': ' + error.response?.request?.responseText
+						+ ': ' + error.response?.request?.responseText,
 					)
 				})
 				.then(() => {
@@ -452,13 +453,13 @@ export default {
 					const nbAdded = response.data.nbAdded
 					const calName = response.data.calName
 					showSuccess(
-						this.n('integration_onedrive', '{number} event successfully imported in {name}', '{number} events successfully imported in {name}', nbAdded, { number: nbAdded, name: calName })
+						this.n('integration_onedrive', '{number} event successfully imported in {name}', '{number} events successfully imported in {name}', nbAdded, { number: nbAdded, name: calName }),
 					)
 				})
 				.catch((error) => {
 					showError(
 						t('integration_onedrive', 'Failed to import calendar')
-						+ ': ' + error.response?.request?.responseText
+						+ ': ' + error.response?.request?.responseText,
 					)
 				})
 				.then(() => {
@@ -477,7 +478,7 @@ export default {
 				.catch((error) => {
 					showError(
 						t('integration_onedrive', 'Failed to get number of contacts')
-						+ ': ' + error.response?.request?.responseText
+						+ ': ' + error.response?.request?.responseText,
 					)
 				})
 				.then(() => {
@@ -498,14 +499,14 @@ export default {
 							'{nbAdded} contact created, {nbUpdated} updated, {nbSkipped} skipped, {nbFailed} failed',
 							'{nbAdded} contacts created, {nbUpdated} updated, {nbSkipped} skipped, {nbFailed} failed',
 							nbAdded,
-							{ nbAdded, nbUpdated, nbSkipped, nbFailed }
-						)
+							{ nbAdded, nbUpdated, nbSkipped, nbFailed },
+						),
 					)
 				})
 				.catch((error) => {
 					showError(
 						t('integration_onedrive', 'Failed to get address book list')
-						+ ': ' + error.response?.request?.responseText
+						+ ': ' + error.response?.request?.responseText,
 					)
 				})
 				.then(() => {
@@ -524,7 +525,7 @@ export default {
 				},
 				false,
 				'httpd/unix-directory',
-				true
+				true,
 			)
 		},
 	},
@@ -557,7 +558,7 @@ export default {
 	}
 
 	.success-icon {
-		color: var(--color-success);
+		color: var(--color-element-success);
 		margin-right: 8px;
 	}
 
@@ -674,7 +675,7 @@ export default {
 	}
 }
 
-::v-deep .app-navigation-entry__icon-bullet {
+:deep(.onedrive-grid-form .app-navigation-entry__icon-bullet) {
 	display: inline-block;
 	padding: 0;
 	height: 12px;
