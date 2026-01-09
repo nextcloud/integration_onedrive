@@ -10,6 +10,8 @@
     "Client ID" : "Kliendi ID",
     "Client secret" : "Kliendi salasõna",
     "Use a popup to authenticate" : "Kasuta autentimiseks hüpikakent",
+    "Import job is currently running" : "Importimine on hetkel pooleli",
+    "Starting importing files in {targetPath} directory" : "Käivitub  import sihtkausta {targetPath}",
     "Choose where to write imported files" : "Vali, kuhu soovid salvestada imporditud failid",
     "Enable navigation link" : "Lisa menüülink",
     "Connected as {user}" : "Ühendatud kui {user}",

@@ -44,6 +44,7 @@
     "Failed to get calendar list" : "Egutegi zerrenda lortzeak huts egin du",
     "_{number} event successfully imported in {name}_::_{number} events successfully imported in {name}_" : ["Gertaera {number} ondo inportatu da {name}-ra","{number} gertaera ondo inportatu dira {name}-ra"],
     "Failed to import calendar" : "Ezin izan da egutegia inportatu",
+    "Failed to get number of contacts" : "Ezin izan da kontaktuen kopurua lortu",
     "_{nbAdded} contact created, {nbUpdated} updated, {nbSkipped} skipped, {nbFailed} failed_::_{nbAdded} contacts created, {nbUpdated} updated, {nbSkipped} skipped, {nbFailed} failed_" : ["Kontaktu {nbAdded} sortu da, {nbUpdated} eguneratu, {nbSkipped} saltatu, {nbFailed}ek huts egin du.","{nbAdded} kontaktu sortu dira, {nbUpdated} eguneratu, {nbSkipped} saltatu eta {nbFailed}(e)k huts egin dute."],
     "Failed to get address book list" : "Helbide-liburuen zerrenda lortzeak huts egin du",
     "Choose where to write imported files" : "Aukeratu non idatzi inportatutako fitxategiak",
