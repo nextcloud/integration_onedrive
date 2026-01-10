@@ -1,8 +1,10 @@
 OC.L10N.register(
     "integration_onedrive",
     {
+    "Microsoft OneDrive" : "Microsoft OneDrive",
     "Error getting OAuth access token" : "Fout bij ophalen OAuth access token",
     "Error during OAuth exchanges" : "Fout tijdens OAuth uitwisselingen",
+    "OneDrive" : "OneDrive",
     "Bad credentials" : "Foute inloggegevens",
     "Bad HTTP method" : "Foute HTTP methode",
     "OAuth access token refused" : "OAuth toegangstoken geweigerd",
