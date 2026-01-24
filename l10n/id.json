@@ -5,12 +5,18 @@
     "Bad HTTP method" : "Metode HTTP tidak benar",
     "OAuth access token refused" : "Token akses OAuth ditolak",
     "Connected accounts" : "Akun terhubung",
+    "Data migration" : "Migrasi data",
+    "Make sure you set the \"Redirect URI\" to" : "Pastikan Anda menyetel \"Redirect URI\" ke",
     "Put the OAuth app \"Client ID\" and \"Client secret\" below." : "Letakkan \"Client ID\" dan \"Client secret\" aplikasi OAuth di bawah.",
     "Client ID" : "ID Klien",
     "Client secret" : "Rahasia klien",
     "Use a popup to authenticate" : "Gunakan sembulan untuk mengautentikasi",
+    "Import job is currently running" : "Pekerjaan impor saat ini sedang berjalan",
+    "Starting importing files in {targetPath} directory" : "Mulai mengimpor file ke direktori {targetPath}",
+    "Choose where to write imported files" : "Pilih lokasi untuk menulis file yang diimpor",
     "Enable navigation link" : "Aktifkan tautan navigasi",
     "Connected as {user}" : "Terhubung sebagai {user}",
+    "Import directory" : "Direktori impor",
     "Contacts" : "Kontak",
     "Calendars" : "Kalender"
 },"pluralForm" :"nplurals=1; plural=0;"
