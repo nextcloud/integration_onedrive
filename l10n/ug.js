@@ -67,6 +67,6 @@ OC.L10N.register(
     "Import Contacts in Nextcloud" : "Nextcloud دىكى ئالاقىداشلارنى ئەكىرىڭ",
     "Calendars" : "كالېندار",
     "Import calendar" : "كالېندارنى ئەكىرىش",
-    "_{amount} file imported ({formImported}) ({progress}%)_::_{amount} files imported ({formImported}) ({progress}%)_" : ["{amount} ھۆججەت كىرگۈزۈلدى ({formImported}) (%{progress})","{amount} ھۆججەت كىرگۈزۈلدى ({formImported})  (%{progress})"]
+    "_{amount} file imported ({formImported}) ({progress}%)_::_{amount} files imported ({formImported}) ({progress}%)_" : ["{amount} ھۆججەت كىرگۈزۈلدى ({formImported}) (%{progress})","{amount} ھۆججەت كىرگۈزۈلدى ({formImported}) (%{progress})"]
 },
 "nplurals=2; plural=(n != 1);");
