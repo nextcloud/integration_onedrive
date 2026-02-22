@@ -1,0 +1,10 @@
+{ "translations": {
+    "Bad credentials" : "Буруу нэвтрэх мэдээлэл",
+    "Bad HTTP method" : "Буруу HTTP арга",
+    "Client ID" : "Хэрэглэгчийн ID",
+    "Client secret" : "Клиентийн нууц",
+    "Contacts" : "Харилцагчид",
+    "Calendars" : "Календарууд",
+    "Import calendar" : "Цагийн хуваарь оруулах"
+},"pluralForm" :"nplurals=2; plural=(n != 1);"
+}
