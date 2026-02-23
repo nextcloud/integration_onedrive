@@ -443,7 +443,7 @@ export default {
 		},
 		onCalendarImport(cal) {
 			const calId = cal.id
-			this.$set(this.importingCalendar, calId, true)
+			this.importingCalendar[calId] = true
 			const req = {
 				params: {
 					calId,
@@ -467,7 +467,7 @@ export default {
 					)
 				})
 				.then(() => {
-					this.$set(this.importingCalendar, calId, false)
+					this.importingCalendar[calId] = false
 				})
 		},
 		// ########## contacts ##########
