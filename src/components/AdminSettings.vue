@@ -6,59 +6,72 @@
 <template>
 	<div id="onedrive_prefs" class="section">
 		<h2>
-			<a class="icon icon-onedrive" />
+			<OnedriveIcon />
 			{{ t('integration_onedrive', 'Microsoft OneDrive integration') }}
 		</h2>
-		<p class="settings-hint">
-			{{ t('integration_onedrive', 'If you want to allow your Nextcloud users to use OAuth to authenticate to https://onedrive.live.com, create an OAuth application in your Azure settings.') }}
-			<a href="https://aka.ms/AppRegistrations/?referrer=https%3A%2F%2Fdev.onedrive.com" class="external" target="_blank">{{ t('integration_onedrive', 'Azure App registrations page') }}</a>
-			<br>
-			{{ t('integration_onedrive', 'Set "Application name" to a value that will make sense to your Nextcloud users as they will see it when connecting to OneDrive using your OAuth app.') }}
-			<br><br>
-			<span class="icon icon-details" />
-			{{ t('integration_onedrive', 'Make sure you set the "Redirect URI" to') }}
-			<b> {{ redirect_uri }} </b>
-			<br><br>
-			{{ t('integration_onedrive', 'Give the "Contacts.Read", "Calendars.Read", "MailboxSettings.Read", "Files.Read" and "User.Read" API permission to your app.') }}
-			<br>
-			{{ t('integration_onedrive', 'Create a client secret in "Certificates & secrets".') }}
-			{{ t('integration_onedrive', 'Put the OAuth app "Client ID" and "Client secret" below.') }}
-			{{ t('integration_onedrive', 'Your Nextcloud users will then see a "Connect to OneDrive" button in their personal settings.') }}
-		</p>
-		<div class="grid-form">
-			<label for="onedrive-client-id">
-				<a class="icon icon-category-auth" />
-				{{ t('integration_onedrive', 'Client ID') }}
-			</label>
-			<input id="onedrive-client-id"
+		<div class="onedrive-content">
+			<NcNoteCard type="info">
+				{{ t('integration_onedrive', 'If you want to allow your Nextcloud users to use OAuth to authenticate to https://onedrive.live.com, create an OAuth application in your Azure settings.') }}
+				<br>
+				<a href="https://aka.ms/AppRegistrations/?referrer=https%3A%2F%2Fdev.onedrive.com" class="external" target="_blank">{{ t('integration_onedrive', 'Azure App registrations page') }}</a>
+				<br><br>
+				{{ t('integration_onedrive', 'Set "Application name" to a value that will make sense to your Nextcloud users as they will see it when connecting to OneDrive using your OAuth app.') }}
+				<br><br>
+				{{ t('integration_onedrive', 'Make sure you set the "Redirect URI" to') }}
+				<br>
+				<strong>{{ redirect_uri }}</strong>
+				<br><br>
+				{{ t('integration_onedrive', 'Give the "Contacts.Read", "Calendars.Read", "MailboxSettings.Read", "Files.Read" and "User.Read" API permission to your app.') }}
+				<br>
+				{{ t('integration_onedrive', 'Create a client secret in "Certificates & secrets".') }}
+				{{ t('integration_onedrive', 'Put the OAuth app "Client ID" and "Client secret" below.') }}
+				{{ t('integration_onedrive', 'Your Nextcloud users will then see a "Connect to OneDrive" button in their personal settings.') }}
+			</NcNoteCard>
+			<NcTextField
 				v-model="state.client_id"
 				type="password"
-				:readonly="readonly"
+				:label="t('integration_onedrive', 'Client ID')"
 				:placeholder="t('integration_onedrive', 'Client ID of your OneDrive application')"
+				:readonly="readonly"
+				:show-trailing-button="!!state.client_id"
+				@trailing-button-click="state.client_id = ''; onInput()"
 				@focus="readonly = false"
-				@input="onInput">
-			<label for="onedrive-client-secret">
-				<a class="icon icon-category-auth" />
-				{{ t('integration_onedrive', 'Client secret') }}
-			</label>
-			<input id="onedrive-client-secret"
+				@update:model-value="onInput">
+				<template #icon>
+					<KeyOutlineIcon :size="20" />
+				</template>
+			</NcTextField>
+			<NcTextField
 				v-model="state.client_secret"
 				type="password"
-				:readonly="readonly"
+				:label="t('integration_onedrive', 'Client secret')"
 				:placeholder="t('integration_onedrive', 'Client secret of your OneDrive application')"
-				@input="onInput"
-				@focus="readonly = false">
-			<NcCheckboxRadioSwitch
-				:checked.sync="state.use_popup"
-				@update:checked="onUsePopupChanged">
-				{{ t('integration_google', 'Use a popup to authenticate') }}
-			</NcCheckboxRadioSwitch>
+				:readonly="readonly"
+				:show-trailing-button="!!state.client_secret"
+				@trailing-button-click="state.client_secret = ''; onInput()"
+				@focus="readonly = false"
+				@update:model-value="onInput">
+				<template #icon>
+					<KeyOutlineIcon :size="20" />
+				</template>
+			</NcTextField>
+			<NcFormBoxSwitch
+				v-model="state.use_popup"
+				@update:model-value="onUsePopupChanged">
+				{{ t('integration_onedrive', 'Use a popup to authenticate') }}
+			</NcFormBoxSwitch>
 		</div>
 	</div>
 </template>
 
 <script>
-import { NcCheckboxRadioSwitch } from '@nextcloud/vue'
+import KeyOutlineIcon from 'vue-material-design-icons/KeyOutline.vue'
+
+import OnedriveIcon from './icons/OnedriveIcon.vue'
+
+import NcFormBoxSwitch from '@nextcloud/vue/components/NcFormBoxSwitch'
+import NcNoteCard from '@nextcloud/vue/components/NcNoteCard'
+import NcTextField from '@nextcloud/vue/components/NcTextField'
 
 import { loadState } from '@nextcloud/initial-state'
 import { generateUrl } from '@nextcloud/router'
@@ -71,7 +84,11 @@ export default {
 	name: 'AdminSettings',
 
 	components: {
-		NcCheckboxRadioSwitch,
+		OnedriveIcon,
+		NcFormBoxSwitch,
+		NcNoteCard,
+		NcTextField,
+		KeyOutlineIcon,
 	},
 
 	props: [],
@@ -125,7 +142,7 @@ export default {
 				.catch((error) => {
 					showError(
 						t('integration_onedrive', 'Failed to save OneDrive admin options')
-						+ ': ' + error.response?.request?.responseText
+						+ ': ' + error.response?.request?.responseText,
 					)
 				})
 				.then(() => {
@@ -136,40 +153,19 @@ export default {
 </script>
 
 <style scoped lang="scss">
-.grid-form label {
-	line-height: 38px;
+#onedrive_prefs {
+	h2 {
+		display: flex;
+		align-items: center;
+		justify-content: start;
+		gap: 8px;
+	}
+	.onedrive-content {
+		max-width: 800px;
+		margin-left: 40px;
+		display: flex;
+		flex-direction: column;
+		gap: 4px;
+	}
 }
-
-.grid-form input {
-	width: 100%;
-}
-
-.grid-form {
-	max-width: 500px;
-	display: grid;
-	grid-template: 1fr / 1fr 1fr;
-	margin-left: 30px;
-}
-
-#onedrive_prefs .icon {
-	display: inline-block;
-	width: 32px;
-}
-
-#onedrive_prefs .grid-form .icon {
-	margin-bottom: -3px;
-}
-
-.icon-onedrive {
-	background-image: url('../../img/app-dark.svg');
-	background-size: 23px 23px;
-	height: 23px;
-	margin-bottom: -4px;
-	filter: var(--background-invert-if-dark);
-}
-
-body.theme--dark .icon-onedrive {
-	background-image: url('../../img/app.svg');
-}
-
 </style>
