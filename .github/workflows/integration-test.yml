@@ -1,0 +1,134 @@
+# SPDX-FileCopyrightText: 2026 Nextcloud GmbH and Nextcloud contributors
+# SPDX-License-Identifier: MIT
+
+name: Integration test
+
+on:
+  pull_request:
+  push:
+    branches:
+      - master
+      - main
+      - stable*
+
+env:
+  APP_NAME: integration_onedrive
+
+permissions:
+  contents: read
+
+concurrency:
+  group: integration-test-${{ github.head_ref || github.run_id }}
+  cancel-in-progress: true
+
+jobs:
+  integration:
+    runs-on: ubuntu-latest
+
+    strategy:
+      fail-fast: false
+      matrix:
+        php-versions: [ '8.2' ]
+        server-versions: [ 'master', 'stable33' ]
+
+    name: Integration test
+
+    steps:
+      - name: Checkout nextcloud
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+        with:
+          path: server
+          repository: nextcloud/server
+          ref: ${{ matrix.server-versions }}
+
+      - name: Set up php
+        uses: shivammathur/setup-php@44454db4f0199b8b9685a5d763dc37cbf79108e1 # v2
+        with:
+          php-version: ${{ matrix.php-versions }}
+          coverage: none
+          ini-file: development
+          extensions: bz2, ctype, curl, dom, fileinfo, gd, iconv, intl, json, libxml, mbstring, openssl, pcntl, posix, session, simplexml, xmlreader, xmlwriter, zip, zlib, sqlite, pdo_sqlite
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Install nextcloud
+        working-directory: server/
+        run: |
+          git submodule update --init
+          php occ maintenance:install --verbose --admin-user admin --admin-pass admin
+
+      - name: Checkout app
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+        with:
+          path: server/apps/${{ env.APP_NAME }}
+
+      - name: Install dependencies
+        working-directory: server/apps/${{ env.APP_NAME }}
+        run: composer i
+
+      - name: Install app
+        working-directory: server/
+        run: |
+          php occ app:enable integration_onedrive -vvv
+          sed -i '$d' config/config.php && echo "  'debug' => true," >> config/config.php && echo ");" >> config/config.php
+
+      - name: Run Nextcloud
+        working-directory: server/
+        run: php -S localhost:8080 &
+
+      - name: Run import
+        working-directory: server/
+        env:
+          ONEDRIVE_CONFIG: ${{ secrets.ONEDRIVE_CONFIG }}
+          OAUTH_CLIENT_ID: ${{ secrets.OAUTH_CLIENT_ID }}
+          OAUTH_CLIENT_SECRET: ${{ secrets.OAUTH_CLIENT_SECRET }}
+        run: |
+          printenv ONEDRIVE_CONFIG > config.json
+          php occ integration_onedrive:setup "$OAUTH_CLIENT_ID" "$OAUTH_CLIENT_SECRET"
+          php occ integration_onedrive:setup-user admin "$(jq -r '.user_name' config.json)" "$(jq -r '.refresh_token' config.json)" "$(jq -r '.access_token' config.json)"
+          rm -f config.json
+          php occ integration_onedrive:start-import admin
+          for run in {1..3}; do
+            date
+            echo "run $run starting"
+            timeout 120 php cron.php || true
+            echo "run $run done"
+            nb=$(php occ user:setting admin integration_onedrive nb_imported_files 2>/dev/null || echo "0")
+            echo "imported files so far: $nb"
+            if [ "$nb" -gt "2" ] 2>/dev/null; then
+              echo "Files imported successfully, stopping early"
+              break
+            fi
+          done
+          date
+
+      - name: Check import result
+        if: always()
+        working-directory: server/
+        run: |
+          echo "=== Import status ==="
+          for key in nb_imported_files imported_size importing_onedrive onedrive_import_running last_onedrive_import_timestamp; do
+            val=$(php occ user:setting admin integration_onedrive "$key" 2>/dev/null || echo "n/a")
+            echo "  $key: $val"
+          done
+          echo "=== Imported files ==="
+          ls -lhR "data/admin/files/OneDrive import/" 2>/dev/null || echo "No imported files found"
+          echo "=== Disk usage ==="
+          du -sh "data/admin/files/OneDrive import/" 2>/dev/null || echo "No import directory"
+
+      - name: Verify import
+        working-directory: server/
+        run: |
+          nb=$(php occ user:setting admin integration_onedrive nb_imported_files 2>/dev/null || echo "0")
+          if [ "$nb" -gt "2" ] 2>/dev/null; then
+            echo "Import verification passed: $nb files imported"
+          else
+            echo "Import verification failed: no files were imported"
+            exit 1
+          fi
+
+      - name: Show log on failure
+        working-directory: server/
+        if: always()
+        run: |
+          tail -100 data/nextcloud.log | sed 's/"access_token":"[^"]*"/"access_token":"***"/g; s/"refresh_token":"[^"]*"/"refresh_token":"***"/g'
