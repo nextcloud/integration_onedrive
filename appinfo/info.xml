@@ -24,6 +24,11 @@
 		<php min-version="8.2"/>
         <nextcloud min-version="33" max-version="34"/>
     </dependencies>
+    <commands>
+        <command>OCA\Onedrive\Command\Setup</command>
+        <command>OCA\Onedrive\Command\SetupUser</command>
+        <command>OCA\Onedrive\Command\StartImport</command>
+    </commands>
     <settings>
         <admin>OCA\Onedrive\Settings\Admin</admin>
         <admin-section>OCA\Onedrive\Settings\AdminSection</admin-section>
