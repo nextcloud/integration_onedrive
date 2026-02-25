@@ -88,12 +88,12 @@ jobs:
           php occ integration_onedrive:setup-user admin "$(jq -r '.user_name' config.json)" "$(jq -r '.refresh_token' config.json)" "$(jq -r '.access_token' config.json)"
           rm -f config.json
           php occ integration_onedrive:start-import admin
-          for run in {1..3}; do
+          for run in {1..9}; do
             date
             echo "run $run starting"
-            timeout 120 php cron.php || true
+            timeout 40 php cron.php || true
             echo "run $run done"
-            nb=$(php occ user:setting admin integration_onedrive nb_imported_files 2>/dev/null || echo "0")
+            nb=$(php occ user:setting admin integration_onedrive nb_imported_files 2>/dev/null | tail -1 || echo "0")
             echo "imported files so far: $nb"
             if [ "$nb" -gt "2" ] 2>/dev/null; then
               echo "Files imported successfully, stopping early"
@@ -108,7 +108,7 @@ jobs:
         run: |
           echo "=== Import status ==="
           for key in nb_imported_files imported_size importing_onedrive onedrive_import_running last_onedrive_import_timestamp; do
-            val=$(php occ user:setting admin integration_onedrive "$key" 2>/dev/null || echo "n/a")
+            val=$(php occ user:setting admin integration_onedrive "$key" 2>/dev/null | tail -1 || echo "n/a")
             echo "  $key: $val"
           done
           echo "=== Imported files ==="
@@ -119,7 +119,7 @@ jobs:
       - name: Verify import
         working-directory: server/
         run: |
-          nb=$(php occ user:setting admin integration_onedrive nb_imported_files 2>/dev/null || echo "0")
+          nb=$(php occ user:setting admin integration_onedrive nb_imported_files 2>/dev/null | tail -1 || echo "0")
           if [ "$nb" -gt "2" ] 2>/dev/null; then
             echo "Import verification passed: $nb files imported"
           else
