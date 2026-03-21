@@ -299,16 +299,16 @@
         },
         {
             "name": "microsoft/kiota-abstractions",
-            "version": "2.0.0",
+            "version": "2.0.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/microsoft/kiota-abstractions-php.git",
-                "reference": "e9c9b118d9f0fb47f260f42a5edf52bd3529db74"
+                "reference": "07d1295ac2e333f1afd10a30764d33683c1960ab"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/microsoft/kiota-abstractions-php/zipball/e9c9b118d9f0fb47f260f42a5edf52bd3529db74",
-                "reference": "e9c9b118d9f0fb47f260f42a5edf52bd3529db74",
+                "url": "https://api.github.com/repos/microsoft/kiota-abstractions-php/zipball/07d1295ac2e333f1afd10a30764d33683c1960ab",
+                "reference": "07d1295ac2e333f1afd10a30764d33683c1960ab",
                 "shasum": ""
             },
             "require": {
@@ -343,29 +343,29 @@
             ],
             "description": "Abstractions for Kiota",
             "support": {
-                "source": "https://github.com/microsoft/kiota-abstractions-php/tree/2.0.0"
+                "source": "https://github.com/microsoft/kiota-abstractions-php/tree/2.0.1"
             },
-            "time": "2026-02-24T19:24:23+00:00"
+            "time": "2026-03-16T13:14:42+00:00"
         },
         {
             "name": "microsoft/kiota-http-guzzle",
-            "version": "2.0.0",
+            "version": "2.0.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/microsoft/kiota-http-guzzle-php.git",
-                "reference": "ecc756d258c98a90c314acd0c9dac3395d463993"
+                "reference": "ac8af28d9a5c4945f97764236ef62b86f23735d7"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/microsoft/kiota-http-guzzle-php/zipball/ecc756d258c98a90c314acd0c9dac3395d463993",
-                "reference": "ecc756d258c98a90c314acd0c9dac3395d463993",
+                "url": "https://api.github.com/repos/microsoft/kiota-http-guzzle-php/zipball/ac8af28d9a5c4945f97764236ef62b86f23735d7",
+                "reference": "ac8af28d9a5c4945f97764236ef62b86f23735d7",
                 "shasum": ""
             },
             "require": {
                 "ext-json": "*",
                 "ext-zlib": "*",
                 "guzzlehttp/guzzle": "^7.4.5",
-                "microsoft/kiota-abstractions": "^2.0.0",
+                "microsoft/kiota-abstractions": "^2.0.1",
                 "php": "^8.2"
             },
             "require-dev": {
@@ -390,9 +390,9 @@
             ],
             "description": "Kiota HTTP Request Adapter implementation",
             "support": {
-                "source": "https://github.com/microsoft/kiota-http-guzzle-php/tree/2.0.0"
+                "source": "https://github.com/microsoft/kiota-http-guzzle-php/tree/2.0.1"
             },
-            "time": "2026-02-24T19:53:00+00:00"
+            "time": "2026-03-16T13:28:22+00:00"
         },
         {
             "name": "nyholm/psr7",
@@ -2835,5 +2835,5 @@
     "platform-overrides": {
         "php": "8.2"
     },
-    "plugin-api-version": "2.6.0"
+    "plugin-api-version": "2.9.0"
 }
