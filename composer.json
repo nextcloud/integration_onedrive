@@ -18,7 +18,7 @@
     "require-dev": {
         "friendsofphp/php-cs-fixer": "^3",
         "nextcloud/coding-standard": "^1",
-        "psalm/phar": "~6.15.1",
+        "psalm/phar": "~6.16.1",
         "nextcloud/ocp": "dev-master",
         "sabre/dav": "^4.4.0"
     },
