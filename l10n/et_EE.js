@@ -15,6 +15,8 @@ OC.L10N.register(
     "Use a popup to authenticate" : "Kasuta autentimiseks hüpikakent",
     "Import job is currently running" : "Importimine on hetkel pooleli",
     "Starting importing files in {targetPath} directory" : "Käivitub  import sihtkausta {targetPath}",
+    "Failed to get calendar list" : "Kalendrite loendi tuvastamine ei õnnestunud",
+    "Failed to get address book list" : "Aadressiraamatute loendi tuvastamine ei õnnestunud",
     "Choose where to write imported files" : "Vali, kuhu soovid salvestada imporditud failid",
     "Enable navigation link" : "Lisa menüülink",
     "Connected as {user}" : "Ühendatud kui {user}",
