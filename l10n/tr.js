@@ -48,7 +48,7 @@ OC.L10N.register(
     "_{number} event successfully imported in {name}_::_{number} events successfully imported in {name}_" : ["{number} etkinlik {name} içine aktarıldı","{number} etkinlik {name} içine aktarıldı"],
     "Failed to import calendar" : "Takvim içe aktarılamadı",
     "Failed to get number of contacts" : "Kişilerin sayısı alınamadı",
-    "_{nbAdded} contact created, {nbUpdated} updated, {nbSkipped} skipped, {nbFailed} failed_::_{nbAdded} contacts created, {nbUpdated} updated, {nbSkipped} skipped, {nbFailed} failed_" : ["{nbAdded} kişi eklendi, {nbUpdated} kişi güncellendi, {nbSkipped} kişi atlandı, {nbFailed} kişi sorunlu","{nbAdded} kişi eklendi, {nbUpdated} kişi güncellendi, {nbSkipped} kişi atlandı, {nbFailed} kişi sorunlu"],
+    "_{nbAdded} contact created, {nbUpdated} updated, {nbSkipped} skipped, {nbFailed} failed_::_{nbAdded} contacts created, {nbUpdated} updated, {nbSkipped} skipped, {nbFailed} failed_" : ["{nbAdded} kişi oluşturuldu, {nbUpdated} kişi güncellendi, {nbSkipped} kişi atlandı, {nbFailed} kişi sorunlu","{nbAdded} kişi oluşturuldu, {nbUpdated} kişi güncellendi, {nbSkipped} kişi atlandı, {nbFailed} kişi sorunlu"],
     "Failed to get address book list" : "Adres defteri listesi alınamadı",
     "Choose where to write imported files" : "İçe aktarılan dosyaların kaydedileceği konumu seçin",
     "Enable navigation link" : "Gezinme bağlantısı kullanılsın",
