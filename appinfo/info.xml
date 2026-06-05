@@ -22,7 +22,7 @@
     <screenshot>https://github.com/nextcloud/integration_onedrive/raw/main/img/screenshot1.jpg</screenshot>
     <dependencies>
 		<php min-version="8.2"/>
-        <nextcloud min-version="33" max-version="34"/>
+        <nextcloud min-version="33" max-version="35"/>
     </dependencies>
     <commands>
         <command>OCA\Onedrive\Command\Setup</command>
