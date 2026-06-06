@@ -9,6 +9,7 @@ OC.L10N.register(
     "Connected accounts" : "Prijungtos paskyros",
     "Data migration" : "Duomenų perkėlimas",
     "OneDrive integration" : "„OneDrive“ integracija",
+    "Create a client secret in \"Certificates & secrets\"." : "Sukurkite kliento paslaptį dalyje „Sertifikatai ir paslaptys“.",
     "Client ID" : "Kliento ID",
     "Client secret" : "Kliento paslaptis",
     "Connected to OneDrive!" : "Prisijungta prie „OneDrive“!",
