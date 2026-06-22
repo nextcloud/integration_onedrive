@@ -1,11 +1,11 @@
 OC.L10N.register(
     "integration_onedrive",
     {
-    "Error getting OAuth access token" : "Klaida gaunant „OAuth“ prieigos raktą",
+    "Error getting OAuth access token" : "Klaida gaunant „OAuth“ prieigos žymenį",
     "Error during OAuth exchanges" : "Klaida „OAuth“ apsikeitimo metu",
     "Bad credentials" : "Blogi prisijungimo duomenys",
     "Bad HTTP method" : "Blogas HTTP metodas",
-    "OAuth access token refused" : "„OAuth“ prieigos raktas atmestas",
+    "OAuth access token refused" : "„OAuth“ prieigos žymuo atmestas",
     "Connected accounts" : "Prijungtos paskyros",
     "Data migration" : "Duomenų perkėlimas",
     "OneDrive integration" : "„OneDrive“ integracija",
