@@ -7,6 +7,7 @@
     "Connected accounts" : "Prijungtos paskyros",
     "Data migration" : "Duomenų perkėlimas",
     "OneDrive integration" : "„OneDrive“ integracija",
+    "If you want to allow your Nextcloud users to use OAuth to authenticate to https://onedrive.live.com, create an OAuth application in your Azure settings." : "Jei norite, kad jūsų „Nextcloud“ vartotojai galėtų naudoti „OAuth“ autentifikuotis svetainėje https://onedrive.live.com, sukurkite „OAuth“ programą savo „Azure“ nustatymuose.",
     "Create a client secret in \"Certificates & secrets\"." : "Sukurkite kliento paslaptį dalyje „Sertifikatai ir paslaptys“.",
     "Put the OAuth app \"Client ID\" and \"Client secret\" below." : "Žemiau įrašykite „OAuth“ programėlės „Kliento ID“ ir „Kliento paslaptį“.",
     "Client ID" : "Kliento ID",
