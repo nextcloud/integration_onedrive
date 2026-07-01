@@ -43,7 +43,7 @@
 				</div>
 				<br>
 				<div v-if="storageSize > 0" id="import-storage">
-					<h3>{{ t('integration_onedrive', 'Onedrive storage') }}</h3>
+					<h3>{{ t('integration_onedrive', 'OneDrive storage') }}</h3>
 					<div v-if="!importingOnedrive" class="output-selection">
 						<label for="onedrive-output">
 							<FolderOutlineIcon :size="20" class="folder-icon" />
@@ -63,17 +63,17 @@
 					<div class="size-import">
 						<label>
 							<FolderOutlineIcon :size="20" class="folder-icon" />
-							{{ t('integration_onedrive', 'Onedrive storage ({formSize})', { formSize: myHumanFileSize(storageSize, true) }) }}
+							{{ t('integration_onedrive', 'OneDrive storage ({formSize})', { formSize: myHumanFileSize(storageSize, true) }) }}
 						</label>
 						<NcButton v-if="enoughSpaceForOnedrive && !importingOnedrive"
 							@click="onImportOnedrive">
 							<template #icon>
 								<FolderOutlineIcon :size="20" class="folder-icon" />
 							</template>
-							{{ t('integration_onedrive', 'Import Onedrive files') }}
+							{{ t('integration_onedrive', 'Import OneDrive files') }}
 						</NcButton>
 						<span v-else-if="!enoughSpaceForOnedrive">
-							{{ t('integration_onedrive', 'Your Onedrive storage is bigger than your remaining space left ({formSpace})', { formSpace: myHumanFileSize(state.free_space) }) }}
+							{{ t('integration_onedrive', 'Your OneDrive storage is bigger than your remaining space left ({formSpace})', { formSpace: myHumanFileSize(state.free_space) }) }}
 						</span>
 						<div v-else>
 							<br>
@@ -87,7 +87,7 @@
 								<template #icon>
 									<CloseIcon :size="20" />
 								</template>
-								{{ t('integration_onedrive', 'Cancel Onedrive files import') }}
+								{{ t('integration_onedrive', 'Cancel OneDrive files import') }}
 							</NcButton>
 						</div>
 					</div>
@@ -218,7 +218,7 @@ export default {
 		lastOnedriveImportDate() {
 			return this.lastOnedriveImportTimestamp !== 0
 				? t('integration_onedrive', 'Last Onedrive import job at {date}', { date: moment.unix(this.lastOnedriveImportTimestamp).format('LLL') })
-				: t('integration_onedrive', 'Onedrive import process will begin soon')
+				: t('integration_onedrive', 'OneDrive import process will begin soon')
 		},
 		onedriveImportProgress() {
 			return this.storageSize > 0 && this.importedSize > 0
@@ -385,7 +385,7 @@ export default {
 				})
 				.catch((error) => {
 					showError(
-						t('integration_onedrive', 'Failed to start importing Onedrive storage')
+						t('integration_onedrive', 'Failed to start importing OneDrive storage')
 						+ ': ' + error.response?.request?.responseText,
 					)
 				})
