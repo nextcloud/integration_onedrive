@@ -46,6 +46,7 @@
     "_{number} event successfully imported in {name}_::_{number} events successfully imported in {name}_" : ["Į {name} sėkingai importuotas {number} įvykis","Į {name} sėkingai importuotų įvykių: {number}","Į {number} sėkingai importuotų įvykių: {name}","Į {name} sėkingai importuotų įvykių: {number}"],
     "Failed to import calendar" : "Nepavyko importuoti kalendoriaus",
     "Failed to get number of contacts" : "Nepavyko gauti adresatų skaičiaus",
+    "_{nbAdded} contact created, {nbUpdated} updated, {nbSkipped} skipped, {nbFailed} failed_::_{nbAdded} contacts created, {nbUpdated} updated, {nbSkipped} skipped, {nbFailed} failed_" : ["Kontaktas sukurtas {nbAdded}, atnaujinta {nbUpdated}, praleista {nbSkipped}, nepavyko {nbFailed}","Kontaktų sukurta {nbAdded}, atnaujinta {nbUpdated}, praleista {nbSkipped}, nepavyko {nbFailed}","Kontaktų sukurta {nbAdded}, atnaujinta {nbUpdated}, praleista {nbSkipped}, nepavyko {nbFailed}","Kontaktų sukurta {nbAdded}, atnaujinta {nbUpdated}, praleista {nbSkipped}, nepavyko {nbFailed}"],
     "Failed to get address book list" : "Nepavyko gauti adresų knygų sąrašo",
     "Choose where to write imported files" : "Pasirinkite, kur įrašyti importuotus failus",
     "Enable navigation link" : "Įjungti navigacijos nuorodą",
@@ -63,6 +64,7 @@
     "{amount} contacts" : "Adresatų: {amount}",
     "Import Contacts in Nextcloud" : "Importuoti kontaktus į „Nextcloud“",
     "Calendars" : "Kalendoriai",
-    "Import calendar" : "Importuoti kalendorių"
+    "Import calendar" : "Importuoti kalendorių",
+    "_{amount} file imported ({formImported}) ({progress}%)_::_{amount} files imported ({formImported}) ({progress}%)_" : ["Importuotas {amount} failas ({formImported}) ({progress}%)","Importuota failų {amount} ({formImported}) ({progress}%)","Importuota failų {amount} ({formImported}) ({progress}%)","Importuota failų {amount} ({formImported}) ({progress}%)"]
 },"pluralForm" :"nplurals=4; plural=(n % 10 == 1 && (n % 100 > 19 || n % 100 < 11) ? 0 : (n % 10 >= 2 && n % 10 <=9) && (n % 100 > 19 || n % 100 < 11) ? 1 : n % 1 != 0 ? 2: 3);"
 }
