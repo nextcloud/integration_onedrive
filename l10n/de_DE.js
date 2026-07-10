@@ -60,6 +60,7 @@ OC.L10N.register(
     "Import directory" : "Import-Verzeichnis",
     "OneDrive storage ({formSize})" : "OneDrive Speicher ({formSize})",
     "Import OneDrive files" : "OneDrive-Dateien importieren",
+    "Your OneDrive storage is bigger than your remaining space left ({formSpace})" : "Ihr OneDrive-Speicher ist größer als Ihr verbleibender Speicherplatz ({formSpace})",
     "Cancel OneDrive files import" : "OneDrive Dateiimport abbrechen",
     "Contacts" : "Kontakte",
     "{amount} contacts" : "{amount} Kontakte",
