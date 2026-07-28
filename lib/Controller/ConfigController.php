@@ -19,12 +19,10 @@ use OCP\AppFramework\Http\DataResponse;
 use OCP\AppFramework\Http\RedirectResponse;
 use OCP\AppFramework\Http\TemplateResponse;
 use OCP\AppFramework\Services\IInitialState;
-
 use OCP\Constants;
 use OCP\Contacts\IManager as IContactManager;
 use OCP\IConfig;
 use OCP\IL10N;
-
 use OCP\IRequest;
 use OCP\IURLGenerator;
 use OCP\Security\ICrypto;

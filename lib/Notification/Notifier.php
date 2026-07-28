@@ -92,7 +92,6 @@ class Notifier implements INotifier {
 					->setIcon($this->url->getAbsoluteURL($this->url->imagePath(Application::APP_ID, 'app-dark.svg')))
 					->setLink($this->url->linkToRouteAbsolute('files.view.index', ['dir' => $targetPath]));
 				return $notification;
-
 			default:
 				// Unknown subject => Unknown notification => throw
 				throw new InvalidArgumentException();

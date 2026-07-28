@@ -12,7 +12,6 @@ use OCA\Onedrive\Service\OnedriveCalendarAPIService;
 use OCA\Onedrive\Service\OnedriveContactAPIService;
 use OCA\Onedrive\Service\OnedriveStorageAPIService;
 use OCP\AppFramework\Controller;
-
 use OCP\AppFramework\Http;
 use OCP\AppFramework\Http\Attribute\NoAdminRequired;
 use OCP\AppFramework\Http\DataResponse;
