@@ -9,7 +9,6 @@ namespace OCA\Onedrive\BackgroundJob;
 
 use OCA\Onedrive\Service\OnedriveStorageAPIService;
 use OCP\AppFramework\Utility\ITimeFactory;
-
 use OCP\BackgroundJob\QueuedJob;
 
 class ImportOnedriveJob extends QueuedJob {

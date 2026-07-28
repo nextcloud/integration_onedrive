@@ -22,7 +22,6 @@ use OCP\Http\Client\IClientService;
 use OCP\IConfig;
 use OCP\IL10N;
 use OCP\Notification\IManager as INotificationManager;
-
 use OCP\Security\ICrypto;
 use Psr\Log\LoggerInterface;
 use Throwable;

@@ -21,7 +21,6 @@ use Throwable;
 class OnedriveCalendarAPIService {
 	private IL10N $l10n;
 
-
 	private LoggerInterface $logger;
 
 	private CalDavBackend $caldavBackend;

@@ -20,7 +20,6 @@ use OCP\Files\InvalidPathException;
 use OCP\Files\IRootFolder;
 use OCP\Files\NotFoundException;
 use OCP\Files\NotPermittedException;
-
 use OCP\IConfig;
 use OCP\PreConditionNotMetException;
 use Psr\Log\LoggerInterface;
