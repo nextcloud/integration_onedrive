@@ -8,6 +8,20 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [3.5.2] - 2026-07-28
+
+### Added
+
+- Added support for Nextcloud 35
+
+### Fixed
+
+- Correct the spelling of "OneDrive" in the personal settings
+
+### Changed
+
+- Update dependencies & translations
+
 ## [3.5.1] - 2026-04-21
 
 ### Added
