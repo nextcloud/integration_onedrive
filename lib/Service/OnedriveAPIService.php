@@ -135,6 +135,28 @@ class OnedriveAPIService {
 	}
 
 	/**
+	 * Get a fresh download URL for a drive item.
+	 *
+	 * The download URL a folder listing returns is only valid for about an hour, so on
+	 * a long import it may have expired by the time a file is reached. Fetching the
+	 * single item returns a newly issued URL.
+	 *
+	 * @param string $userId
+	 * @param string $itemId
+	 * @return string|null
+	 */
+	public function getDownloadUrl(string $userId, string $itemId): ?string {
+		try {
+			$result = $this->request($userId, 'me/drive/items/' . rawurlencode($itemId));
+		} catch (Exception|Throwable $e) {
+			return null;
+		}
+		/** @psalm-suppress InvalidArrayOffset the declared shape of request() does not cover decoded JSON keys */
+		$url = $result['@microsoft.graph.downloadUrl'] ?? null;
+		return is_string($url) ? $url : null;
+	}
+
+	/**
 	 * Make the HTTP request
 	 * @param string $userId
 	 * @param string $endPoint The path to reach in api.onedrive.com
