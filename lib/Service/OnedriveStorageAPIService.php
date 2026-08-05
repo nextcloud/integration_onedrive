@@ -39,6 +39,17 @@ use Throwable;
  */
 
 class OnedriveStorageAPIService {
+
+	private const FILE_DOWNLOADED = 'downloaded';
+	private const FILE_ALREADY_THERE = 'already there';
+	private const FILE_FAILED = 'failed';
+
+	/**
+	 * How many failed file names are kept to be shown in the import finished
+	 * notification. The full list is in the server log.
+	 */
+	private const MAX_REPORTED_FAILED_FILES = 10;
+
 	/**
 	 * @var string
 	 */
@@ -130,7 +141,9 @@ class OnedriveStorageAPIService {
 		$this->config->setUserValue($userId, Application::APP_ID, 'importing_onedrive', '1');
 		$this->config->setUserValue($userId, Application::APP_ID, 'imported_size', '0');
 		$this->config->setUserValue($userId, Application::APP_ID, 'nb_failed_files', '0');
+		$this->config->setUserValue($userId, Application::APP_ID, 'nb_skipped_files', '0');
 		$this->config->setUserValue($userId, Application::APP_ID, 'last_onedrive_import_timestamp', '0');
+		$this->config->deleteUserValue($userId, Application::APP_ID, 'failed_files');
 		$this->config->deleteUserValue($userId, Application::APP_ID, 'import_tree');
 
 		$this->jobList->add(ImportOnedriveJob::class, ['user_id' => $userId]);
@@ -199,16 +212,22 @@ class OnedriveStorageAPIService {
 			// read the counters accumulated over all batches before resetting them
 			$nbImported = (int)$this->config->getUserValue($userId, Application::APP_ID, 'nb_imported_files', '0');
 			$nbFailed = (int)$this->config->getUserValue($userId, Application::APP_ID, 'nb_failed_files', '0');
+			$nbSkipped = (int)$this->config->getUserValue($userId, Application::APP_ID, 'nb_skipped_files', '0');
+			$failedFiles = json_decode($this->config->getUserValue($userId, Application::APP_ID, 'failed_files', '[]'), true) ?: [];
 			$this->config->setUserValue($userId, Application::APP_ID, 'importing_onedrive', '0');
 			$this->config->setUserValue($userId, Application::APP_ID, 'imported_size', '0');
 			$this->config->setUserValue($userId, Application::APP_ID, 'nb_imported_files', '0');
 			$this->config->setUserValue($userId, Application::APP_ID, 'nb_failed_files', '0');
+			$this->config->setUserValue($userId, Application::APP_ID, 'nb_skipped_files', '0');
+			$this->config->deleteUserValue($userId, Application::APP_ID, 'failed_files');
 			$this->config->setUserValue($userId, Application::APP_ID, 'last_onedrive_import_timestamp', '0');
 			if (isset($result['finished']) && $result['finished']) {
 				$this->config->deleteUserValue($userId, Application::APP_ID, 'import_tree');
 				$this->onedriveApiService->sendNCNotification($userId, 'import_onedrive_finished', [
 					'nbImported' => $nbImported,
 					'nbFailed' => $nbFailed,
+					'nbSkipped' => $nbSkipped,
+					'failedFiles' => $failedFiles,
 					'targetPath' => $targetPath,
 				]);
 			}
@@ -325,27 +344,34 @@ class OnedriveStorageAPIService {
 				];
 			}
 
+			$pageSkipped = 0;
 			/** @var OneDriveItem $item */
 			foreach ($result['value'] as $item) {
 				if (isset($item['file'])) {
 					$newTotalSeenNumber++;
-					$size = $this->getFile($userId, $folder, $item);
-					if ($size !== null) {
-						$newDownloadedSize += $size;
-						if ($size > 0) {
-							$newNbDownloaded++;
-							$this->config->setUserValue($userId, Application::APP_ID, 'imported_size', (string)($alreadyImportedSize + $newDownloadedSize));
-							$this->config->setUserValue($userId, Application::APP_ID, 'nb_imported_files', (string)($alreadyImportedNumber + $newNbDownloaded));
-							$this->config->setUserValue($userId, Application::APP_ID, 'last_onedrive_import_timestamp', (string)(new \DateTime())->getTimestamp());
-						}
+					$fileResult = $this->getFile($userId, $folder, $item);
+					if ($fileResult['status'] === self::FILE_DOWNLOADED) {
+						$newDownloadedSize += $fileResult['size'];
+						$newNbDownloaded++;
+						$this->config->setUserValue($userId, Application::APP_ID, 'imported_size', (string)($alreadyImportedSize + $newDownloadedSize));
+						$this->config->setUserValue($userId, Application::APP_ID, 'nb_imported_files', (string)($alreadyImportedNumber + $newNbDownloaded));
+						$this->config->setUserValue($userId, Application::APP_ID, 'last_onedrive_import_timestamp', (string)(new \DateTime())->getTimestamp());
 						if ($maxDownloadSize !== null && $newDownloadedSize >= $maxDownloadSize) {
 							throw new MaxDownloadSizeReachedException('Download size limit reached');
 						}
+					} elseif ($fileResult['status'] === self::FILE_ALREADY_THERE) {
+						$pageSkipped++;
 					} else {
-						// count files that could not be downloaded, to report them in the
-						// notification sent when the import finishes
+						// count files that could not be downloaded and remember the first
+						// few names, to report them in the notification sent when the
+						// import finishes
 						$nbFailed = (int)$this->config->getUserValue($userId, Application::APP_ID, 'nb_failed_files', '0');
 						$this->config->setUserValue($userId, Application::APP_ID, 'nb_failed_files', (string)($nbFailed + 1));
+						if ($nbFailed < self::MAX_REPORTED_FAILED_FILES) {
+							$failedFiles = json_decode($this->config->getUserValue($userId, Application::APP_ID, 'failed_files', '[]'), true) ?: [];
+							$failedFiles[] = $item['name'];
+							$this->config->setUserValue($userId, Application::APP_ID, 'failed_files', json_encode($failedFiles));
+						}
 					}
 				}
 				// folders: remember for recursion
@@ -355,6 +381,11 @@ class OnedriveStorageAPIService {
 					$subPath = ltrim($path . '/' . $item['name']);
 					$importTree[$subPath] = 'todo';
 				}
+			}
+			if ($pageSkipped > 0) {
+				// one write per listing page, skipped files are frequent on re-imports
+				$nbSkipped = (int)$this->config->getUserValue($userId, Application::APP_ID, 'nb_skipped_files', '0');
+				$this->config->setUserValue($userId, Application::APP_ID, 'nb_skipped_files', (string)($nbSkipped + $pageSkipped));
 			}
 
 			// if this directory was marked unfinished, remove it now
@@ -431,17 +462,18 @@ class OnedriveStorageAPIService {
 	 * @param string $userId
 	 * @param Folder $folder
 	 * @param array $fileItem
-	 * @return ?float downloaded size, null if already existing or network error
+	 * @return array{status: string, size: float} status is one of the FILE_* constants,
+	 *                                            size is only meaningful for FILE_DOWNLOADED
 	 */
-	private function getFile(string $userId, Folder $folder, array $fileItem): ?float {
+	private function getFile(string $userId, Folder $folder, array $fileItem): array {
 		$fileName = $fileItem['name'];
 		try {
 			$fileExists = $folder->nodeExists($fileName);
 		} catch (ForbiddenException $e) {
-			return null;
+			return ['status' => self::FILE_FAILED, 'size' => 0.0];
 		}
 		if ($fileExists) {
-			return 0;
+			return ['status' => self::FILE_ALREADY_THERE, 'size' => 0.0];
 		}
 
 		$savedFile = $folder->newFile($fileName);
@@ -462,7 +494,7 @@ class OnedriveStorageAPIService {
 			if ($savedFile->isDeletable()) {
 				$savedFile->delete();
 			}
-			return null;
+			return ['status' => self::FILE_FAILED, 'size' => 0.0];
 		}
 
 		if (isset($fileItem['lastModifiedDateTime'])) {
@@ -473,7 +505,7 @@ class OnedriveStorageAPIService {
 			$savedFile->touch();
 		}
 		$stat = $savedFile->stat();
-		return (float)($stat['size'] ?? 0);
+		return ['status' => self::FILE_DOWNLOADED, 'size' => (float)($stat['size'] ?? 0)];
 	}
 
 	/**
