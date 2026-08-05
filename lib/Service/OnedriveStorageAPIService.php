@@ -129,6 +129,7 @@ class OnedriveStorageAPIService {
 		}
 		$this->config->setUserValue($userId, Application::APP_ID, 'importing_onedrive', '1');
 		$this->config->setUserValue($userId, Application::APP_ID, 'imported_size', '0');
+		$this->config->setUserValue($userId, Application::APP_ID, 'nb_failed_files', '0');
 		$this->config->setUserValue($userId, Application::APP_ID, 'last_onedrive_import_timestamp', '0');
 		$this->config->deleteUserValue($userId, Application::APP_ID, 'import_tree');
 
@@ -195,14 +196,19 @@ class OnedriveStorageAPIService {
 			];
 		}
 		if (isset($result['error']) || (isset($result['finished']) && $result['finished'])) {
+			// read the counters accumulated over all batches before resetting them
+			$nbImported = (int)$this->config->getUserValue($userId, Application::APP_ID, 'nb_imported_files', '0');
+			$nbFailed = (int)$this->config->getUserValue($userId, Application::APP_ID, 'nb_failed_files', '0');
 			$this->config->setUserValue($userId, Application::APP_ID, 'importing_onedrive', '0');
 			$this->config->setUserValue($userId, Application::APP_ID, 'imported_size', '0');
 			$this->config->setUserValue($userId, Application::APP_ID, 'nb_imported_files', '0');
+			$this->config->setUserValue($userId, Application::APP_ID, 'nb_failed_files', '0');
 			$this->config->setUserValue($userId, Application::APP_ID, 'last_onedrive_import_timestamp', '0');
 			if (isset($result['finished']) && $result['finished']) {
 				$this->config->deleteUserValue($userId, Application::APP_ID, 'import_tree');
 				$this->onedriveApiService->sendNCNotification($userId, 'import_onedrive_finished', [
-					'nbImported' => $result['totalSeenNumber'],
+					'nbImported' => $nbImported,
+					'nbFailed' => $nbFailed,
 					'targetPath' => $targetPath,
 				]);
 			}
@@ -335,6 +341,11 @@ class OnedriveStorageAPIService {
 						if ($maxDownloadSize !== null && $newDownloadedSize >= $maxDownloadSize) {
 							throw new MaxDownloadSizeReachedException('Download size limit reached');
 						}
+					} else {
+						// count files that could not be downloaded, to report them in the
+						// notification sent when the import finishes
+						$nbFailed = (int)$this->config->getUserValue($userId, Application::APP_ID, 'nb_failed_files', '0');
+						$this->config->setUserValue($userId, Application::APP_ID, 'nb_failed_files', (string)($nbFailed + 1));
 					}
 				}
 				// folders: remember for recursion
