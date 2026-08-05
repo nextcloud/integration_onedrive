@@ -13,6 +13,7 @@ use OCA\Onedrive\AppInfo\Application;
 use OCA\Onedrive\BackgroundJob\ImportOnedriveJob;
 use OCA\Onedrive\Exceptions\MaxDownloadSizeReachedException;
 use OCP\BackgroundJob\IJobList;
+use OCP\Files\File;
 use OCP\Files\FileInfo;
 use OCP\Files\Folder;
 use OCP\Files\ForbiddenException;
@@ -28,6 +29,7 @@ use Throwable;
 /**
  * @psalm-type OneDriveItem = array{
  *   "name": string,
+ *   "id"?: string,
  *   "file"?: array<string,mixed>,
  *   "folder"?: array<string,mixed>,
  *   "@microsoft.graph.downloadUrl"?: string,
@@ -321,7 +323,7 @@ class OnedriveStorageAPIService {
 			foreach ($result['value'] as $item) {
 				if (isset($item['file'])) {
 					$newTotalSeenNumber++;
-					$size = $this->getFile($folder, $item);
+					$size = $this->getFile($userId, $folder, $item);
 					if ($size !== null) {
 						$newDownloadedSize += $size;
 						if ($size > 0) {
@@ -415,52 +417,73 @@ class OnedriveStorageAPIService {
 	}
 
 	/**
-	 * @param array $fileItem
+	 * @param string $userId
 	 * @param Folder $folder
+	 * @param array $fileItem
 	 * @return ?float downloaded size, null if already existing or network error
 	 */
-	private function getFile(Folder $folder, array $fileItem): ?float {
+	private function getFile(string $userId, Folder $folder, array $fileItem): ?float {
 		$fileName = $fileItem['name'];
 		try {
 			$fileExists = $folder->nodeExists($fileName);
 		} catch (ForbiddenException $e) {
 			return null;
 		}
-		if (!$fileExists) {
-			$savedFile = $folder->newFile($fileName);
-			$resource = $savedFile->fopen('w');
-			if ($resource === false) {
-				$this->logger->warning('Could not open new file for writing', ['app' => Application::APP_ID]);
-				if ($savedFile->isDeletable()) {
-					$savedFile->delete();
-				}
-				return null;
-			}
-			$res = $this->onedriveApiService->fileRequest($fileItem['@microsoft.graph.downloadUrl'], $resource);
-			if (is_resource($resource)) {
-				fclose($resource);
-			}
-			if (!isset($res['error'])) {
-				if (isset($fileItem['lastModifiedDateTime'])) {
-					$d = new DateTime($fileItem['lastModifiedDateTime']);
-					$ts = $d->getTimestamp();
-					$savedFile->touch($ts);
-				} else {
-					$savedFile->touch();
-				}
-				$stat = $savedFile->stat();
-				return (float)($stat['size'] ?? 0);
-			} else {
-				// there was an error
-				$this->logger->warning('OneDrive error downloading file ' . $fileName . ' : ' . $res['error'], ['app' => Application::APP_ID]);
-				if ($savedFile->isDeletable()) {
-					$savedFile->delete();
-				}
-				return null;
-			}
-		} else {
-			// file exists
+		if ($fileExists) {
 			return 0;
 		}
+
+		$savedFile = $folder->newFile($fileName);
+		$res = $this->downloadFile($savedFile, $fileItem['@microsoft.graph.downloadUrl'] ?? null);
+		if (isset($res['error'])) {
+			// The URL from the folder listing is only valid for about an hour, so on a long
+			// import it may have expired by the time this file is reached. Fetch a fresh URL
+			// for the item and try once more; this also covers transient network errors.
+			$freshUrl = isset($fileItem['id'])
+				? $this->onedriveApiService->getDownloadUrl($userId, $fileItem['id'])
+				: null;
+			if ($freshUrl !== null) {
+				$res = $this->downloadFile($savedFile, $freshUrl);
+			}
+		}
+		if (isset($res['error'])) {
+			$this->logger->warning('OneDrive error downloading file ' . $fileName . ' : ' . $res['error'], ['app' => Application::APP_ID]);
+			if ($savedFile->isDeletable()) {
+				$savedFile->delete();
+			}
+			return null;
+		}
+
+		if (isset($fileItem['lastModifiedDateTime'])) {
+			$d = new DateTime($fileItem['lastModifiedDateTime']);
+			$ts = $d->getTimestamp();
+			$savedFile->touch($ts);
+		} else {
+			$savedFile->touch();
+		}
+		$stat = $savedFile->stat();
+		return (float)($stat['size'] ?? 0);
+	}
+
+	/**
+	 * Download $url into $file, truncating whatever an earlier attempt may have written.
+	 *
+	 * @param File $file
+	 * @param ?string $url
+	 * @return array request result, error under 'error' on failure
+	 */
+	private function downloadFile(File $file, ?string $url): array {
+		if ($url === null) {
+			return ['error' => 'no download URL'];
+		}
+		$resource = $file->fopen('w');
+		if ($resource === false) {
+			return ['error' => 'could not open local file for writing'];
+		}
+		$res = $this->onedriveApiService->fileRequest($url, $resource);
+		if (is_resource($resource)) {
+			fclose($resource);
+		}
+		return $res;
 	}
 }
