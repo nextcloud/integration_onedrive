@@ -8,6 +8,13 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [3.5.3]
+
+### Fixed
+
+- Stop a file import from blocking forever when a download stalls
+- Stop logging download URLs, they contain a short lived access token
+
 ## [3.5.2] - 2026-07-28
 
 ### Added

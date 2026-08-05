@@ -28,6 +28,11 @@ use Throwable;
 
 class OnedriveAPIService {
 
+	/**
+	 * Give up on a file download that has transferred nothing for this many seconds.
+	 */
+	private const DOWNLOAD_STALL_TIMEOUT = 30;
+
 	private IClient $client;
 
 	private string $userAgent;
@@ -81,7 +86,15 @@ class OnedriveAPIService {
 		try {
 			$options = [
 				'sink' => $resource,
+				// No total transfer timeout, a big file may legitimately take a long time.
 				'timeout' => 0,
+				// A download URL that expired while the import was running can be accepted
+				// by the remote end without any data ever being sent. Without this the job
+				// would block on such a connection forever.
+				'curl' => [
+					CURLOPT_LOW_SPEED_LIMIT => 1,
+					CURLOPT_LOW_SPEED_TIME => self::DOWNLOAD_STALL_TIMEOUT,
+				],
 				'headers' => [
 					'User-Agent' => $this->userAgent,
 				],
@@ -96,15 +109,29 @@ class OnedriveAPIService {
 			}
 			return ['success' => true];
 		} catch (ServerException|ClientException $e) {
-			$this->logger->warning('OneDrive API error : ' . $e->getMessage(), ['app' => Application::APP_ID]);
-			return ['error' => $e->getMessage()];
+			$error = $this->withoutUrls($e->getMessage());
+			$this->logger->warning('OneDrive API error : ' . $error, ['app' => Application::APP_ID]);
+			return ['error' => $error];
 		} catch (ConnectException $e) {
-			$this->logger->error('OneDrive API request connection error: ' . $e->getMessage(), ['app' => Application::APP_ID]);
-			return ['error' => $e->getMessage()];
+			$error = $this->withoutUrls($e->getMessage());
+			$this->logger->error('OneDrive API request connection error: ' . $error, ['app' => Application::APP_ID]);
+			return ['error' => $error];
 		} catch (Exception|Throwable $e) {
-			$this->logger->error('OneDrive API request connection error: ' . $e->getMessage(), ['app' => Application::APP_ID]);
-			return ['error' => $e->getMessage()];
+			$error = $this->withoutUrls($e->getMessage());
+			$this->logger->error('OneDrive API request connection error: ' . $error, ['app' => Application::APP_ID]);
+			return ['error' => $error];
 		}
+	}
+
+	/**
+	 * Strip URLs out of an error message before it is logged or handed to the caller.
+	 *
+	 * Guzzle includes the requested URL in its exception messages. A OneDrive download
+	 * URL carries a short lived access token in its query string, so such a message must
+	 * never end up in the log, where it gets copied into bug reports.
+	 */
+	private function withoutUrls(string $message): string {
+		return preg_replace('/https?:\/\/\S+/', '<url removed>', $message) ?? $message;
 	}
 
 	/**
