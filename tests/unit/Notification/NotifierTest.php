@@ -25,7 +25,9 @@ class NotifierTest extends TestCase {
 		parent::setUp();
 
 		$l = $this->createMock(IL10N::class);
-		$l->method('t')->willReturnArgument(0);
+		$l->method('t')->willReturnCallback(
+			static fn (string $text, $parameters = []) => vsprintf($text, is_array($parameters) ? $parameters : [$parameters])
+		);
 		$l->method('n')->willReturnCallback(
 			static fn (string $singular, string $plural, int $count) => str_replace('%n', (string)$count, $count === 1 ? $singular : $plural)
 		);
@@ -45,7 +47,7 @@ class NotifierTest extends TestCase {
 		);
 	}
 
-	private function prepare(array $subjectParameters, string $expectedSubject, string $subject = 'import_onedrive_finished', string $app = 'integration_onedrive'): void {
+	private function prepare(array $subjectParameters, string $expectedSubject, ?string $expectedMessage = null, string $subject = 'import_onedrive_finished', string $app = 'integration_onedrive'): void {
 		$notification = $this->createMock(INotification::class);
 		$notification->method('getApp')->willReturn($app);
 		$notification->method('getSubject')->willReturn($subject);
@@ -54,6 +56,14 @@ class NotifierTest extends TestCase {
 			->method('setParsedSubject')
 			->with($expectedSubject)
 			->willReturnSelf();
+		if ($expectedMessage === null) {
+			$notification->expects($this->never())->method('setParsedMessage');
+		} else {
+			$notification->expects($this->once())
+				->method('setParsedMessage')
+				->with($expectedMessage)
+				->willReturnSelf();
+		}
 		$notification->method('setIcon')->willReturnSelf();
 		$notification->method('setLink')->willReturnSelf();
 
@@ -69,17 +79,42 @@ class NotifierTest extends TestCase {
 
 	public function testFinishedWithFailures(): void {
 		$this->prepare(
-			['nbImported' => 5, 'nbFailed' => 2, 'targetPath' => '/OneDrive import'],
+			['nbImported' => 5, 'nbFailed' => 2, 'failedFiles' => ['a.jpg', 'b.jpg'], 'targetPath' => '/OneDrive import'],
 			'5 files were imported from OneDrive storage.'
-			. ' 2 files could not be downloaded, check the server logs for details.'
+			. ' 2 files could not be downloaded, check the server logs for details.',
+			'Could not download: a.jpg, b.jpg'
 		);
 	}
 
 	public function testFinishedWithSingleImportAndSingleFailure(): void {
 		$this->prepare(
-			['nbImported' => 1, 'nbFailed' => 1, 'targetPath' => '/OneDrive import'],
+			['nbImported' => 1, 'nbFailed' => 1, 'failedFiles' => ['a.jpg'], 'targetPath' => '/OneDrive import'],
 			'1 file was imported from OneDrive storage.'
-			. ' 1 file could not be downloaded, check the server logs for details.'
+			. ' 1 file could not be downloaded, check the server logs for details.',
+			'Could not download: a.jpg'
+		);
+	}
+
+	public function testFinishedWithMoreFailuresThanReportedNames(): void {
+		$this->prepare(
+			['nbImported' => 5, 'nbFailed' => 12, 'failedFiles' => ['a.jpg', 'b.jpg', 'c.jpg'], 'targetPath' => '/OneDrive import'],
+			'5 files were imported from OneDrive storage.'
+			. ' 12 files could not be downloaded, check the server logs for details.',
+			'Could not download: a.jpg, b.jpg, c.jpg, and 9 more'
+		);
+	}
+
+	public function testFinishedWithSkippedFiles(): void {
+		$this->prepare(
+			['nbImported' => 7, 'nbFailed' => 0, 'nbSkipped' => 1993, 'targetPath' => '/OneDrive import'],
+			'7 files were imported from OneDrive storage. 1993 files were already there.'
+		);
+	}
+
+	public function testRerunWithNothingNewExplainsItself(): void {
+		$this->prepare(
+			['nbImported' => 0, 'nbFailed' => 0, 'nbSkipped' => 2000, 'targetPath' => '/OneDrive import'],
+			'0 files were imported from OneDrive storage. 2000 files were already there.'
 		);
 	}
 

@@ -82,12 +82,21 @@ class Notifier implements INotifier {
 
 		switch ($notification->getSubject()) {
 			case 'import_onedrive_finished':
-				/** @var array{nbImported?: string, nbFailed?: string, targetPath: string} $p */
+				/** @var array{nbImported?: string, nbFailed?: string, nbSkipped?: string, failedFiles?: string[], targetPath: string} $p */
 				$p = $notification->getSubjectParameters();
 				$nbImported = (int)($p['nbImported'] ?? 0);
 				$nbFailed = (int)($p['nbFailed'] ?? 0);
+				$nbSkipped = (int)($p['nbSkipped'] ?? 0);
+				$failedFiles = is_array($p['failedFiles'] ?? null) ? $p['failedFiles'] : [];
 				$targetPath = $p['targetPath'];
 				$content = $l->n('%n file was imported from OneDrive storage.', '%n files were imported from OneDrive storage.', $nbImported);
+				if ($nbSkipped > 0) {
+					$content .= ' ' . $l->n(
+						'%n file was already there.',
+						'%n files were already there.',
+						$nbSkipped
+					);
+				}
 				if ($nbFailed > 0) {
 					$content .= ' ' . $l->n(
 						'%n file could not be downloaded, check the server logs for details.',
@@ -96,6 +105,15 @@ class Notifier implements INotifier {
 					);
 				}
 
+				if ($failedFiles !== []) {
+					$names = implode(', ', $failedFiles);
+					$nbMore = $nbFailed - count($failedFiles);
+					$notification->setParsedMessage(
+						$nbMore > 0
+							? $l->t('Could not download: %1$s, and %2$s more', [$names, (string)$nbMore])
+							: $l->t('Could not download: %s', [$names])
+					);
+				}
 				$notification->setParsedSubject($content)
 					->setIcon($this->url->getAbsoluteURL($this->url->imagePath(Application::APP_ID, 'app-dark.svg')))
 					->setLink($this->url->linkToRouteAbsolute('files.view.index', ['dir' => $targetPath]));
