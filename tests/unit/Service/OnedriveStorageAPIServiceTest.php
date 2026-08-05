@@ -23,10 +23,16 @@ use ReflectionMethod;
 class OnedriveStorageAPIServiceTest extends TestCase {
 
 	private OnedriveAPIService|MockObject $apiService;
+	private IRootFolder|MockObject $rootFolder;
+	private IConfig|MockObject $config;
+	private IJobList|MockObject $jobList;
 	private Folder|MockObject $folder;
 	private File|MockObject $file;
 
 	private OnedriveStorageAPIService $service;
+
+	/** @var array<string, string> */
+	private array $configStore = [];
 
 	private const STALE_URL = 'https://stale.example.org/download?tempauth=old';
 	private const FRESH_URL = 'https://fresh.example.org/download?tempauth=new';
@@ -35,12 +41,15 @@ class OnedriveStorageAPIServiceTest extends TestCase {
 		parent::setUp();
 
 		$this->apiService = $this->createMock(OnedriveAPIService::class);
+		$this->rootFolder = $this->createMock(IRootFolder::class);
+		$this->config = $this->createMock(IConfig::class);
+		$this->jobList = $this->createMock(IJobList::class);
 		$this->service = new OnedriveStorageAPIService(
 			'integration_onedrive',
 			$this->createMock(LoggerInterface::class),
-			$this->createMock(IRootFolder::class),
-			$this->createMock(IConfig::class),
-			$this->createMock(IJobList::class),
+			$this->rootFolder,
+			$this->config,
+			$this->jobList,
 			$this->createMock(UserScopeService::class),
 			$this->apiService,
 		);
@@ -50,6 +59,27 @@ class OnedriveStorageAPIServiceTest extends TestCase {
 		$this->folder = $this->createMock(Folder::class);
 		$this->folder->method('nodeExists')->willReturn(false);
 		$this->folder->method('newFile')->willReturn($this->file);
+	}
+
+	/**
+	 * Back the IConfig mock with an array, so code doing read-increment-write
+	 * on user settings behaves like it does against the real config.
+	 */
+	private function useStatefulConfig(array $initial): void {
+		$this->configStore = $initial;
+		$this->config->method('getUserValue')->willReturnCallback(
+			fn (string $userId, string $appName, string $key, $default = '') => $this->configStore[$key] ?? $default
+		);
+		$this->config->method('setUserValue')->willReturnCallback(
+			function (string $userId, string $appName, string $key, $value): void {
+				$this->configStore[$key] = (string)$value;
+			}
+		);
+		$this->config->method('deleteUserValue')->willReturnCallback(
+			function (string $userId, string $appName, string $key): void {
+				unset($this->configStore[$key]);
+			}
+		);
 	}
 
 	private function getFile(array $fileItem): ?float {
@@ -162,5 +192,109 @@ class OnedriveStorageAPIServiceTest extends TestCase {
 		$size = $method->invoke($this->service, 'user1', $folder, ['name' => 'photo.jpg']);
 
 		$this->assertSame(0.0, $size);
+	}
+
+	public function testImportCountsFailedDownloads(): void {
+		$this->useStatefulConfig([]);
+
+		// remote drive root holds three files, b fails on the listing URL and on a fresh one
+		$this->apiService->method('request')->willReturnCallback(
+			static function (string $userId, string $endPoint) {
+				if ($endPoint === 'me/drive') {
+					return ['quota' => ['used' => 1000]];
+				}
+				if ($endPoint === 'me/drive/root/children') {
+					return ['value' => array_map(static fn (string $name) => [
+						'name' => $name . '.jpg',
+						'id' => 'id-' . $name,
+						'file' => [],
+						'@microsoft.graph.downloadUrl' => 'https://listing.example.org/' . $name,
+					], ['a', 'b', 'c'])];
+				}
+				return [];
+			}
+		);
+		$requestedUrls = [];
+		$this->apiService->method('fileRequest')->willReturnCallback(
+			static function (string $url) use (&$requestedUrls) {
+				$requestedUrls[] = $url;
+				return str_ends_with($url, '/b') ? ['error' => 'download error'] : ['success' => true];
+			}
+		);
+		$this->apiService->expects($this->once())
+			->method('getDownloadUrl')
+			->with('user1', 'id-b')
+			->willReturn('https://fresh.example.org/b');
+
+		$dirFolder = $this->createMock(Folder::class);
+		$dirFolder->method('nodeExists')->willReturn(false);
+		$dirFolder->method('newFile')->willReturnCallback(function () {
+			$file = $this->createMock(File::class);
+			$file->method('fopen')->willReturnCallback(static fn () => fopen('php://temp', 'w+'));
+			$file->method('stat')->willReturn(['size' => 10]);
+			$file->method('isDeletable')->willReturn(true);
+			return $file;
+		});
+		$topFolder = $this->createMock(Folder::class);
+		$topFolder->method('nodeExists')->willReturn(true);
+		$topFolder->method('get')->willReturn($dirFolder);
+		$userFolder = $this->createMock(Folder::class);
+		$userFolder->method('nodeExists')->willReturn(true);
+		$userFolder->method('get')->willReturn($topFolder);
+		$this->rootFolder->method('getUserFolder')->willReturn($userFolder);
+
+		$result = $this->service->importFiles('user1', '/Import');
+
+		$this->assertTrue($result['finished']);
+		$this->assertSame('1', $this->configStore['nb_failed_files'] ?? null);
+		$this->assertSame('2', $this->configStore['nb_imported_files'] ?? null);
+		$this->assertSame([
+			'https://listing.example.org/a',
+			'https://listing.example.org/b',
+			'https://fresh.example.org/b',
+			'https://listing.example.org/c',
+		], $requestedUrls);
+	}
+
+	public function testFinishedNotificationReportsImportedAndFailedCounts(): void {
+		$this->useStatefulConfig([
+			'importing_onedrive' => '1',
+			'onedrive_import_running' => '0',
+			'nb_imported_files' => '7',
+			'nb_failed_files' => '3',
+		]);
+
+		// nothing left to download, the job finishes right away
+		$this->apiService->method('request')->willReturnCallback(
+			static function (string $userId, string $endPoint) {
+				if ($endPoint === 'me/drive') {
+					return ['quota' => ['used' => 1000]];
+				}
+				if ($endPoint === 'me/drive/root/children') {
+					return ['value' => []];
+				}
+				return [];
+			}
+		);
+		$folder = $this->createMock(Folder::class);
+		$folder->method('isShared')->willReturn(false);
+		$folder->method('nodeExists')->willReturn(true);
+		$folder->method('get')->willReturnSelf();
+		$this->rootFolder->method('getUserFolder')->willReturn($folder);
+
+		$this->apiService->expects($this->once())
+			->method('sendNCNotification')
+			->with('user1', 'import_onedrive_finished', [
+				'nbImported' => 7,
+				'nbFailed' => 3,
+				'targetPath' => '/OneDrive import',
+			]);
+		$this->jobList->expects($this->never())->method('add');
+
+		$this->service->importOnedriveJob('user1');
+
+		$this->assertSame('0', $this->configStore['nb_imported_files']);
+		$this->assertSame('0', $this->configStore['nb_failed_files']);
+		$this->assertSame('0', $this->configStore['importing_onedrive']);
 	}
 }

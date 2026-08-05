@@ -15,6 +15,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 - Stop a file import from blocking forever when a download stalls
 - Stop logging download URLs, they contain a short lived access token
 - Retry a failed file download once with a freshly fetched download URL, the one from the folder listing may have expired during a long import
+- Report files that could not be downloaded in the import finished notification, which also no longer counts them as imported
 
 ## [3.5.2] - 2026-07-28
 
