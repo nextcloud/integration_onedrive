@@ -40,6 +40,7 @@
     "Failed to save OneDrive OAuth state" : "Échec de l'enregistrement de l'état OAuth OneDrive",
     "Failed to get OneDrive storage information" : "Échec de l'obtention des informations sur le stockage OneDrive",
     "Starting importing files in {targetPath} directory" : "Démarrage de l'import des fichiers dans le dossier {targetPath}",
+    "Failed to start importing OneDrive storage" : "Échec du démarrage de l'import du stockage OneDrive",
     "Failed to get calendar list" : "Échec de l'obtention de la liste des calendriers",
     "_{number} event successfully imported in {name}_::_{number} events successfully imported in {name}_" : ["{number} événement importé avec succès dans {name}","{number} événements importés avec succès dans {name}","{number} événements importés avec succès dans {name}"],
     "Failed to import calendar" : "Échec de l'importation du calendrier OneDrive",
