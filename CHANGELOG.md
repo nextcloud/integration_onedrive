@@ -10,6 +10,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [3.5.3]
 
+### Added
+
+- Added support for Nextcloud 36
+
 ### Fixed
 
 - Stop a file import from blocking forever when a download stalls
