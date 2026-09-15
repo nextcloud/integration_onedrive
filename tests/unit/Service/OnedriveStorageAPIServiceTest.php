@@ -14,6 +14,7 @@ use OCP\BackgroundJob\IJobList;
 use OCP\Files\File;
 use OCP\Files\Folder;
 use OCP\Files\IRootFolder;
+use OCP\Files\IUserFolder;
 use OCP\IConfig;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
@@ -80,6 +81,14 @@ class OnedriveStorageAPIServiceTest extends TestCase {
 				unset($this->configStore[$key]);
 			}
 		);
+	}
+
+	/**
+	 * IRootFolder::getUserFolder() declares an IUserFolder return type since
+	 * Nextcloud 36, older versions have no IUserFolder to mock.
+	 */
+	private function createUserFolderMock(): Folder|MockObject {
+		return $this->createMock(interface_exists(IUserFolder::class) ? IUserFolder::class : Folder::class);
 	}
 
 	private function getFile(array $fileItem): array {
@@ -255,7 +264,7 @@ class OnedriveStorageAPIServiceTest extends TestCase {
 		$topFolder = $this->createMock(Folder::class);
 		$topFolder->method('nodeExists')->willReturn(true);
 		$topFolder->method('get')->willReturn($dirFolder);
-		$userFolder = $this->createMock(Folder::class);
+		$userFolder = $this->createUserFolderMock();
 		$userFolder->method('nodeExists')->willReturn(true);
 		$userFolder->method('get')->willReturn($topFolder);
 		$this->rootFolder->method('getUserFolder')->willReturn($userFolder);
@@ -299,7 +308,7 @@ class OnedriveStorageAPIServiceTest extends TestCase {
 				return [];
 			}
 		);
-		$folder = $this->createMock(Folder::class);
+		$folder = $this->createUserFolderMock();
 		$folder->method('isShared')->willReturn(false);
 		$folder->method('nodeExists')->willReturn(true);
 		$folder->method('get')->willReturnSelf();
