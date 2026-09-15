@@ -7,7 +7,6 @@
 
 namespace OCA\Onedrive\Tests;
 
-use InvalidArgumentException;
 use OCA\Onedrive\Notification\Notifier;
 use OCP\IL10N;
 use OCP\IURLGenerator;
@@ -15,6 +14,7 @@ use OCP\IUserManager;
 use OCP\L10N\IFactory;
 use OCP\Notification\IManager as INotificationManager;
 use OCP\Notification\INotification;
+use OCP\Notification\UnknownNotificationException;
 use PHPUnit\Framework\TestCase;
 
 class NotifierTest extends TestCase {
@@ -129,7 +129,7 @@ class NotifierTest extends TestCase {
 		$notification = $this->createMock(INotification::class);
 		$notification->method('getApp')->willReturn('some_other_app');
 
-		$this->expectException(InvalidArgumentException::class);
+		$this->expectException(UnknownNotificationException::class);
 		$this->notifier->prepare($notification, 'en');
 	}
 
@@ -138,7 +138,7 @@ class NotifierTest extends TestCase {
 		$notification->method('getApp')->willReturn('integration_onedrive');
 		$notification->method('getSubject')->willReturn('some_unknown_subject');
 
-		$this->expectException(InvalidArgumentException::class);
+		$this->expectException(UnknownNotificationException::class);
 		$this->notifier->prepare($notification, 'en');
 	}
 }
