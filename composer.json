@@ -20,7 +20,7 @@
         "friendsofphp/php-cs-fixer": "^3",
         "nextcloud/coding-standard": "^1",
         "phpunit/phpunit": "^10",
-        "psalm/phar": "~6.16.1",
+        "psalm/phar": "~6.17.2",
         "nextcloud/ocp": "dev-master",
         "sabre/dav": "^4.4.0"
     },
