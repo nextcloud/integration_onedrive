@@ -93,26 +93,33 @@ jobs:
           php occ integration_onedrive:setup-user admin "$(jq -r '.user_name' config.json)" "$(jq -r '.refresh_token' config.json)" "$(jq -r '.access_token' config.json)"
           rm -f config.json
           php occ integration_onedrive:start-import admin
+          # The drive behind the secrets holds more than 500 MB, so a full import takes several
+          # batches of minutes each. Import until a few files have arrived, then stop: the import
+          # stays in progress, which the second run below takes into account.
+          max_imported=0
           for run in {1..9}; do
             date
-            echo "run $run starting"
+            echo "round $run starting"
             timeout 40 php cron.php || true
-            echo "run $run done"
-            nb=$(php occ user:setting admin integration_onedrive nb_imported_files 2>/dev/null | tail -1 || echo "0")
-            echo "imported files so far: $nb"
-            if [ "$nb" -gt "2" ] 2>/dev/null; then
+            imported=$(php occ user:setting admin integration_onedrive nb_imported_files 2>/dev/null | tail -1 || echo "0")
+            skipped=$(php occ user:setting admin integration_onedrive nb_skipped_files 2>/dev/null | tail -1 || echo "0")
+            failed=$(php occ user:setting admin integration_onedrive nb_failed_files 2>/dev/null | tail -1 || echo "0")
+            echo "round $run: imported=$imported skipped=$skipped failed=$failed"
+            if [ "$imported" -gt "$max_imported" ] 2>/dev/null; then max_imported=$imported; fi
+            if [ "$imported" -gt "2" ] 2>/dev/null; then
               echo "Files imported successfully, stopping early"
               break
             fi
           done
           date
+          echo "MAX_IMPORTED=$max_imported" >> "$GITHUB_ENV"
 
       - name: Check import result
         if: always()
         working-directory: server/
         run: |
           echo "=== Import status ==="
-          for key in nb_imported_files imported_size importing_onedrive onedrive_import_running last_onedrive_import_timestamp; do
+          for key in nb_imported_files nb_skipped_files nb_failed_files failed_files imported_size importing_onedrive onedrive_import_running last_onedrive_import_timestamp; do
             val=$(php occ user:setting admin integration_onedrive "$key" 2>/dev/null | tail -1 || echo "n/a")
             echo "  $key: $val"
           done
@@ -124,13 +131,47 @@ jobs:
       - name: Verify import
         working-directory: server/
         run: |
-          nb=$(php occ user:setting admin integration_onedrive nb_imported_files 2>/dev/null | tail -1 || echo "0")
-          if [ "$nb" -gt "2" ] 2>/dev/null; then
-            echo "Import verification passed: $nb files imported"
+          if [ "${MAX_IMPORTED:-0}" -gt "2" ] 2>/dev/null; then
+            echo "Import verification passed: $MAX_IMPORTED files imported"
           else
             echo "Import verification failed: no files were imported"
             exit 1
           fi
+          failed=$(php occ user:setting admin integration_onedrive nb_failed_files 2>/dev/null | tail -1 || echo "0")
+          if [ "$failed" != "0" ]; then
+            echo "The import reported $failed failed download(s) against a healthy drive"
+            exit 1
+          fi
+
+      - name: Import a second time, the files of the first run are already there
+        working-directory: server/
+        run: |
+          # The first import is still in progress and its job holds a lock that only expires after
+          # an hour (Application::IMPORT_JOB_TIMEOUT), so clear both flags the way a user would see
+          # them expire, then import again over the files that already arrived.
+          php occ user:setting admin integration_onedrive onedrive_import_running 0
+          php occ user:setting admin integration_onedrive importing_onedrive 0
+          before=$(php occ user:setting admin integration_onedrive nb_imported_files 2>/dev/null | tail -1 || echo "0")
+          php occ integration_onedrive:start-import admin
+          max_skipped=0
+          for run in {1..3}; do
+            timeout 40 php cron.php || true
+            imported=$(php occ user:setting admin integration_onedrive nb_imported_files 2>/dev/null | tail -1 || echo "0")
+            skipped=$(php occ user:setting admin integration_onedrive nb_skipped_files 2>/dev/null | tail -1 || echo "0")
+            failed=$(php occ user:setting admin integration_onedrive nb_failed_files 2>/dev/null | tail -1 || echo "0")
+            echo "round $run: imported=$imported skipped=$skipped failed=$failed (before the second run: $before)"
+            if [ "$skipped" -gt "$max_skipped" ] 2>/dev/null; then max_skipped=$skipped; fi
+            if [ "$failed" != "0" ]; then
+              echo "The second import reported $failed failed download(s)"
+              exit 1
+            fi
+            if [ "$max_skipped" -gt "2" ] 2>/dev/null; then break; fi
+          done
+          if [ "$max_skipped" -le "2" ] 2>/dev/null; then
+            echo "Expected the second import to skip the files the first one brought, it skipped $max_skipped"
+            exit 1
+          fi
+          echo "The second import skipped $max_skipped file(s) that were already there"
 
       - name: Show log on failure
         working-directory: server/
