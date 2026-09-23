@@ -23,6 +23,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 - Report files that could not be downloaded in the import finished notification, with their names, which also no longer counts them as imported
 - Mention files that were already there in the import finished notification, so re-running an import does not look like a failure
 - Count imported empty files as imported
+- Test the import against a stubbed Graph API, including failed downloads, empty files and paging
 
 ## [3.5.2] - 2026-07-28
 

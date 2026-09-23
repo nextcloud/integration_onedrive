@@ -111,4 +111,42 @@ class OnedriveAPIServiceTest extends TestCase {
 		$this->assertStringNotContainsString('SECRETTOKEN', $result['error']);
 		$this->assertStringContainsString('<url removed>', $result['error']);
 	}
+
+	public function testRequestsGoToMicrosoftGraphByDefault(): void {
+		$this->assertSame(
+			'https://graph.microsoft.com/v1.0/me/drive',
+			$this->urlOfRequest('me/drive')
+		);
+	}
+
+	public function testTheApiBaseUrlCanBeOverriddenForTests(): void {
+		$this->config->method('getAppValue')->willReturnCallback(
+			static fn (string $app, string $key, string $default = ''): string
+				=> $key === 'api_base_url' ? 'http://127.0.0.1:8099/v1.0' : $default
+		);
+
+		$this->assertSame(
+			'http://127.0.0.1:8099/v1.0/me/drive',
+			$this->urlOfRequest('me/drive')
+		);
+	}
+
+	/**
+	 * The URL the service asks the HTTP client for when requesting an endpoint.
+	 */
+	private function urlOfRequest(string $endPoint): string {
+		$response = $this->createMock(IResponse::class);
+		$response->method('getStatusCode')->willReturn(200);
+		$response->method('getBody')->willReturn('{}');
+		$requested = '';
+		$this->client->method('get')->willReturnCallback(
+			function (string $url) use (&$requested, $response): IResponse {
+				$requested = $url;
+				return $response;
+			}
+		);
+
+		$this->apiService->request('user1', $endPoint);
+		return $requested;
+	}
 }

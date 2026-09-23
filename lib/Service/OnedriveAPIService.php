@@ -27,6 +27,11 @@ use Psr\Log\LoggerInterface;
 use Throwable;
 
 class OnedriveAPIService {
+	/**
+	 * Microsoft Graph, overridable through the app config so that tests can point the app at a
+	 * local stub instead of reaching out to Microsoft.
+	 */
+	private const API_BASE_URL = 'https://graph.microsoft.com/v1.0/';
 
 	/**
 	 * Give up on a file download that has transferred nothing for this many seconds.
@@ -171,7 +176,7 @@ class OnedriveAPIService {
 		$accessToken = $this->config->getUserValue($userId, Application::APP_ID, 'token');
 		$accessToken = $accessToken === '' ? '' : $this->crypto->decrypt($accessToken);
 		try {
-			$url = 'https://graph.microsoft.com/v1.0/' . $endPoint;
+			$url = $this->getApiBaseUrl() . $endPoint;
 			$options = [
 				'headers' => [
 					'Authorization' => 'bearer ' . $accessToken,
@@ -288,6 +293,18 @@ class OnedriveAPIService {
 			$this->logger->warning('OneDrive OAuth error : ' . $e->getMessage(), ['app' => Application::APP_ID]);
 			return ['error' => $e->getMessage()];
 		}
+	}
+
+	/**
+	 * The Microsoft Graph base URL, with a trailing slash. The app config value is only meant for
+	 * tests; when it is unset the real Graph endpoint is used.
+	 */
+	private function getApiBaseUrl(): string {
+		$baseUrl = (string)$this->config->getAppValue(Application::APP_ID, 'api_base_url', self::API_BASE_URL);
+		if ($baseUrl === '') {
+			$baseUrl = self::API_BASE_URL;
+		}
+		return rtrim($baseUrl, '/') . '/';
 	}
 
 	private function checkTokenExpiration(string $userId): void {
