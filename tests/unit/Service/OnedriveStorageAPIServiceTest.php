@@ -38,6 +38,12 @@ class OnedriveStorageAPIServiceTest extends TestCase {
 	/** @var array<string, string> */
 	private array $configStore = [];
 
+	/** @var string[] names of the files the target folder holds */
+	private array $existingFiles = [];
+
+	/** @var string[] the downloads the app asked for, in order */
+	private array $downloadedFiles = [];
+
 	private const STALE_URL = 'https://stale.example.org/download?tempauth=old';
 	private const FRESH_URL = 'https://fresh.example.org/download?tempauth=new';
 
@@ -378,5 +384,343 @@ class OnedriveStorageAPIServiceTest extends TestCase {
 		$result = $method->invoke($this->service, 'user1', $folder, ['name' => 'photo.jpg']);
 
 		$this->assertSame(['status' => 'failed', 'size' => 0.0], $result);
+	}
+	/**
+	 * A drive whose root listing has two pages: a folder on the first one, two files on
+	 * the second. $fileSize decides where the batch download size runs out.
+	 */
+	private function statefulDriveWithTwoRootPages(int $fileSize, array $alreadyThere = []): void {
+		$this->useStatefulConfig([]);
+		$this->apiService->method('request')->willReturnCallback(
+			static function (string $userId, string $endPoint, array $params = []) {
+				if ($endPoint === 'me/drive') {
+					return ['quota' => ['used' => 1000]];
+				}
+				$file = static fn (string $name) => [
+					'name' => $name,
+					'id' => 'id-' . $name,
+					'file' => [],
+					'@microsoft.graph.downloadUrl' => 'https://dl.example.org/' . $name,
+				];
+				if ($endPoint === 'me/drive/root/children') {
+					if (($params['$skiptoken'] ?? '') === 'page2') {
+						return ['value' => [$file('second-page-1.jpg'), $file('second-page-2.jpg')]];
+					}
+					return [
+						'value' => [['name' => 'sub', 'id' => 'id-sub', 'folder' => []]],
+						'@odata.nextLink' => 'https://graph.example.org/me/drive/root/children?$skiptoken=page2',
+					];
+				}
+				if ($endPoint === 'me/drive/root:%2Fsub:/children') {
+					return ['value' => [$file('nested.jpg')]];
+				}
+				// the folder itself, asked for to copy its modification time
+				return ['lastModifiedDateTime' => '2026-09-01T10:00:00Z'];
+			}
+		);
+		$this->apiService->method('fileRequest')->willReturnCallback(
+			function (string $url) {
+				$this->downloadedFiles[] = basename($url);
+				return ['success' => true];
+			}
+		);
+
+		$this->existingFiles = $alreadyThere;
+		$folders = [];
+		$folderFor = function (string $path) use (&$folders, $fileSize) {
+			if (!isset($folders[$path])) {
+				$folder = $this->createMock(Folder::class);
+				$folder->method('nodeExists')->willReturnCallback(
+					fn (string $name) => in_array($path . '/' . $name, $this->existingFiles, true)
+				);
+				$folder->method('newFile')->willReturnCallback(function (string $name) use ($path, $fileSize) {
+					$this->existingFiles[] = $path . '/' . $name;
+					$file = $this->createMock(File::class);
+					$file->method('fopen')->willReturnCallback(static fn () => fopen('php://temp', 'w+'));
+					$file->method('stat')->willReturn(['size' => $fileSize]);
+					$file->method('isDeletable')->willReturn(true);
+					return $file;
+				});
+				$folders[$path] = $folder;
+			}
+			return $folders[$path];
+		};
+		$topFolder = $this->createMock(Folder::class);
+		$topFolder->method('nodeExists')->willReturn(true);
+		$topFolder->method('get')->willReturnCallback(static fn (string $path) => $folderFor($path));
+		$userFolder = $this->createUserFolderMock();
+		$userFolder->method('nodeExists')->willReturn(true);
+		$userFolder->method('get')->willReturn($topFolder);
+		$this->rootFolder->method('getUserFolder')->willReturn($userFolder);
+	}
+
+	public function testBatchThatRunsOutInAListingComesBackForTheRestOfIt(): void {
+		$this->statefulDriveWithTwoRootPages(200);
+		$importTree = [];
+
+		// 200 bytes per file, so the first file of the root's second page ends the batch
+		$first = $this->service->importFiles('user1', '/Import', 100, 0, 0, $importTree);
+
+		$this->assertFalse($first['finished']);
+		$this->assertSame(['second-page-1.jpg'], $this->downloadedFiles);
+		$this->assertSame('todo', $importTree['/sub'] ?? null, 'the folder found on the first page is remembered');
+		$this->assertSame('page2', $importTree[''] ?? null, 'the root is remembered at the page it stopped in');
+
+		// the job keeps handing the remembered tree to the next batch until one finishes
+		$batches = 1;
+		do {
+			$result = $this->service->importFiles('user1', '/Import', 100, 0, 0, $importTree);
+			$batches++;
+		} while (empty($result['finished']) && $batches < 6);
+
+		$this->assertTrue($result['finished']);
+		$this->assertSame(
+			['second-page-1.jpg', 'second-page-2.jpg', 'nested.jpg'],
+			$this->downloadedFiles,
+			'every file of the drive was imported'
+		);
+		$this->assertSame([], $importTree, 'nothing is left unfinished');
+	}
+
+	public function testFilesTheImportBroughtItselfAreNotReportedAsAlreadyThere(): void {
+		$this->statefulDriveWithTwoRootPages(200);
+		$importTree = [];
+
+		// the first batch downloads one file of the second page, the next batch walks that
+		// page again and finds it in place
+		$this->service->importFiles('user1', '/Import', 100, 0, 0, $importTree);
+		$this->assertSame(['second-page-1.jpg'], $this->downloadedFiles);
+		$batches = 1;
+		do {
+			$result = $this->service->importFiles('user1', '/Import', 100, 0, 0, $importTree);
+			$batches++;
+		} while (empty($result['finished']) && $batches < 6);
+
+		$this->assertSame('0', $this->configStore['nb_skipped_files'] ?? '0', 'nothing was already there');
+	}
+
+	public function testFilesThatWereAlreadyThereAreStillCounted(): void {
+		// the file of the sub-folder is there before the import starts, and the sub-folder
+		// is only reached by a later batch, which is not walking a page again
+		$this->statefulDriveWithTwoRootPages(200, ['/sub/nested.jpg']);
+		$importTree = [];
+
+		$batches = 0;
+		do {
+			$result = $this->service->importFiles('user1', '/Import', 100, 0, 0, $importTree);
+			$batches++;
+		} while (empty($result['finished']) && $batches < 6);
+
+		$this->assertSame('1', $this->configStore['nb_skipped_files'] ?? '0');
+	}
+
+	public function testResumingAFolderAsksForThePageItStoppedIn(): void {
+		$this->statefulDriveWithTwoRootPages(200);
+		$importTree = ['' => 'page2'];
+
+		$this->service->importFiles('user1', '/Import', null, 0, 0, $importTree);
+
+		// the second page holds both files, the first page only the sub-folder: asking for
+		// the first page again would have downloaded nothing from the root
+		$this->assertSame(
+			['second-page-1.jpg', 'second-page-2.jpg'],
+			$this->downloadedFiles,
+			'the remembered page was asked for, not the first one'
+		);
+	}
+
+	public function testFolderWhoseListingFailsIsTriedAgainByTheNextBatch(): void {
+		$this->useStatefulConfig([]);
+		$listings = [];
+		$failuresLeft = 1;
+		$this->apiService->method('request')->willReturnCallback(
+			static function (string $userId, string $endPoint) use (&$listings, &$failuresLeft) {
+				if ($endPoint === 'me/drive') {
+					return ['quota' => ['used' => 1000]];
+				}
+				if ($endPoint === 'me/drive/root:%2Fsub:/children') {
+					$listings[] = $endPoint;
+					if ($failuresLeft > 0) {
+						$failuresLeft--;
+						return ['error' => 'serviceUnavailable'];
+					}
+					return ['value' => [[
+						'name' => 'nested.jpg',
+						'id' => 'id-nested',
+						'file' => [],
+						'@microsoft.graph.downloadUrl' => 'https://dl.example.org/nested.jpg',
+					]]];
+				}
+				if ($endPoint === 'me/drive/root/children') {
+					return ['value' => [['name' => 'sub', 'id' => 'id-sub', 'folder' => []]]];
+				}
+				return ['lastModifiedDateTime' => '2026-09-01T10:00:00Z'];
+			}
+		);
+		$this->apiService->method('fileRequest')->willReturnCallback(
+			function (string $url) {
+				$this->downloadedFiles[] = basename($url);
+				return ['success' => true];
+			}
+		);
+		$folder = $this->createMock(Folder::class);
+		$folder->method('nodeExists')->willReturn(false);
+		$folder->method('newFile')->willReturnCallback(function () {
+			$file = $this->createMock(File::class);
+			$file->method('fopen')->willReturnCallback(static fn () => fopen('php://temp', 'w+'));
+			$file->method('stat')->willReturn(['size' => 10]);
+			return $file;
+		});
+		$topFolder = $this->createMock(Folder::class);
+		$topFolder->method('nodeExists')->willReturn(true);
+		$topFolder->method('get')->willReturn($folder);
+		$userFolder = $this->createUserFolderMock();
+		$userFolder->method('nodeExists')->willReturn(true);
+		$userFolder->method('get')->willReturn($topFolder);
+		$this->rootFolder->method('getUserFolder')->willReturn($userFolder);
+
+		$importTree = [];
+		$this->service->importFiles('user1', '/Import', null, 0, 0, $importTree);
+
+		$this->assertSame([], $this->downloadedFiles, 'the folder could not be listed');
+		$this->assertSame('todo', $importTree['/sub'] ?? null, 'it is still to do');
+
+		$this->service->importFiles('user1', '/Import', null, 0, 0, $importTree);
+
+		$this->assertSame(['nested.jpg'], $this->downloadedFiles, 'the next batch listed it again');
+		$this->assertSame([], $importTree);
+	}
+
+	public function testFolderIsStartedOverWhenItsRememberedPageIsGone(): void {
+		$this->useStatefulConfig([]);
+		$listed = [];
+		$this->apiService->method('request')->willReturnCallback(
+			static function (string $userId, string $endPoint, array $params = []) use (&$listed) {
+				if ($endPoint === 'me/drive') {
+					return ['quota' => ['used' => 1000]];
+				}
+				if ($endPoint === 'me/drive/root/children') {
+					$listed[] = $params['$skiptoken'] ?? 'first page';
+					if (isset($params['$skiptoken'])) {
+						return ['error' => 'invalid skiptoken'];
+					}
+					return ['value' => [[
+						'name' => 'photo.jpg',
+						'id' => 'id-photo',
+						'file' => [],
+						'@microsoft.graph.downloadUrl' => 'https://dl.example.org/photo.jpg',
+					]]];
+				}
+				return ['lastModifiedDateTime' => '2026-09-01T10:00:00Z'];
+			}
+		);
+		$this->apiService->method('fileRequest')->willReturnCallback(
+			function (string $url) {
+				$this->downloadedFiles[] = basename($url);
+				return ['success' => true];
+			}
+		);
+		$folder = $this->createMock(Folder::class);
+		$folder->method('nodeExists')->willReturn(false);
+		$folder->method('newFile')->willReturnCallback(function () {
+			$file = $this->createMock(File::class);
+			$file->method('fopen')->willReturnCallback(static fn () => fopen('php://temp', 'w+'));
+			$file->method('stat')->willReturn(['size' => 10]);
+			return $file;
+		});
+		$topFolder = $this->createMock(Folder::class);
+		$topFolder->method('nodeExists')->willReturn(true);
+		$topFolder->method('get')->willReturn($folder);
+		$userFolder = $this->createUserFolderMock();
+		$userFolder->method('nodeExists')->willReturn(true);
+		$userFolder->method('get')->willReturn($topFolder);
+		$this->rootFolder->method('getUserFolder')->willReturn($userFolder);
+
+		// the previous batch stopped at a page whose token is not accepted any more
+		$importTree = ['' => 'stale-token'];
+		$result = $this->service->importFiles('user1', '/Import', null, 0, 0, $importTree);
+
+		$this->assertSame(['stale-token', 'first page'], $listed, 'the folder is listed again from its first page');
+		$this->assertSame(['photo.jpg'], $this->downloadedFiles);
+		$this->assertTrue($result['finished']);
+		$this->assertSame([], $importTree);
+	}
+
+	public function testTheBatchSizeCanBeConfigured(): void {
+		$this->useStatefulConfig(['importing_onedrive' => '1']);
+		$this->config->method('getAppValue')->willReturnCallback(
+			static fn (string $app, string $key, string $default = '') => $key === 'import_batch_size' ? '100' : $default
+		);
+		// two files of 200 bytes, so a 100 byte batch stops after the first one
+		$this->apiService->method('request')->willReturnCallback(
+			static function (string $userId, string $endPoint) {
+				if ($endPoint === 'me/drive') {
+					return ['quota' => ['used' => 1000]];
+				}
+				if ($endPoint === 'me/drive/root/children') {
+					return ['value' => array_map(static fn (string $name) => [
+						'name' => $name,
+						'id' => 'id-' . $name,
+						'file' => [],
+						'@microsoft.graph.downloadUrl' => 'https://dl.example.org/' . $name,
+					], ['a.jpg', 'b.jpg'])];
+				}
+				return ['lastModifiedDateTime' => '2026-09-01T10:00:00Z'];
+			}
+		);
+		$this->apiService->method('fileRequest')->willReturnCallback(
+			function (string $url) {
+				$this->downloadedFiles[] = basename($url);
+				return ['success' => true];
+			}
+		);
+		$dirFolder = $this->createMock(Folder::class);
+		$dirFolder->method('nodeExists')->willReturn(false);
+		$dirFolder->method('newFile')->willReturnCallback(function () {
+			$file = $this->createMock(File::class);
+			$file->method('fopen')->willReturnCallback(static fn () => fopen('php://temp', 'w+'));
+			$file->method('stat')->willReturn(['size' => 200]);
+			return $file;
+		});
+		$topFolder = $this->createMock(Folder::class);
+		$topFolder->method('isShared')->willReturn(false);
+		$topFolder->method('nodeExists')->willReturn(true);
+		$topFolder->method('get')->willReturn($dirFolder);
+		$userFolder = $this->createUserFolderMock();
+		$userFolder->method('nodeExists')->willReturn(true);
+		$userFolder->method('get')->willReturn($topFolder);
+		$this->rootFolder->method('getUserFolder')->willReturn($userFolder);
+		// the job queues itself again to continue with the next batch
+		$this->jobList->expects($this->once())->method('add');
+
+		$this->service->importOnedriveJob('user1');
+
+		$this->assertSame(['a.jpg'], $this->downloadedFiles, 'the batch stopped after the first file');
+		$this->assertSame('1', $this->configStore['importing_onedrive'], 'the import is not finished');
+		$this->assertArrayHasKey('import_tree', $this->configStore);
+	}
+
+	public function testTheImportIsResumedFromWhatTheBatchWroteToTheConfig(): void {
+		$this->statefulDriveWithTwoRootPages(200);
+		$this->configStore['importing_onedrive'] = '1';
+		$this->config->method('getAppValue')->willReturnCallback(
+			static fn (string $app, string $key, string $default = '') => $key === 'import_batch_size' ? '100' : $default
+		);
+
+		// the job runs once per cron round and hands its progress over through the config
+		for ($round = 1; $round <= 6; $round++) {
+			$this->service->importOnedriveJob('user1');
+			if (($this->configStore['importing_onedrive'] ?? '0') === '0') {
+				break;
+			}
+		}
+
+		$this->assertSame('0', $this->configStore['importing_onedrive'], 'the import finished');
+		$this->assertSame(
+			['second-page-1.jpg', 'second-page-2.jpg', 'nested.jpg'],
+			$this->downloadedFiles,
+			'every file of the drive was imported'
+		);
+		$this->assertArrayNotHasKey('import_tree', $this->configStore);
 	}
 }

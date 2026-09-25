@@ -27,6 +27,12 @@ class Application extends App implements IBootstrap {
 	public const APP_ID = 'integration_onedrive';
 	public const IMPORT_JOB_TIMEOUT = 3600;
 
+	/**
+	 * How much a single run of the import job downloads before it stops and lets the next
+	 * one continue, in bytes. Overridable with the import_batch_size app setting.
+	 */
+	public const IMPORT_BATCH_SIZE = 500000000;
+
 	public function __construct(array $urlParams = []) {
 		parent::__construct(self::APP_ID, $urlParams);
 	}

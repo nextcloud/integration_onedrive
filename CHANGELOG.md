@@ -13,6 +13,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ### Added
 
 - Added support for Nextcloud 36
+- Added the import_batch_size app setting, how much a single run of the import job downloads before it lets the next one continue
 
 ### Fixed
 
@@ -25,6 +26,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 - Count imported empty files as imported
 - Report the number of files the current import brought, a counter left over from an interrupted import is no longer added to it
 - Say in the log which file of an import could not be looked up in the target folder
+- Come back to the folder listing page an import stopped in, the files behind it were left out and the import still reported itself as finished
+- Stop counting the files an import downloaded itself among the files that were already there
+- Try a folder whose listing failed again in a later batch instead of leaving it out of the import
+- List a folder again from its first page when the page an import stopped in cannot be listed any more
 - Test the import against a stubbed Graph API, including failed downloads, empty files and paging
 
 ## [3.5.2] - 2026-07-28
