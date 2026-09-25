@@ -40,6 +40,12 @@ use Throwable;
 
 class OnedriveStorageAPIService {
 
+	/** A directory of the import tree that has not been listed at all yet. */
+	private const DIR_NOT_STARTED = 'todo';
+
+	/** A directory whose first listing page a batch has begun but not finished. */
+	private const DIR_STARTED = 'started';
+
 	private const FILE_DOWNLOADED = 'downloaded';
 	private const FILE_ALREADY_THERE = 'already there';
 	private const FILE_FAILED = 'failed';
@@ -282,11 +288,19 @@ class OnedriveStorageAPIService {
 				);
 			} else {
 				foreach ($importTree as $path => $state) {
-					if ($state === 'todo') {
-						$downloadResult = $this->downloadDir(
-							$userId, $topFolder, $maxDownloadSize, 0, 0, 0, (string)$path, $alreadyImportedSize, $alreadyImportedNumber, $importTree
-						);
+					if (!isset($importTree[$path])) {
+						// a directory this batch already finished on its way through a parent
+						continue;
 					}
+					// an unfinished directory is remembered as not started at all, as begun
+					// on its first page, or with the listing page the last batch stopped in
+					$startedBefore = $state !== self::DIR_NOT_STARTED;
+					$resumeToken = (!$startedBefore || $state === self::DIR_STARTED || !is_string($state) || $state === '')
+						? null
+						: $state;
+					$downloadResult = $this->downloadDir(
+						$userId, $topFolder, $maxDownloadSize, 0, 0, 0, (string)$path, $alreadyImportedSize, $alreadyImportedNumber, $importTree, $resumeToken, $startedBefore
+					);
 				}
 			}
 		} catch (MaxDownloadSizeReachedException $e) {
@@ -314,6 +328,8 @@ class OnedriveStorageAPIService {
 		float $alreadyImportedSize,
 		int $alreadyImportedNumber,
 		array &$importTree,
+		?string $resumeToken = null,
+		bool $resuming = false,
 	): array {
 		$newDownloadedSize = (float)$downloadedSize;
 		$newTotalSeenNumber = $totalSeenNumber;
@@ -335,9 +351,40 @@ class OnedriveStorageAPIService {
 		/** @var string[] $subDirs */
 		$subDirs = [];
 		$params = [];
+		if ($resumeToken !== null) {
+			$params['$skiptoken'] = $resumeToken;
+		}
+		// Remember this directory as unfinished for as long as its listing is not
+		// exhausted. A batch that stops in the middle of it, because it reached its
+		// download size, has to come back to it, and to the page it stopped in.
+		$importTree[$path] = $resumeToken ?? self::DIR_NOT_STARTED;
+		$listingStartedOver = false;
+		// the files of a page an earlier batch had already started are not files that
+		// were "already there": this import downloaded them itself
+		$walkingThePageAgain = $resuming;
 		do {
 			$result = $this->onedriveApiService->request($userId, $endPoint, $params);
 			if (isset($result['error']) || !isset($result['value']) || !is_array($result['value'])) {
+				if (isset($params['$skiptoken']) && !$listingStartedOver) {
+					// the page cannot be listed any more, its token may simply have expired:
+					// start the directory over once, the files it already brought are skipped
+					// as existing ones
+					$this->logger->info(
+						'OneDrive could not list a page of ' . ($path === '' ? 'the import folder' : $path) . ', starting the folder over',
+						['app' => Application::APP_ID]
+					);
+					$listingStartedOver = true;
+					unset($params['$skiptoken']);
+					$importTree[$path] = self::DIR_NOT_STARTED;
+					$subDirs = [];
+					continue;
+				}
+				// the directory stays in the tree: a later batch tries it again, and an
+				// import that ends before that at least says in the log what it missed
+				$this->logger->warning(
+					'OneDrive error listing ' . ($path === '' ? 'the import folder' : $path) . ': ' . ($result['error'] ?? 'no file list in the answer'),
+					['app' => Application::APP_ID]
+				);
 				return [
 					'downloadedSize' => $newDownloadedSize,
 					'totalSeenNumber' => $newTotalSeenNumber,
@@ -346,6 +393,11 @@ class OnedriveStorageAPIService {
 			}
 
 			$pageSkipped = 0;
+			if (!isset($params['$skiptoken'])) {
+				// the first page has begun: a batch that stops inside it has to come back
+				// to it, and must not count its files as files that were already there
+				$importTree[$path] = self::DIR_STARTED;
+			}
 			/** @var OneDriveItem $item */
 			foreach ($result['value'] as $item) {
 				if (isset($item['file'])) {
@@ -380,19 +432,16 @@ class OnedriveStorageAPIService {
 					$subDirs[] = $item['name'];
 					// mark for progress tracking
 					$subPath = ltrim($path . '/' . $item['name']);
-					$importTree[$subPath] = 'todo';
+					$importTree[$subPath] = self::DIR_NOT_STARTED;
 				}
 			}
-			if ($pageSkipped > 0) {
+			if ($pageSkipped > 0 && !$walkingThePageAgain) {
 				// one write per listing page, skipped files are frequent on re-imports
 				$nbSkipped = (int)$this->config->getUserValue($userId, Application::APP_ID, 'nb_skipped_files', '0');
 				$this->config->setUserValue($userId, Application::APP_ID, 'nb_skipped_files', (string)($nbSkipped + $pageSkipped));
 			}
-
-			// if this directory was marked unfinished, remove it now
-			if (isset($importTree[$path])) {
-				unset($importTree[$path]);
-			}
+			// only the first page of a resumed directory is one an earlier batch had started
+			$walkingThePageAgain = false;
 
 			// prepare next page if any
 			if (isset($result['@odata.nextLink'])
@@ -400,7 +449,11 @@ class OnedriveStorageAPIService {
 				&& preg_match('/\$skiptoken=/i', $result['@odata.nextLink'])
 			) {
 				$params['$skiptoken'] = preg_replace('/.*\$skiptoken=/', '', $result['@odata.nextLink']);
+				// come back to this page, not to the first one, if the import stops here
+				$importTree[$path] = $params['$skiptoken'];
 			} else {
+				// the whole directory has been listed
+				unset($importTree[$path]);
 				break;
 			}
 		} while (true);
