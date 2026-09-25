@@ -140,6 +140,7 @@ class OnedriveStorageAPIService {
 		}
 		$this->config->setUserValue($userId, Application::APP_ID, 'importing_onedrive', '1');
 		$this->config->setUserValue($userId, Application::APP_ID, 'imported_size', '0');
+		$this->config->setUserValue($userId, Application::APP_ID, 'nb_imported_files', '0');
 		$this->config->setUserValue($userId, Application::APP_ID, 'nb_failed_files', '0');
 		$this->config->setUserValue($userId, Application::APP_ID, 'nb_skipped_files', '0');
 		$this->config->setUserValue($userId, Application::APP_ID, 'last_onedrive_import_timestamp', '0');
@@ -470,6 +471,9 @@ class OnedriveStorageAPIService {
 		try {
 			$fileExists = $folder->nodeExists($fileName);
 		} catch (ForbiddenException $e) {
+			// it is counted as a failed file below, so say why: the notification that
+			// reports it points at the log
+			$this->logger->warning('OneDrive cannot check whether file ' . $fileName . ' is already there: ' . $e->getMessage(), ['app' => Application::APP_ID]);
 			return ['status' => self::FILE_FAILED, 'size' => 0.0];
 		}
 		if ($fileExists) {
