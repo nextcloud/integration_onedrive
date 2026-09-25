@@ -93,26 +93,33 @@ jobs:
           php occ integration_onedrive:setup-user admin "$(jq -r '.user_name' config.json)" "$(jq -r '.refresh_token' config.json)" "$(jq -r '.access_token' config.json)"
           rm -f config.json
           php occ integration_onedrive:start-import admin
+          # The drive behind the secrets holds more than 500 MB, so a full import takes several
+          # batches of minutes each. Import until a few files have arrived, then stop: the import
+          # stays in progress, which the second run below takes into account.
+          max_imported=0
           for run in {1..9}; do
             date
-            echo "run $run starting"
+            echo "round $run starting"
             timeout 40 php cron.php || true
-            echo "run $run done"
-            nb=$(php occ user:setting admin integration_onedrive nb_imported_files 2>/dev/null | tail -1 || echo "0")
-            echo "imported files so far: $nb"
-            if [ "$nb" -gt "2" ] 2>/dev/null; then
+            imported=$(php occ user:setting admin integration_onedrive nb_imported_files 2>/dev/null | tail -1 || echo "0")
+            skipped=$(php occ user:setting admin integration_onedrive nb_skipped_files 2>/dev/null | tail -1 || echo "0")
+            failed=$(php occ user:setting admin integration_onedrive nb_failed_files 2>/dev/null | tail -1 || echo "0")
+            echo "round $run: imported=$imported skipped=$skipped failed=$failed"
+            if [ "$imported" -gt "$max_imported" ] 2>/dev/null; then max_imported=$imported; fi
+            if [ "$imported" -gt "2" ] 2>/dev/null; then
               echo "Files imported successfully, stopping early"
               break
             fi
           done
           date
+          echo "MAX_IMPORTED=$max_imported" >> "$GITHUB_ENV"
 
       - name: Check import result
         if: always()
         working-directory: server/
         run: |
           echo "=== Import status ==="
-          for key in nb_imported_files imported_size importing_onedrive onedrive_import_running last_onedrive_import_timestamp; do
+          for key in nb_imported_files nb_skipped_files nb_failed_files failed_files imported_size importing_onedrive onedrive_import_running last_onedrive_import_timestamp; do
             val=$(php occ user:setting admin integration_onedrive "$key" 2>/dev/null | tail -1 || echo "n/a")
             echo "  $key: $val"
           done
@@ -124,11 +131,15 @@ jobs:
       - name: Verify import
         working-directory: server/
         run: |
-          nb=$(php occ user:setting admin integration_onedrive nb_imported_files 2>/dev/null | tail -1 || echo "0")
-          if [ "$nb" -gt "2" ] 2>/dev/null; then
-            echo "Import verification passed: $nb files imported"
+          if [ "${MAX_IMPORTED:-0}" -gt "2" ] 2>/dev/null; then
+            echo "Import verification passed: $MAX_IMPORTED files imported"
           else
             echo "Import verification failed: no files were imported"
+            exit 1
+          fi
+          failed=$(php occ user:setting admin integration_onedrive nb_failed_files 2>/dev/null | tail -1 || echo "0")
+          if [ "$failed" != "0" ]; then
+            echo "The import reported $failed failed download(s) against a healthy drive"
             exit 1
           fi
 
@@ -137,3 +148,205 @@ jobs:
         if: always()
         run: |
           tail -100 data/nextcloud.log | sed 's/"access_token":"[^"]*"/"access_token":"***"/g; s/"refresh_token":"[^"]*"/"refresh_token":"***"/g'
+
+  stub-integration:
+    runs-on: ubuntu-latest
+
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - php-versions: '8.2'
+            server-versions: 'stable33'
+          - php-versions: '8.3'
+            server-versions: 'master'
+
+    name: Import against a stubbed Graph API
+
+    steps:
+      - name: Checkout nextcloud
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          path: server
+          repository: nextcloud/server
+          ref: ${{ matrix.server-versions }}
+          persist-credentials: false
+
+      - name: Set up php
+        uses: shivammathur/setup-php@f3e473d116dcccaddc5834248c87452386958240 # v2
+        with:
+          php-version: ${{ matrix.php-versions }}
+          coverage: none
+          ini-file: development
+          extensions: bz2, ctype, curl, dom, fileinfo, gd, iconv, intl, json, libxml, mbstring, openssl, pcntl, posix, session, simplexml, xmlreader, xmlwriter, zip, zlib, sqlite, pdo_sqlite
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Install nextcloud
+        working-directory: server/
+        run: |
+          git submodule update --init
+          php occ maintenance:install --verbose --admin-user admin --admin-pass admin
+
+      - name: Checkout app
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          path: server/apps/${{ env.APP_NAME }}
+          persist-credentials: false
+
+      - name: Checkout the notifications app
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          path: server/apps/notifications
+          repository: nextcloud/notifications
+          ref: ${{ matrix.server-versions }}
+          persist-credentials: false
+
+      - name: Install dependencies
+        run: |
+          composer i --working-dir=server/apps/${{ env.APP_NAME }}
+          composer i --no-dev --working-dir=server/apps/notifications
+
+      - name: Install apps
+        working-directory: server/
+        run: |
+          php occ app:enable notifications
+          php occ app:enable ${{ env.APP_NAME }} -vvv
+          # the HTTP client refuses to talk to a local address unless this is allowed
+          php occ config:system:set allow_local_remote_servers --value true --type boolean
+
+      - name: Start the Graph stub
+        working-directory: server/
+        run: |
+          php -S 127.0.0.1:8099 apps/${{ env.APP_NAME }}/tests/integration/graph-stub.php > stub.log 2>&1 &
+          for _ in $(seq 1 20); do
+            curl -fs -H 'Authorization: bearer test' http://127.0.0.1:8099/v1.0/me/drive >/dev/null && break
+            sleep 0.5
+          done
+          curl -fs -H 'Authorization: bearer test' http://127.0.0.1:8099/v1.0/me/drive
+          echo
+          # a request without an access token has to be refused, otherwise the test could pass
+          # while the app stopped sending the token
+          test "$(curl -s -o /dev/null -w '%{http_code}' http://127.0.0.1:8099/v1.0/me/drive)" = "401"
+
+      - name: Run Nextcloud
+        working-directory: server/
+        run: php -S localhost:8080 &
+
+      - name: Point the app at the stub
+        working-directory: server/
+        run: |
+          php occ ${{ env.APP_NAME }}:setup stub-client stub-secret
+          php occ ${{ env.APP_NAME }}:setup-user admin stub-user stub-refresh-token stub-access-token
+          # setup-user expires the token on purpose so that it gets refreshed; the stub has no token
+          # endpoint, so keep the one it stored valid
+          php occ user:setting admin ${{ env.APP_NAME }} token_expires_at "$(( $(date +%s) + 86400 ))"
+          php occ config:app:set ${{ env.APP_NAME }} api_base_url --value http://127.0.0.1:8099/v1.0/
+
+      - name: Put one of the files in the target folder beforehand
+        working-directory: server/
+        run: |
+          mkdir -p "data/admin/files/OneDrive import"
+          printf 'already there' > "data/admin/files/OneDrive import/already.txt"
+          php occ files:scan admin -q
+
+      - name: Import
+        working-directory: server/
+        run: |
+          php occ ${{ env.APP_NAME }}:start-import admin
+          importing=1
+          for run in {1..4}; do
+            php cron.php
+            importing=$(php occ user:setting admin ${{ env.APP_NAME }} importing_onedrive 2>/dev/null | tail -1 || echo "1")
+            echo "round $run: importing=$importing"
+            if [ "$importing" = "0" ]; then break; fi
+          done
+          if [ "$importing" != "0" ]; then
+            echo "The import did not finish"
+            exit 1
+          fi
+
+      - name: Verify the imported files
+        working-directory: server/
+        run: |
+          target="data/admin/files/OneDrive import"
+          find "$target" -type f -printf '%P %s bytes\n' | sort
+          fail=0
+          check() { # path, expected size
+            if [ ! -f "$target/$1" ]; then echo "missing: $1"; fail=1; return; fi
+            size=$(stat -c%s "$target/$1")
+            if [ "$size" != "$2" ]; then echo "$1 has $size bytes, expected $2"; fail=1; fi
+          }
+          check normal.txt 12
+          check empty.txt 0
+          check flaky.txt 9
+          check sub/nested.txt 11
+          check already.txt 13
+          if [ -f "$target/broken.txt" ]; then
+            echo "broken.txt should not have been created, its download failed twice"
+            fail=1
+          fi
+          exit $fail
+
+      - name: Verify what the app asked the stub for
+        working-directory: server/
+        run: |
+          grep -oE 'stub (GET|POST) [^ ]+ -> [0-9]+' stub.log | sort | uniq -c
+          fail=0
+          expect() { # pattern, what it proves
+            if ! grep -q "$1" stub.log; then echo "missing request ($2): $1"; fail=1; fi
+          }
+          expect 'skiptoken=page2' 'the second listing page was fetched'
+          expect '/v1.0/me/drive/items/f3 -> 200' 'a fresh download URL was fetched after a failure'
+          expect '/download/f3?source=fresh -> 200' 'the retry used the fresh URL'
+          expect '/download/f4?source=fresh -> 403' 'the second attempt failed as well'
+          expect '/v1.0/me/drive/root:%2Fsub:/children -> 200' 'the subfolder was listed'
+          if grep -q '/download/f5' stub.log; then
+            echo "already.txt was downloaded although it was there, it should have been skipped"
+            fail=1
+          fi
+          exit $fail
+
+      - name: Verify the notification and the counters
+        working-directory: server/
+        run: |
+          notification=$(curl -s -u admin:admin -H 'OCS-APIRequest: true' -H 'Accept: application/json' \
+            'http://localhost:8080/ocs/v2.php/apps/notifications/api/v2/notifications')
+          subject=$(php -r 'foreach (json_decode(stream_get_contents(STDIN), true)["ocs"]["data"] as $n) { if (($n["app"] ?? "") === "integration_onedrive") { echo $n["subject"]; break; } }' <<< "$notification")
+          message=$(php -r 'foreach (json_decode(stream_get_contents(STDIN), true)["ocs"]["data"] as $n) { if (($n["app"] ?? "") === "integration_onedrive") { echo $n["message"] ?? ""; break; } }' <<< "$notification")
+          echo "subject: $subject"
+          echo "message: $message"
+          expected_subject='4 files were imported from OneDrive storage. 1 file was already there. 1 file could not be downloaded, check the server logs for details.'
+          expected_message='Could not download: broken.txt'
+          fail=0
+          if [ "$subject" != "$expected_subject" ]; then
+            echo "expected subject: $expected_subject"
+            fail=1
+          fi
+          if [ "$message" != "$expected_message" ]; then
+            echo "expected message: $expected_message"
+            fail=1
+          fi
+          # the counters are reported in the notification and reset afterwards
+          for key in nb_imported_files nb_skipped_files nb_failed_files; do
+            val=$(php occ user:setting admin ${{ env.APP_NAME }} "$key" 2>/dev/null | tail -1 || echo "n/a")
+            if [ "$val" != "0" ]; then
+              echo "$key should be 0 after the import finished, it is '$val'"
+              fail=1
+            fi
+          done
+          # the failed download is in the log for the admin to look up
+          if ! grep -q 'broken.txt' data/nextcloud.log; then
+            echo "the log does not mention the file that could not be downloaded"
+            fail=1
+          fi
+          exit $fail
+
+      - name: Show the logs on failure
+        working-directory: server/
+        if: failure()
+        run: |
+          echo "=== stub ==="
+          tail -60 stub.log || true
+          echo "=== nextcloud ==="
+          tail -60 data/nextcloud.log || true
