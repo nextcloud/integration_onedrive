@@ -13,6 +13,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ### Added
 
 - Added support for Nextcloud 36
+- Added the import_batch_size app setting, how much a single run of the import job downloads before it lets the next one continue
 
 ### Fixed
 

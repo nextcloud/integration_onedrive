@@ -205,11 +205,15 @@ class OnedriveStorageAPIService {
 		$importTreeStr = $this->config->getUserValue($userId, Application::APP_ID, 'import_tree', '[]');
 		/** @var array $importTree */
 		$importTree = ($importTreeStr === '[]' || $importTreeStr === '') ? [] : json_decode($importTreeStr, true);
-		// import by batch of 500 MB
+		// import by batches, 500 MB each unless the admin asked for another size
+		$batchSize = (int)$this->config->getAppValue(Application::APP_ID, 'import_batch_size', (string)Application::IMPORT_BATCH_SIZE);
+		if ($batchSize <= 0) {
+			$batchSize = Application::IMPORT_BATCH_SIZE;
+		}
 		$alreadyImportedSize = (float)$this->config->getUserValue($userId, Application::APP_ID, 'imported_size', '0');
 		$alreadyImportedNumber = (int)$this->config->getUserValue($userId, Application::APP_ID, 'nb_imported_files', '0');
 		try {
-			$result = $this->importFiles($userId, $targetPath, 500000000, $alreadyImportedSize, $alreadyImportedNumber, $importTree);
+			$result = $this->importFiles($userId, $targetPath, $batchSize, $alreadyImportedSize, $alreadyImportedNumber, $importTree);
 		} catch (Exception|Throwable $e) {
 			$result = [
 				'error' => 'Unknow job failure. ' . $e->getMessage(),

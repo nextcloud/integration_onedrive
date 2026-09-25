@@ -646,4 +646,81 @@ class OnedriveStorageAPIServiceTest extends TestCase {
 		$this->assertSame([], $importTree);
 	}
 
+	public function testTheBatchSizeCanBeConfigured(): void {
+		$this->useStatefulConfig(['importing_onedrive' => '1']);
+		$this->config->method('getAppValue')->willReturnCallback(
+			static fn (string $app, string $key, string $default = '') => $key === 'import_batch_size' ? '100' : $default
+		);
+		// two files of 200 bytes, so a 100 byte batch stops after the first one
+		$this->apiService->method('request')->willReturnCallback(
+			static function (string $userId, string $endPoint) {
+				if ($endPoint === 'me/drive') {
+					return ['quota' => ['used' => 1000]];
+				}
+				if ($endPoint === 'me/drive/root/children') {
+					return ['value' => array_map(static fn (string $name) => [
+						'name' => $name,
+						'id' => 'id-' . $name,
+						'file' => [],
+						'@microsoft.graph.downloadUrl' => 'https://dl.example.org/' . $name,
+					], ['a.jpg', 'b.jpg'])];
+				}
+				return ['lastModifiedDateTime' => '2026-09-01T10:00:00Z'];
+			}
+		);
+		$this->apiService->method('fileRequest')->willReturnCallback(
+			function (string $url) {
+				$this->downloadedFiles[] = basename($url);
+				return ['success' => true];
+			}
+		);
+		$dirFolder = $this->createMock(Folder::class);
+		$dirFolder->method('nodeExists')->willReturn(false);
+		$dirFolder->method('newFile')->willReturnCallback(function () {
+			$file = $this->createMock(File::class);
+			$file->method('fopen')->willReturnCallback(static fn () => fopen('php://temp', 'w+'));
+			$file->method('stat')->willReturn(['size' => 200]);
+			return $file;
+		});
+		$topFolder = $this->createMock(Folder::class);
+		$topFolder->method('isShared')->willReturn(false);
+		$topFolder->method('nodeExists')->willReturn(true);
+		$topFolder->method('get')->willReturn($dirFolder);
+		$userFolder = $this->createUserFolderMock();
+		$userFolder->method('nodeExists')->willReturn(true);
+		$userFolder->method('get')->willReturn($topFolder);
+		$this->rootFolder->method('getUserFolder')->willReturn($userFolder);
+		// the job queues itself again to continue with the next batch
+		$this->jobList->expects($this->once())->method('add');
+
+		$this->service->importOnedriveJob('user1');
+
+		$this->assertSame(['a.jpg'], $this->downloadedFiles, 'the batch stopped after the first file');
+		$this->assertSame('1', $this->configStore['importing_onedrive'], 'the import is not finished');
+		$this->assertArrayHasKey('import_tree', $this->configStore);
+	}
+
+	public function testTheImportIsResumedFromWhatTheBatchWroteToTheConfig(): void {
+		$this->statefulDriveWithTwoRootPages(200);
+		$this->configStore['importing_onedrive'] = '1';
+		$this->config->method('getAppValue')->willReturnCallback(
+			static fn (string $app, string $key, string $default = '') => $key === 'import_batch_size' ? '100' : $default
+		);
+
+		// the job runs once per cron round and hands its progress over through the config
+		for ($round = 1; $round <= 6; $round++) {
+			$this->service->importOnedriveJob('user1');
+			if (($this->configStore['importing_onedrive'] ?? '0') === '0') {
+				break;
+			}
+		}
+
+		$this->assertSame('0', $this->configStore['importing_onedrive'], 'the import finished');
+		$this->assertSame(
+			['second-page-1.jpg', 'second-page-2.jpg', 'nested.jpg'],
+			$this->downloadedFiles,
+			'every file of the drive was imported'
+		);
+		$this->assertArrayNotHasKey('import_tree', $this->configStore);
+	}
 }
