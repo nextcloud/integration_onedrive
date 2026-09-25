@@ -8,6 +8,7 @@
 namespace OCA\Onedrive\Notification;
 
 use OCA\Onedrive\AppInfo\Application;
+use OCP\IL10N;
 use OCP\IURLGenerator;
 use OCP\IUserManager;
 use OCP\L10N\IFactory;
@@ -66,6 +67,28 @@ class Notifier implements INotifier {
 	}
 
 	/**
+	 * The sentences an import adds about the files it did not bring, if there were any.
+	 */
+	private function whatElseHappened(IL10N $l, int $nbSkipped, int $nbFailed): string {
+		$content = '';
+		if ($nbSkipped > 0) {
+			$content .= ' ' . $l->n(
+				'%n file was already there.',
+				'%n files were already there.',
+				$nbSkipped
+			);
+		}
+		if ($nbFailed > 0) {
+			$content .= ' ' . $l->n(
+				'%n file could not be downloaded, check the server logs for details.',
+				'%n files could not be downloaded, check the server logs for details.',
+				$nbFailed
+			);
+		}
+		return $content;
+	}
+
+	/**
 	 * @param INotification $notification
 	 * @param string $languageCode The code of the language that should be used to prepare the notification
 	 * @return INotification
@@ -89,21 +112,8 @@ class Notifier implements INotifier {
 				$nbSkipped = (int)($p['nbSkipped'] ?? 0);
 				$failedFiles = is_array($p['failedFiles'] ?? null) ? $p['failedFiles'] : [];
 				$targetPath = $p['targetPath'];
-				$content = $l->n('%n file was imported from OneDrive storage.', '%n files were imported from OneDrive storage.', $nbImported);
-				if ($nbSkipped > 0) {
-					$content .= ' ' . $l->n(
-						'%n file was already there.',
-						'%n files were already there.',
-						$nbSkipped
-					);
-				}
-				if ($nbFailed > 0) {
-					$content .= ' ' . $l->n(
-						'%n file could not be downloaded, check the server logs for details.',
-						'%n files could not be downloaded, check the server logs for details.',
-						$nbFailed
-					);
-				}
+				$content = $l->n('%n file was imported from OneDrive storage.', '%n files were imported from OneDrive storage.', $nbImported)
+					. $this->whatElseHappened($l, $nbSkipped, $nbFailed);
 
 				if ($failedFiles !== []) {
 					$names = implode(', ', $failedFiles);
@@ -115,6 +125,22 @@ class Notifier implements INotifier {
 					);
 				}
 				$notification->setParsedSubject($content)
+					->setIcon($this->url->getAbsoluteURL($this->url->imagePath(Application::APP_ID, 'app-dark.svg')))
+					->setLink($this->url->linkToRouteAbsolute('files.view.index', ['dir' => $targetPath]));
+				return $notification;
+			case 'import_onedrive_stopped':
+				/** @var array{nbImported?: string, nbFailed?: string, nbSkipped?: string, targetPath: string} $p */
+				$p = $notification->getSubjectParameters();
+				$nbImported = (int)($p['nbImported'] ?? 0);
+				$nbFailed = (int)($p['nbFailed'] ?? 0);
+				$nbSkipped = (int)($p['nbSkipped'] ?? 0);
+				$targetPath = $p['targetPath'];
+				$notification
+					->setParsedSubject($l->t('The import of your OneDrive files stopped before it was finished, check the server logs for details.'))
+					->setParsedMessage(
+						$l->n('%n file was imported from OneDrive storage.', '%n files were imported from OneDrive storage.', $nbImported)
+						. $this->whatElseHappened($l, $nbSkipped, $nbFailed)
+					)
 					->setIcon($this->url->getAbsoluteURL($this->url->imagePath(Application::APP_ID, 'app-dark.svg')))
 					->setLink($this->url->linkToRouteAbsolute('files.view.index', ['dir' => $targetPath]));
 				return $notification;

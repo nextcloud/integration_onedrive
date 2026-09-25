@@ -30,6 +30,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 - Stop counting the files an import downloaded itself among the files that were already there
 - Try a folder whose listing failed again in a later batch instead of leaving it out of the import
 - List a folder again from its first page when the page an import stopped in cannot be listed any more
+- Tell the user when an import stops before it has seen the whole drive, it used to end in silence, and write the reason to the log
+- Say nothing about an import the user cancelled while it was running, it used to report itself as finished
 - Test the import against a stubbed Graph API, including failed downloads, empty files and paging
 
 ## [3.5.2] - 2026-07-28

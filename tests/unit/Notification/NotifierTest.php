@@ -141,4 +141,23 @@ class NotifierTest extends TestCase {
 		$this->expectException(UnknownNotificationException::class);
 		$this->notifier->prepare($notification, 'en');
 	}
+
+	public function testStoppedImportSaysWhatItGotDone(): void {
+		$this->prepare(
+			['nbImported' => 12, 'nbFailed' => 0, 'nbSkipped' => 0, 'targetPath' => '/OneDrive import'],
+			'The import of your OneDrive files stopped before it was finished, check the server logs for details.',
+			'12 files were imported from OneDrive storage.',
+			'import_onedrive_stopped'
+		);
+	}
+
+	public function testStoppedImportCountsWhatItSkippedAndCouldNotDownload(): void {
+		$this->prepare(
+			['nbImported' => 1, 'nbFailed' => 2, 'nbSkipped' => 3, 'targetPath' => '/OneDrive import'],
+			'The import of your OneDrive files stopped before it was finished, check the server logs for details.',
+			'1 file was imported from OneDrive storage. 3 files were already there.'
+			. ' 2 files could not be downloaded, check the server logs for details.',
+			'import_onedrive_stopped'
+		);
+	}
 }
