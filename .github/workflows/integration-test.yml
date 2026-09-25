@@ -342,6 +342,86 @@ jobs:
           fi
           exit $fail
 
+      - name: Import again in batches that end in the middle of a listing page
+        working-directory: server/
+        run: |
+          # 20 bytes runs out on the first file of the second listing page, so the import
+          # has to come back to that page in a later batch
+          php occ config:app:set ${{ env.APP_NAME }} import_batch_size --value 20
+          php occ user:setting admin ${{ env.APP_NAME }} onedrive_output_dir "/OneDrive resume"
+          # drop the notification of the first import, the one checked below has to be the
+          # one this import sends
+          curl -s -X DELETE -u admin:admin -H 'OCS-APIRequest: true' \
+            'http://localhost:8080/ocs/v2.php/apps/notifications/api/v2/notifications' >/dev/null
+          mkdir -p "data/admin/files/OneDrive resume"
+          printf 'already there' > "data/admin/files/OneDrive resume/already.txt"
+          php occ files:scan admin -q
+          echo "STUB_LOG_LINES=$(wc -l < stub.log)" >> "$GITHUB_ENV"
+          php occ ${{ env.APP_NAME }}:start-import admin
+          importing=1
+          for run in {1..8}; do
+            php cron.php
+            importing=$(php occ user:setting admin ${{ env.APP_NAME }} importing_onedrive 2>/dev/null | tail -1 || echo "1")
+            imported=$(php occ user:setting admin ${{ env.APP_NAME }} nb_imported_files 2>/dev/null | tail -1 || echo "?")
+            echo "batch $run: importing=$importing imported=$imported"
+            if [ "$importing" = "0" ]; then break; fi
+          done
+          if [ "$importing" != "0" ]; then
+            echo "The import did not finish"
+            exit 1
+          fi
+
+      - name: Verify the import came back for the page it stopped in
+        working-directory: server/
+        run: |
+          tail -n +$((STUB_LOG_LINES + 1)) stub.log > resume.log
+          grep -oE 'stub (GET|POST) [^ ]+ -> [0-9]+' resume.log | sort | uniq -c
+          fail=0
+          pages=$(grep -c 'skiptoken=page2' resume.log || true)
+          if [ "$pages" -lt 2 ]; then
+            echo "the second listing page was fetched $pages time(s), the import never came back to it"
+            fail=1
+          fi
+          # coming back to the page is the point: walking the whole folder again would
+          # fetch the first page a second time as well, and would pass the check above
+          first=$(grep -cE 'root/children -> 200' resume.log || true)
+          if [ "$first" != "1" ]; then
+            echo "the first listing page was fetched $first time(s), the import started the folder over"
+            fail=1
+          fi
+          target="data/admin/files/OneDrive resume"
+          find "$target" -type f -printf '%P %s bytes\n' | sort
+          check() { # path, expected size
+            if [ ! -f "$target/$1" ]; then echo "missing: $1"; fail=1; return; fi
+            size=$(stat -c%s "$target/$1")
+            if [ "$size" != "$2" ]; then echo "$1 has $size bytes, expected $2"; fail=1; fi
+          }
+          check normal.txt 12
+          check empty.txt 0
+          check flaky.txt 9
+          check sub/nested.txt 11
+          if [ -f "$target/broken.txt" ]; then
+            echo "broken.txt should not have been created, its download failed twice"
+            fail=1
+          fi
+          # flaky.txt was brought by the first batch and sits in the page the second batch
+          # walked again: it must not be reported among the files that were already there,
+          # and already.txt shares that page, so no file is
+          notification=$(curl -s -u admin:admin -H 'OCS-APIRequest: true' -H 'Accept: application/json' \
+            'http://localhost:8080/ocs/v2.php/apps/notifications/api/v2/notifications')
+          expected='4 files were imported from OneDrive storage. 1 file could not be downloaded, check the server logs for details.'
+          subjects=$(php -r 'foreach (json_decode(stream_get_contents(STDIN), true)["ocs"]["data"] as $n) { if (($n["app"] ?? "") === "integration_onedrive") { echo $n["subject"], "\n"; } }' <<< "$notification")
+          echo "$subjects"
+          if [ "$(printf '%s\n' "$subjects" | grep -c .)" != "1" ]; then
+            echo "expected exactly one notification of this import"
+            fail=1
+          fi
+          if [ "$subjects" != "$expected" ]; then
+            echo "expected: $expected"
+            fail=1
+          fi
+          exit $fail
+
       - name: Show the logs on failure
         working-directory: server/
         if: failure()
