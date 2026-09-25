@@ -11,8 +11,8 @@
 		</h2>
 		<div class="header">
 			<NcFormBoxSwitch
-				:model-value="state.navigation_enabled"
-				@update:model-value="onNavigationChange">
+				:modelValue="state.navigation_enabled"
+				@update:modelValue="onNavigationChange">
 				{{ t('integration_onedrive', 'Enable navigation link') }}
 			</NcFormBoxSwitch>
 			<br>
@@ -120,7 +120,8 @@
 							{{ getCalendarLabel(cal) }}
 						</label>
 						<NcButton
-							:class="{ loading: importingCalendar[cal.id], 'import-calendar-button': true }"
+							class="import-calendar-button"
+							:class="{ loading: importingCalendar[cal.id] }"
 							@click="onCalendarImport(cal)">
 							<template #icon>
 								<CalendarBlankIcon :size="20" />
@@ -136,26 +137,23 @@
 </template>
 
 <script>
-import CloseIcon from 'vue-material-design-icons/Close.vue'
-import CheckIcon from 'vue-material-design-icons/Check.vue'
-import LoginVariantIcon from 'vue-material-design-icons/LoginVariant.vue'
-import PencilIcon from 'vue-material-design-icons/Pencil.vue'
-import FolderOutlineIcon from 'vue-material-design-icons/FolderOutline.vue'
-import CalendarBlankIcon from 'vue-material-design-icons/CalendarBlank.vue'
-import AccountMultipleOutlineIcon from 'vue-material-design-icons/AccountMultipleOutline.vue'
-
-import OnedriveIcon from './icons/OnedriveIcon.vue'
-
-import NcButton from '@nextcloud/vue/components/NcButton'
+import axios from '@nextcloud/axios'
+import { showError, showSuccess } from '@nextcloud/dialogs'
+import { loadState } from '@nextcloud/initial-state'
+import moment from '@nextcloud/moment'
+import { generateUrl } from '@nextcloud/router'
 import NcAppNavigationIconBullet from '@nextcloud/vue/components/NcAppNavigationIconBullet'
+import NcButton from '@nextcloud/vue/components/NcButton'
 import NcFormBoxSwitch from '@nextcloud/vue/components/NcFormBoxSwitch'
 import NcNoteCard from '@nextcloud/vue/components/NcNoteCard'
-
-import { loadState } from '@nextcloud/initial-state'
-import { generateUrl } from '@nextcloud/router'
-import axios from '@nextcloud/axios'
-import moment from '@nextcloud/moment'
-import { showSuccess, showError } from '@nextcloud/dialogs'
+import AccountMultipleOutlineIcon from 'vue-material-design-icons/AccountMultipleOutline.vue'
+import CalendarBlankIcon from 'vue-material-design-icons/CalendarBlank.vue'
+import CheckIcon from 'vue-material-design-icons/Check.vue'
+import CloseIcon from 'vue-material-design-icons/Close.vue'
+import FolderOutlineIcon from 'vue-material-design-icons/FolderOutline.vue'
+import LoginVariantIcon from 'vue-material-design-icons/LoginVariant.vue'
+import PencilIcon from 'vue-material-design-icons/Pencil.vue'
+import OnedriveIcon from './icons/OnedriveIcon.vue'
 import { humanFileSize } from '../utils.js'
 
 export default {
@@ -204,22 +202,27 @@ export default {
 		showOAuth() {
 			return this.state.client_id && this.state.client_secret
 		},
+
 		connected() {
 			return this.state.user_name && this.state.user_name !== ''
 		},
+
 		enoughSpaceForOnedrive() {
 			return this.storageSize === 0 || this.state.user_quota === 'none' || this.storageSize < this.state.free_space
 		},
+
 		jobRunningText() {
 			return this.jobRunning
 				? t('integration_onedrive', 'Import job is currently running')
 				: t('integration_onedrive', 'Import job is scheduled')
 		},
+
 		lastOnedriveImportDate() {
 			return this.lastOnedriveImportTimestamp !== 0
 				? t('integration_onedrive', 'Last Onedrive import job at {date}', { date: moment.unix(this.lastOnedriveImportTimestamp).format('LLL') })
 				: t('integration_onedrive', 'OneDrive import process will begin soon')
 		},
+
 		onedriveImportProgress() {
 			return this.storageSize > 0 && this.importedSize > 0
 				? parseInt(this.importedSize / this.storageSize * 100)
@@ -232,7 +235,7 @@ export default {
 
 	mounted() {
 		const paramString = window.location.search.substr(1)
-		// eslint-disable-next-line
+
 		const urlParams = new URLSearchParams(paramString)
 		const ghToken = urlParams.get('onedriveToken')
 		if (ghToken === 'success') {
@@ -253,14 +256,17 @@ export default {
 				this.getNbContacts()
 			}
 		},
+
 		onLogoutClick() {
 			this.state.user_name = ''
 			this.saveOptions({ user_name: this.state.user_name })
 		},
+
 		onNavigationChange(newValue) {
 			this.state.navigation_enabled = newValue
 			this.saveOptions({ navigation_enabled: this.state.navigation_enabled ? '1' : '0' })
 		},
+
 		saveOptions(values) {
 			const req = {
 				values,
@@ -274,14 +280,13 @@ export default {
 					}
 				})
 				.catch((error) => {
-					showError(
-						t('integration_onedrive', 'Failed to save OneDrive options')
-						+ ': ' + error.response?.request?.responseText,
-					)
+					showError(t('integration_onedrive', 'Failed to save OneDrive options')
+						+ ': ' + error.response?.request?.responseText)
 				})
 				.then(() => {
 				})
 		},
+
 		onOAuthClick() {
 			const scopes = [
 				'Files.Read',
@@ -305,7 +310,7 @@ export default {
 				},
 			}
 			const url = generateUrl('/apps/integration_onedrive/config')
-			axios.put(url, req).then((response) => {
+			axios.put(url, req).then(() => {
 				if (this.state.use_popup) {
 					const ssoWindow = window.open(
 						requestUrl,
@@ -322,12 +327,11 @@ export default {
 					window.location.replace(requestUrl)
 				}
 			}).catch((error) => {
-				showError(
-					t('integration_onedrive', 'Failed to save OneDrive OAuth state')
-					+ ': ' + error.response?.request?.responseText,
-				)
+				showError(t('integration_onedrive', 'Failed to save OneDrive OAuth state')
+					+ ': ' + error.response?.request?.responseText)
 			})
 		},
+
 		getStorageInfo() {
 			const url = generateUrl('/apps/integration_onedrive/storage-size')
 			axios.get(url)
@@ -337,14 +341,13 @@ export default {
 					}
 				})
 				.catch((error) => {
-					showError(
-						t('integration_onedrive', 'Failed to get OneDrive storage information')
-						+ ': ' + error.response?.request?.responseText,
-					)
+					showError(t('integration_onedrive', 'Failed to get OneDrive storage information')
+						+ ': ' + error.response?.request?.responseText)
 				})
 				.then(() => {
 				})
 		},
+
 		getOnedriveImportValues(launchLoop = false) {
 			const url = generateUrl('/apps/integration_onedrive/import-files-info')
 			axios.get(url)
@@ -369,6 +372,7 @@ export default {
 				.then(() => {
 				})
 		},
+
 		onImportOnedrive() {
 			const req = {
 				params: {
@@ -378,20 +382,17 @@ export default {
 			axios.get(url, req)
 				.then((response) => {
 					const targetPath = response.data.targetPath
-					showSuccess(
-						t('integration_onedrive', 'Starting importing files in {targetPath} directory', { targetPath }),
-					)
+					showSuccess(t('integration_onedrive', 'Starting importing files in {targetPath} directory', { targetPath }))
 					this.getOnedriveImportValues(true)
 				})
 				.catch((error) => {
-					showError(
-						t('integration_onedrive', 'Failed to start importing OneDrive storage')
-						+ ': ' + error.response?.request?.responseText,
-					)
+					showError(t('integration_onedrive', 'Failed to start importing OneDrive storage')
+						+ ': ' + error.response?.request?.responseText)
 				})
 				.then(() => {
 				})
 		},
+
 		onCancelOnedriveImport() {
 			this.importingOnedrive = false
 			clearInterval(this.onedriveImportLoop)
@@ -404,7 +405,7 @@ export default {
 			}
 			const url = generateUrl('/apps/integration_onedrive/config')
 			axios.put(url, req)
-				.then((response) => {
+				.then(() => {
 				})
 				.catch((error) => {
 					console.debug(error)
@@ -412,9 +413,11 @@ export default {
 				.then(() => {
 				})
 		},
+
 		myHumanFileSize(bytes, approx = false, si = false, dp = 1) {
 			return humanFileSize(bytes, approx, si, dp)
 		},
+
 		// ########## calendars ##########
 		getCalendarList() {
 			const url = generateUrl('/apps/integration_onedrive/calendars')
@@ -425,22 +428,23 @@ export default {
 					}
 				})
 				.catch((error) => {
-					showError(
-						t('integration_onedrive', 'Failed to get calendar list')
-						+ ': ' + error.response?.request?.responseText,
-					)
+					showError(t('integration_onedrive', 'Failed to get calendar list')
+						+ ': ' + error.response?.request?.responseText)
 				})
 				.then(() => {
 				})
 		},
+
 		getCalendarLabel(cal) {
 			return cal.name
 		},
+
 		getCalendarColor(cal) {
 			return cal.hexColor
 				? cal.hexColor.replace('#', '')
 				: '0082c9'
 		},
+
 		onCalendarImport(cal) {
 			const calId = cal.id
 			this.importingCalendar[calId] = true
@@ -456,20 +460,17 @@ export default {
 				.then((response) => {
 					const nbAdded = response.data.nbAdded
 					const calName = response.data.calName
-					showSuccess(
-						this.n('integration_onedrive', '{number} event successfully imported in {name}', '{number} events successfully imported in {name}', nbAdded, { number: nbAdded, name: calName }),
-					)
+					showSuccess(this.n('integration_onedrive', '{number} event successfully imported in {name}', '{number} events successfully imported in {name}', nbAdded, { number: nbAdded, name: calName }))
 				})
 				.catch((error) => {
-					showError(
-						t('integration_onedrive', 'Failed to import calendar')
-						+ ': ' + error.response?.request?.responseText,
-					)
+					showError(t('integration_onedrive', 'Failed to import calendar')
+						+ ': ' + error.response?.request?.responseText)
 				})
 				.then(() => {
 					this.importingCalendar[calId] = false
 				})
 		},
+
 		// ########## contacts ##########
 		getNbContacts() {
 			const url = generateUrl('/apps/integration_onedrive/contact-number')
@@ -480,14 +481,13 @@ export default {
 					}
 				})
 				.catch((error) => {
-					showError(
-						t('integration_onedrive', 'Failed to get number of contacts')
-						+ ': ' + error.response?.request?.responseText,
-					)
+					showError(t('integration_onedrive', 'Failed to get number of contacts')
+						+ ': ' + error.response?.request?.responseText)
 				})
 				.then(() => {
 				})
 		},
+
 		onImportContacts() {
 			this.importingContacts = true
 			const url = generateUrl('/apps/integration_onedrive/import-contacts')
@@ -497,26 +497,23 @@ export default {
 					const nbUpdated = response.data.nbUpdated
 					const nbSkipped = response.data.nbSkipped
 					const nbFailed = response.data.nbFailed
-					showSuccess(
-						this.n(
-							'integration_onedrive',
-							'{nbAdded} contact created, {nbUpdated} updated, {nbSkipped} skipped, {nbFailed} failed',
-							'{nbAdded} contacts created, {nbUpdated} updated, {nbSkipped} skipped, {nbFailed} failed',
-							nbAdded,
-							{ nbAdded, nbUpdated, nbSkipped, nbFailed },
-						),
-					)
+					showSuccess(this.n(
+						'integration_onedrive',
+						'{nbAdded} contact created, {nbUpdated} updated, {nbSkipped} skipped, {nbFailed} failed',
+						'{nbAdded} contacts created, {nbUpdated} updated, {nbSkipped} skipped, {nbFailed} failed',
+						nbAdded,
+						{ nbAdded, nbUpdated, nbSkipped, nbFailed },
+					))
 				})
 				.catch((error) => {
-					showError(
-						t('integration_onedrive', 'Failed to get address book list')
-						+ ': ' + error.response?.request?.responseText,
-					)
+					showError(t('integration_onedrive', 'Failed to get address book list')
+						+ ': ' + error.response?.request?.responseText)
 				})
 				.then(() => {
 					this.importingContacts = false
 				})
 		},
+
 		onOnedriveOutputChange() {
 			OC.dialogs.filepicker(
 				t('integration_onedrive', 'Choose where to write imported files'),

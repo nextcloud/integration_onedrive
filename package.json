@@ -54,11 +54,11 @@
     "@nextcloud/babel-config": "^1.0.0",
     "@nextcloud/browserslist-config": "^3.0.0",
     "@nextcloud/e2e-test-server": "^0.6.0",
-    "@nextcloud/eslint-config": "^8.3.0",
+    "@nextcloud/eslint-config": "^9.0.1",
     "@nextcloud/stylelint-config": "^3.1.1",
     "@nextcloud/webpack-vue-config": "^7.0.2",
     "@playwright/test": "^1.63.0",
-    "eslint-webpack-plugin": "^5.0.2",
+    "eslint-webpack-plugin": "^6.0.0",
     "stylelint-webpack-plugin": "^5.0.1"
   }
 }
