@@ -233,8 +233,10 @@ class OnedriveAPIService {
 				}
 			}
 		} catch (ServerException|ClientException $e) {
-			$this->logger->warning('OneDrive API error : ' . $e->getResponse()->getBody(), ['app' => Application::APP_ID]);
-			return ['error' => $e->getResponse()->getBody()];
+			// a string, so that whoever reports this error does not have to read a stream
+			$body = (string)$e->getResponse()->getBody();
+			$this->logger->warning('OneDrive API error : ' . $body, ['app' => Application::APP_ID]);
+			return ['error' => $body];
 		} catch (ConnectException $e) {
 			$this->logger->warning('OneDrive API connection error : ' . $e->getMessage(), ['app' => Application::APP_ID]);
 			return ['error' => $e->getMessage()];

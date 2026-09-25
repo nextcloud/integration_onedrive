@@ -723,4 +723,120 @@ class OnedriveStorageAPIServiceTest extends TestCase {
 		);
 		$this->assertArrayNotHasKey('import_tree', $this->configStore);
 	}
+
+	public function testAnImportThatCannotReachTheDriveSaysSo(): void {
+		$this->useStatefulConfig([
+			'importing_onedrive' => '1',
+			'nb_imported_files' => '5',
+			'nb_skipped_files' => '2',
+		]);
+		$this->apiService->method('request')->willReturnCallback(
+			static fn (string $userId, string $endPoint) => ['error' => 'Too many requests']
+		);
+		$folder = $this->createUserFolderMock();
+		$folder->method('nodeExists')->willReturn(true);
+		$folder->method('get')->willReturnSelf();
+		$folder->method('isShared')->willReturn(false);
+		$this->rootFolder->method('getUserFolder')->willReturn($folder);
+		$this->logger->expects($this->once())
+			->method('error')
+			->with($this->stringContains('Too many requests'), ['app' => 'integration_onedrive']);
+		$this->apiService->expects($this->once())
+			->method('sendNCNotification')
+			->with('user1', 'import_onedrive_stopped', [
+				'nbImported' => 5,
+				'nbFailed' => 0,
+				'nbSkipped' => 2,
+				'targetPath' => '/OneDrive import',
+			]);
+		$this->jobList->expects($this->never())->method('add');
+
+		$this->service->importOnedriveJob('user1');
+
+		$this->assertSame('0', $this->configStore['importing_onedrive'], 'the import is over');
+		$this->assertSame('0', $this->configStore['nb_imported_files']);
+	}
+
+	public function testAJobThatThrowsIsLoggedWithItsReason(): void {
+		$this->useStatefulConfig(['importing_onedrive' => '1']);
+		$errors = [];
+		$this->logger->method('error')->willReturnCallback(
+			static function (string $message) use (&$errors): void {
+				$errors[] = $message;
+			}
+		);
+		// the date of the file cannot be parsed, which throws inside the import
+		$this->apiService->method('request')->willReturnCallback(
+			static function (string $userId, string $endPoint) {
+				if ($endPoint === 'me/drive') {
+					return ['quota' => ['used' => 1000]];
+				}
+				if ($endPoint === 'me/drive/root/children') {
+					return ['value' => [[
+						'name' => 'photo.jpg',
+						'id' => 'id-photo',
+						'file' => [],
+						'lastModifiedDateTime' => 'the day before yesterday',
+						'@microsoft.graph.downloadUrl' => 'https://dl.example.org/photo.jpg',
+					]]];
+				}
+				return ['lastModifiedDateTime' => '2026-09-01T10:00:00Z'];
+			}
+		);
+		$this->apiService->method('fileRequest')->willReturn(['success' => true]);
+		$file = $this->createMock(File::class);
+		$file->method('fopen')->willReturnCallback(static fn () => fopen('php://temp', 'w+'));
+		$file->method('stat')->willReturn(['size' => 10]);
+		$dirFolder = $this->createMock(Folder::class);
+		$dirFolder->method('nodeExists')->willReturn(false);
+		$dirFolder->method('newFile')->willReturn($file);
+		$topFolder = $this->createMock(Folder::class);
+		$topFolder->method('isShared')->willReturn(false);
+		$topFolder->method('nodeExists')->willReturn(true);
+		$topFolder->method('get')->willReturn($dirFolder);
+		$userFolder = $this->createUserFolderMock();
+		$userFolder->method('nodeExists')->willReturn(true);
+		$userFolder->method('get')->willReturn($topFolder);
+		$this->rootFolder->method('getUserFolder')->willReturn($userFolder);
+		$this->apiService->expects($this->once())
+			->method('sendNCNotification')
+			->with('user1', 'import_onedrive_stopped', $this->anything());
+
+		$this->service->importOnedriveJob('user1');
+
+		$this->assertNotEmpty(
+			array_filter($errors, static fn (string $m) => str_contains($m, 'import job failed')),
+			'the exception was logged: ' . implode(' / ', $errors)
+		);
+		$this->assertSame('0', $this->configStore['importing_onedrive']);
+	}
+
+	public function testAnImportCancelledWhileItRunsIsNotReported(): void {
+		$this->useStatefulConfig(['importing_onedrive' => '1']);
+		// the settings page clears the flag while the batch is walking the drive
+		$this->apiService->method('request')->willReturnCallback(
+			function (string $userId, string $endPoint) {
+				if ($endPoint === 'me/drive') {
+					return ['quota' => ['used' => 1000]];
+				}
+				if ($endPoint === 'me/drive/root/children') {
+					$this->configStore['importing_onedrive'] = '0';
+					return ['value' => []];
+				}
+				return ['lastModifiedDateTime' => '2026-09-01T10:00:00Z'];
+			}
+		);
+		$folder = $this->createUserFolderMock();
+		$folder->method('nodeExists')->willReturn(true);
+		$folder->method('get')->willReturnSelf();
+		$folder->method('isShared')->willReturn(false);
+		$this->rootFolder->method('getUserFolder')->willReturn($folder);
+		$this->apiService->expects($this->never())->method('sendNCNotification');
+		$this->jobList->expects($this->never())->method('add');
+
+		$this->service->importOnedriveJob('user1');
+
+		$this->assertSame('0', $this->configStore['importing_onedrive']);
+		$this->assertArrayNotHasKey('import_tree', $this->configStore);
+	}
 }

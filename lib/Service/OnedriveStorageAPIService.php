@@ -215,11 +215,15 @@ class OnedriveStorageAPIService {
 		try {
 			$result = $this->importFiles($userId, $targetPath, $batchSize, $alreadyImportedSize, $alreadyImportedNumber, $importTree);
 		} catch (Exception|Throwable $e) {
+			$this->logger->error('OneDrive import job failed: ' . $e->getMessage(), ['app' => Application::APP_ID, 'exception' => $e]);
 			$result = [
-				'error' => 'Unknow job failure. ' . $e->getMessage(),
+				'error' => $e->getMessage(),
 			];
 		}
 		if (isset($result['error']) || (isset($result['finished']) && $result['finished'])) {
+			// the settings page cancels an import by clearing this while a batch runs: the
+			// user knows it is over and does not need to hear about it
+			$cancelled = $this->config->getUserValue($userId, Application::APP_ID, 'importing_onedrive', '0') !== '1';
 			// read the counters accumulated over all batches before resetting them
 			$nbImported = (int)$this->config->getUserValue($userId, Application::APP_ID, 'nb_imported_files', '0');
 			$nbFailed = (int)$this->config->getUserValue($userId, Application::APP_ID, 'nb_failed_files', '0');
@@ -232,13 +236,25 @@ class OnedriveStorageAPIService {
 			$this->config->setUserValue($userId, Application::APP_ID, 'nb_skipped_files', '0');
 			$this->config->deleteUserValue($userId, Application::APP_ID, 'failed_files');
 			$this->config->setUserValue($userId, Application::APP_ID, 'last_onedrive_import_timestamp', '0');
-			if (isset($result['finished']) && $result['finished']) {
-				$this->config->deleteUserValue($userId, Application::APP_ID, 'import_tree');
+			$this->config->deleteUserValue($userId, Application::APP_ID, 'import_tree');
+			if ($cancelled) {
+				$this->logger->info('The OneDrive import of ' . $userId . ' was cancelled', ['app' => Application::APP_ID]);
+			} elseif (isset($result['finished']) && $result['finished']) {
 				$this->onedriveApiService->sendNCNotification($userId, 'import_onedrive_finished', [
 					'nbImported' => $nbImported,
 					'nbFailed' => $nbFailed,
 					'nbSkipped' => $nbSkipped,
 					'failedFiles' => $failedFiles,
+					'targetPath' => $targetPath,
+				]);
+			} else {
+				// the import ends here without having seen the whole drive, say so instead
+				// of leaving the user with an import that stopped for no visible reason
+				$this->logger->error('OneDrive import of ' . $userId . ' stopped: ' . $result['error'], ['app' => Application::APP_ID]);
+				$this->onedriveApiService->sendNCNotification($userId, 'import_onedrive_stopped', [
+					'nbImported' => $nbImported,
+					'nbFailed' => $nbFailed,
+					'nbSkipped' => $nbSkipped,
 					'targetPath' => $targetPath,
 				]);
 			}
