@@ -14,6 +14,7 @@ use OCP\BackgroundJob\IJobList;
 use OCP\Files\File;
 use OCP\Files\FileInfo;
 use OCP\Files\Folder;
+use OCP\Files\ForbiddenException;
 use OCP\Files\IRootFolder;
 use OCP\Files\IUserFolder;
 use OCP\IConfig;
@@ -25,6 +26,7 @@ use ReflectionMethod;
 class OnedriveStorageAPIServiceTest extends TestCase {
 
 	private OnedriveAPIService|MockObject $apiService;
+	private LoggerInterface|MockObject $logger;
 	private IRootFolder|MockObject $rootFolder;
 	private IConfig|MockObject $config;
 	private IJobList|MockObject $jobList;
@@ -43,12 +45,13 @@ class OnedriveStorageAPIServiceTest extends TestCase {
 		parent::setUp();
 
 		$this->apiService = $this->createMock(OnedriveAPIService::class);
+		$this->logger = $this->createMock(LoggerInterface::class);
 		$this->rootFolder = $this->createMock(IRootFolder::class);
 		$this->config = $this->createMock(IConfig::class);
 		$this->jobList = $this->createMock(IJobList::class);
 		$this->service = new OnedriveStorageAPIService(
 			'integration_onedrive',
-			$this->createMock(LoggerInterface::class),
+			$this->logger,
 			$this->rootFolder,
 			$this->config,
 			$this->jobList,
@@ -361,5 +364,19 @@ class OnedriveStorageAPIServiceTest extends TestCase {
 		$this->assertSame('0', $this->configStore['imported_size']);
 		$this->assertArrayNotHasKey('failed_files', $this->configStore);
 		$this->assertArrayNotHasKey('import_tree', $this->configStore);
+	}
+
+	public function testFileThatCannotBeLookedUpIsLoggedAndCountedAsFailed(): void {
+		$folder = $this->createMock(Folder::class);
+		$folder->method('nodeExists')->willThrowException(new ForbiddenException('no reading here', false));
+		$this->apiService->expects($this->never())->method('fileRequest');
+		$this->logger->expects($this->once())
+			->method('warning')
+			->with($this->stringContains('photo.jpg'), ['app' => 'integration_onedrive']);
+
+		$method = new ReflectionMethod(OnedriveStorageAPIService::class, 'getFile');
+		$result = $method->invoke($this->service, 'user1', $folder, ['name' => 'photo.jpg']);
+
+		$this->assertSame(['status' => 'failed', 'size' => 0.0], $result);
 	}
 }

@@ -24,6 +24,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 - Mention files that were already there in the import finished notification, so re-running an import does not look like a failure
 - Count imported empty files as imported
 - Report the number of files the current import brought, a counter left over from an interrupted import is no longer added to it
+- Say in the log which file of an import could not be looked up in the target folder
 - Test the import against a stubbed Graph API, including failed downloads, empty files and paging
 
 ## [3.5.2] - 2026-07-28
