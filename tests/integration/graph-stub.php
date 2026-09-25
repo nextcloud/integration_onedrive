@@ -26,6 +26,12 @@
  * The first listing page carries an @odata.nextLink, so paging is covered as well.
  */
 
+// the router of a development server is the only thing this is ever meant to be
+if (PHP_SAPI !== 'cli-server') {
+	http_response_code(404);
+	return;
+}
+
 const MODIFIED = '2026-09-01T10:00:00Z';
 
 /** Every file of the fake drive, with what its download URLs should answer. */
