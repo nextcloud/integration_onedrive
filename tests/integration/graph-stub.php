@@ -23,6 +23,9 @@
  *   already.txt  is never downloaded, the test puts it in the target folder beforehand
  *   sub/         a folder, holding nested.txt, which downloads
  *
+ * A request to /control/break-drive makes the drive itself unreachable, which is how an
+ * import that stops before it is finished is produced.
+ *
  * The first listing page carries an @odata.nextLink, so paging is covered as well.
  */
 
@@ -73,6 +76,14 @@ function baseUrl(): string {
 	return 'http://' . ($_SERVER['HTTP_HOST'] ?? '127.0.0.1:8099');
 }
 
+/**
+ * The file that says the drive has been made unreachable on purpose. It carries the port
+ * so that two stubs on one machine, or a later run, do not inherit it.
+ */
+function brokenDriveFlag(): string {
+	return sys_get_temp_dir() . '/graph-stub-broken-drive-' . ($_SERVER['SERVER_PORT'] ?? 'x');
+}
+
 function respond(array $body, int $status = 200): void {
 	http_response_code($status);
 	header('Content-Type: application/json');
@@ -113,6 +124,18 @@ function serveDownload(string $id): void {
 $path = parse_url($_SERVER['REQUEST_URI'] ?? '/', PHP_URL_PATH) ?: '/';
 $path = rawurldecode($path);
 
+// the test asks for the drive to be broken and repaired, no access token involved
+if ($path === '/control/break-drive') {
+	touch(brokenDriveFlag());
+	respond(['broken' => true]);
+	return;
+}
+if ($path === '/control/repair-drive') {
+	@unlink(brokenDriveFlag());
+	respond(['broken' => false]);
+	return;
+}
+
 // downloads carry their own authorisation in the URL, everything else needs the access token
 if (!str_starts_with($path, '/download/') && !preg_match('/^bearer .+/i', $_SERVER['HTTP_AUTHORIZATION'] ?? '')) {
 	respond(['error' => ['code' => 'unauthenticated', 'message' => 'no access token']], 401);
@@ -125,6 +148,11 @@ if (preg_match('#^/download/([^/?]+)$#', $path, $matches)) {
 }
 
 if ($path === '/v1.0/me/drive') {
+	if (file_exists(brokenDriveFlag())) {
+		// what a revoked consent looks like: the import cannot even read the drive
+		respond(['error' => ['code' => 'accessDenied', 'message' => 'the drive is not yours any more']], 403);
+		return;
+	}
 	respond(['id' => 'stub-drive', 'quota' => ['total' => 1073741824, 'used' => 42, 'remaining' => 1073741782]]);
 	return;
 }

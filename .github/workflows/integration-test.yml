@@ -228,6 +228,9 @@ jobs:
           # a request without an access token has to be refused, otherwise the test could pass
           # while the app stopped sending the token
           test "$(curl -s -o /dev/null -w '%{http_code}' http://127.0.0.1:8099/v1.0/me/drive)" = "401"
+          # start from a healthy drive whatever an earlier run left behind
+          curl -fs -X POST http://127.0.0.1:8099/control/repair-drive
+          echo
 
       - name: Run Nextcloud
         working-directory: server/
@@ -418,6 +421,52 @@ jobs:
           fi
           if [ "$subjects" != "$expected" ]; then
             echo "expected: $expected"
+            fail=1
+          fi
+          exit $fail
+
+      - name: Import with a drive that cannot be reached
+        working-directory: server/
+        run: |
+          php occ user:setting admin ${{ env.APP_NAME }} onedrive_output_dir "/OneDrive stopped"
+          # drop what the previous imports sent, the one checked below has to be this import's
+          curl -s -X DELETE -u admin:admin -H 'OCS-APIRequest: true' \
+            'http://localhost:8080/ocs/v2.php/apps/notifications/api/v2/notifications' >/dev/null
+          curl -fs -X POST http://127.0.0.1:8099/control/break-drive
+          echo
+          # make sure the drive really is unreachable, otherwise the import would just work
+          test "$(curl -s -o /dev/null -w '%{http_code}' -H 'Authorization: bearer stub-access-token' http://127.0.0.1:8099/v1.0/me/drive)" = "403"
+          php occ ${{ env.APP_NAME }}:start-import admin
+          fail=0
+          importing=1
+          # a queued job is not always picked by the first cron run
+          for run in {1..4}; do
+            php cron.php
+            importing=$(php occ user:setting admin ${{ env.APP_NAME }} importing_onedrive 2>/dev/null | tail -1 || echo "1")
+            echo "round $run: importing=$importing"
+            if [ "$importing" = "0" ]; then break; fi
+          done
+          if [ "$importing" != "0" ]; then
+            echo "the import should have given up, importing_onedrive is '$importing'"
+            fail=1
+          fi
+          notification=$(curl -s -u admin:admin -H 'OCS-APIRequest: true' -H 'Accept: application/json' \
+            'http://localhost:8080/ocs/v2.php/apps/notifications/api/v2/notifications')
+          expected='The import of your OneDrive files stopped before it was finished, check the server logs for details. | 0 files were imported from OneDrive storage.'
+          said=$(php -r 'foreach (json_decode(stream_get_contents(STDIN), true)["ocs"]["data"] as $n) { if (($n["app"] ?? "") === "integration_onedrive") { echo $n["subject"], " | ", $n["message"] ?? "", "\n"; } }' <<< "$notification")
+          echo "$said"
+          if [ "$(printf '%s\n' "$said" | grep -c .)" != "1" ]; then
+            echo "expected exactly one notification of this import"
+            fail=1
+          fi
+          if [ "$said" != "$expected" ]; then
+            echo "expected: $expected"
+            fail=1
+          fi
+          # the reason belongs in that line, it is what the notification sends the admin to
+          if ! grep -q 'import of admin stopped: .*accessDenied' data/nextcloud.log; then
+            echo "the log does not say why the import stopped"
+            grep 'import of admin stopped' data/nextcloud.log || true
             fail=1
           fi
           exit $fail
