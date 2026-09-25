@@ -12,6 +12,7 @@ use OCA\Onedrive\Service\OnedriveStorageAPIService;
 use OCA\Onedrive\Service\UserScopeService;
 use OCP\BackgroundJob\IJobList;
 use OCP\Files\File;
+use OCP\Files\FileInfo;
 use OCP\Files\Folder;
 use OCP\Files\IRootFolder;
 use OCP\Files\IUserFolder;
@@ -332,5 +333,33 @@ class OnedriveStorageAPIServiceTest extends TestCase {
 		$this->assertSame('0', $this->configStore['nb_skipped_files']);
 		$this->assertArrayNotHasKey('failed_files', $this->configStore);
 		$this->assertSame('0', $this->configStore['importing_onedrive']);
+	}
+
+	public function testStartingAnImportForgetsTheCountersOfThePreviousOne(): void {
+		$this->useStatefulConfig([
+			'nb_imported_files' => '41',
+			'nb_failed_files' => '2',
+			'nb_skipped_files' => '3',
+			'failed_files' => '["x.jpg"]',
+			'imported_size' => '123456',
+			'import_tree' => '{"/sub":"todo"}',
+		]);
+		$folder = $this->createMock(Folder::class);
+		$folder->method('getType')->willReturn(FileInfo::TYPE_FOLDER);
+		$userFolder = $this->createUserFolderMock();
+		$userFolder->method('nodeExists')->willReturn(true);
+		$userFolder->method('get')->willReturn($folder);
+		$this->rootFolder->method('getUserFolder')->willReturn($userFolder);
+		$this->jobList->expects($this->once())->method('add');
+
+		$this->service->startImportOnedrive('user1');
+
+		$this->assertSame('1', $this->configStore['importing_onedrive']);
+		$this->assertSame('0', $this->configStore['nb_imported_files']);
+		$this->assertSame('0', $this->configStore['nb_failed_files']);
+		$this->assertSame('0', $this->configStore['nb_skipped_files']);
+		$this->assertSame('0', $this->configStore['imported_size']);
+		$this->assertArrayNotHasKey('failed_files', $this->configStore);
+		$this->assertArrayNotHasKey('import_tree', $this->configStore);
 	}
 }

@@ -140,6 +140,7 @@ class OnedriveStorageAPIService {
 		}
 		$this->config->setUserValue($userId, Application::APP_ID, 'importing_onedrive', '1');
 		$this->config->setUserValue($userId, Application::APP_ID, 'imported_size', '0');
+		$this->config->setUserValue($userId, Application::APP_ID, 'nb_imported_files', '0');
 		$this->config->setUserValue($userId, Application::APP_ID, 'nb_failed_files', '0');
 		$this->config->setUserValue($userId, Application::APP_ID, 'nb_skipped_files', '0');
 		$this->config->setUserValue($userId, Application::APP_ID, 'last_onedrive_import_timestamp', '0');
