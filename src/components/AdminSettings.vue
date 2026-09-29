@@ -33,10 +33,10 @@
 				:label="t('integration_onedrive', 'Client ID')"
 				:placeholder="t('integration_onedrive', 'Client ID of your OneDrive application')"
 				:readonly="readonly"
-				:show-trailing-button="!!state.client_id"
-				@trailing-button-click="state.client_id = ''; onInput()"
+				:showTrailingButton="!!state.client_id"
+				@trailingButtonClick="state.client_id = ''; onInput()"
 				@focus="readonly = false"
-				@update:model-value="onInput">
+				@update:modelValue="onInput">
 				<template #icon>
 					<KeyOutlineIcon :size="20" />
 				</template>
@@ -47,17 +47,17 @@
 				:label="t('integration_onedrive', 'Client secret')"
 				:placeholder="t('integration_onedrive', 'Client secret of your OneDrive application')"
 				:readonly="readonly"
-				:show-trailing-button="!!state.client_secret"
-				@trailing-button-click="state.client_secret = ''; onInput()"
+				:showTrailingButton="!!state.client_secret"
+				@trailingButtonClick="state.client_secret = ''; onInput()"
 				@focus="readonly = false"
-				@update:model-value="onInput">
+				@update:modelValue="onInput">
 				<template #icon>
 					<KeyOutlineIcon :size="20" />
 				</template>
 			</NcTextField>
 			<NcFormBoxSwitch
 				v-model="state.use_popup"
-				@update:model-value="onUsePopupChanged">
+				@update:modelValue="onUsePopupChanged">
 				{{ t('integration_onedrive', 'Use a popup to authenticate') }}
 			</NcFormBoxSwitch>
 		</div>
@@ -65,20 +65,17 @@
 </template>
 
 <script>
-import KeyOutlineIcon from 'vue-material-design-icons/KeyOutline.vue'
-
-import OnedriveIcon from './icons/OnedriveIcon.vue'
-
+import axios from '@nextcloud/axios'
+import { showError, showSuccess } from '@nextcloud/dialogs'
+import { loadState } from '@nextcloud/initial-state'
+import { confirmPassword } from '@nextcloud/password-confirmation'
+import { generateUrl } from '@nextcloud/router'
 import NcFormBoxSwitch from '@nextcloud/vue/components/NcFormBoxSwitch'
 import NcNoteCard from '@nextcloud/vue/components/NcNoteCard'
 import NcTextField from '@nextcloud/vue/components/NcTextField'
-
-import { loadState } from '@nextcloud/initial-state'
-import { generateUrl } from '@nextcloud/router'
-import axios from '@nextcloud/axios'
+import KeyOutlineIcon from 'vue-material-design-icons/KeyOutline.vue'
+import OnedriveIcon from './icons/OnedriveIcon.vue'
 import { delay } from '../utils.js'
-import { showSuccess, showError } from '@nextcloud/dialogs'
-import { confirmPassword } from '@nextcloud/password-confirmation'
 
 export default {
 	name: 'AdminSettings',
@@ -112,6 +109,7 @@ export default {
 		onUsePopupChanged(newValue) {
 			this.saveOptions({ use_popup: newValue ? '1' : '0' })
 		},
+
 		onInput() {
 			delay(() => {
 				const values = {
@@ -121,9 +119,9 @@ export default {
 					values.client_secret = this.state.client_secret
 				}
 				this.saveOptions(values, true)
-
 			}, 2000)()
 		},
+
 		async saveOptions(values, sensitive = false) {
 			if (sensitive) {
 				await confirmPassword()
@@ -136,14 +134,12 @@ export default {
 				: generateUrl('/apps/integration_onedrive/admin-config')
 
 			axios.put(url, req)
-				.then((response) => {
+				.then(() => {
 					showSuccess(t('integration_onedrive', 'OneDrive admin options saved'))
 				})
 				.catch((error) => {
-					showError(
-						t('integration_onedrive', 'Failed to save OneDrive admin options')
-						+ ': ' + error.response?.request?.responseText,
-					)
+					showError(t('integration_onedrive', 'Failed to save OneDrive admin options')
+						+ ': ' + error.response?.request?.responseText)
 				})
 				.then(() => {
 				})
