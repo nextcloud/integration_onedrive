@@ -8,17 +8,23 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
-## [3.5.3]
+## [Unreleased]
+
+## 3.6.0 - 2026-10-05
 
 ### Added
 
 - Added support for Nextcloud 36
 - Added the import_batch_size app setting, how much a single run of the import job downloads before it lets the next one continue
 
+### Changed
+
+- Update @nextcloud/eslint-config to 9 and sync the lint workflows
+- Update dependencies & translations
+
 ### Fixed
 
 - Stop a file import from blocking forever when a download stalls
-- Stop logging download URLs, they contain a short lived access token
 - Retry a failed file download once with a freshly fetched download URL, the one from the folder listing may have expired during a long import
 - Stop logging a deprecation warning every time another app sends a notification
 - Report files that could not be downloaded in the import finished notification, with their names, which also no longer counts them as imported
@@ -32,7 +38,11 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 - List a folder again from its first page when the page an import stopped in cannot be listed any more
 - Tell the user when an import stops before it has seen the whole drive, it used to end in silence, and write the reason to the log
 - Say nothing about an import the user cancelled while it was running, it used to report itself as finished
-- Test the import against a stubbed Graph API, including failed downloads, empty files and paging
+
+### Security
+
+- Stop logging OneDrive download URLs; the error of a failed transfer carried the short lived access
+  token from the URL and was logged verbatim
 
 ## [3.5.2] - 2026-07-28
 
