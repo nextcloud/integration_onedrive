@@ -8,6 +8,7 @@ OC.L10N.register(
     "Bad HTTP method" : "Metodă HTTP nepotrivită",
     "OAuth access token refused" : "Token-ul OAuth a fost refuzat",
     "Connected accounts" : "Conturile conectate",
+    "Data migration" : "Migrarea datelor",
     "Client ID" : "ID client",
     "Client secret" : "Secret client",
     "Enable navigation link" : "Pornește link-ul de navifare",
