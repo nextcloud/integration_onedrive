@@ -9,6 +9,7 @@ namespace OCA\Onedrive\Settings;
 
 use OCA\Onedrive\AppInfo\Application;
 use OCP\AppFramework\Http\TemplateResponse;
+use OCP\AppFramework\Services\IAppConfig;
 use OCP\AppFramework\Services\IInitialState;
 use OCP\Files\IRootFolder;
 use OCP\IConfig;
@@ -18,6 +19,7 @@ use OCP\Settings\ISettings;
 class Personal implements ISettings {
 
 	public function __construct(
+		private IAppConfig $appConfig,
 		private IConfig $config,
 		private IRootFolder $root,
 		private IUserManager $userManager,
@@ -35,12 +37,9 @@ class Personal implements ISettings {
 		$userName = $this->config->getUserValue($this->userId, Application::APP_ID, 'user_name');
 
 		// for OAuth
-		/** @psalm-suppress DeprecatedMethod */
-		$clientID = $this->config->getAppValue(Application::APP_ID, 'client_id');
-		/** @psalm-suppress DeprecatedMethod */
-		$clientSecret = $this->config->getAppValue(Application::APP_ID, 'client_secret') !== '';
-		/** @psalm-suppress DeprecatedMethod */
-		$usePopup = $this->config->getAppValue(Application::APP_ID, 'use_popup', '0');
+		$clientID = $this->appConfig->getAppValueString('client_id', lazy: true);
+		$clientSecret = $this->appConfig->getAppValueString('client_secret', lazy: true) !== '';
+		$usePopup = $this->appConfig->getAppValueString('use_popup', '0', lazy: true);
 
 		// get free space
 		$userFolder = $this->root->getUserFolder($this->userId);

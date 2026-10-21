@@ -11,6 +11,7 @@ use GuzzleHttp\Exception\ConnectException;
 use GuzzleHttp\Psr7\Request;
 use OCA\Onedrive\Service\OnedriveAPIService;
 use OCP\App\IAppManager;
+use OCP\AppFramework\Services\IAppConfig;
 use OCP\Http\Client\IClient;
 use OCP\Http\Client\IClientService;
 use OCP\Http\Client\IResponse;
@@ -26,6 +27,7 @@ class OnedriveAPIServiceTest extends TestCase {
 
 	private LoggerInterface|MockObject $logger;
 	private IConfig|MockObject $config;
+	private IAppConfig|MockObject $appConfig;
 	private IClient|MockObject $client;
 
 	private OnedriveAPIService $apiService;
@@ -38,6 +40,9 @@ class OnedriveAPIServiceTest extends TestCase {
 		// IConfig::getUserValue has no native return type, so the mock would return
 		// null instead of the empty-string default the code relies on
 		$this->config->method('getUserValue')->willReturnArgument(3);
+		// what the server answers for a lazy value
+		$this->config->method('getAppValue')->willReturnArgument(2);
+		$this->appConfig = $this->createMock(IAppConfig::class);
 		$this->client = $this->createMock(IClient::class);
 
 		$clientService = $this->createMock(IClientService::class);
@@ -47,6 +52,7 @@ class OnedriveAPIServiceTest extends TestCase {
 			$this->logger,
 			$this->createMock(IL10N::class),
 			$this->config,
+			$this->appConfig,
 			$this->createMock(ICrypto::class),
 			$this->createMock(INotificationManager::class),
 			$this->createMock(IAppManager::class),
@@ -120,9 +126,9 @@ class OnedriveAPIServiceTest extends TestCase {
 	}
 
 	public function testTheApiBaseUrlCanBeOverriddenForTests(): void {
-		$this->config->method('getAppValue')->willReturnCallback(
-			static fn (string $app, string $key, string $default = ''): string
-				=> $key === 'api_base_url' ? 'http://127.0.0.1:8099/v1.0' : $default
+		$this->appConfig->method('getAppValueString')->willReturnCallback(
+			static fn (string $key, string $default = '', bool $lazy = false): string
+				=> $key === 'api_base_url' && $lazy ? 'http://127.0.0.1:8099/v1.0' : $default
 		);
 
 		$this->assertSame(

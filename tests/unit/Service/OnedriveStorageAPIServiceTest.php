@@ -10,6 +10,7 @@ namespace OCA\Onedrive\Tests;
 use OCA\Onedrive\Service\OnedriveAPIService;
 use OCA\Onedrive\Service\OnedriveStorageAPIService;
 use OCA\Onedrive\Service\UserScopeService;
+use OCP\AppFramework\Services\IAppConfig;
 use OCP\BackgroundJob\IJobList;
 use OCP\Files\File;
 use OCP\Files\FileInfo;
@@ -29,6 +30,7 @@ class OnedriveStorageAPIServiceTest extends TestCase {
 	private LoggerInterface|MockObject $logger;
 	private IRootFolder|MockObject $rootFolder;
 	private IConfig|MockObject $config;
+	private IAppConfig|MockObject $appConfig;
 	private IJobList|MockObject $jobList;
 	private Folder|MockObject $folder;
 	private File|MockObject $file;
@@ -54,12 +56,16 @@ class OnedriveStorageAPIServiceTest extends TestCase {
 		$this->logger = $this->createMock(LoggerInterface::class);
 		$this->rootFolder = $this->createMock(IRootFolder::class);
 		$this->config = $this->createMock(IConfig::class);
+		// what the server answers for a lazy value
+		$this->config->method('getAppValue')->willReturnArgument(2);
+		$this->appConfig = $this->createMock(IAppConfig::class);
 		$this->jobList = $this->createMock(IJobList::class);
 		$this->service = new OnedriveStorageAPIService(
 			'integration_onedrive',
 			$this->logger,
 			$this->rootFolder,
 			$this->config,
+			$this->appConfig,
 			$this->jobList,
 			$this->createMock(UserScopeService::class),
 			$this->apiService,
@@ -648,8 +654,8 @@ class OnedriveStorageAPIServiceTest extends TestCase {
 
 	public function testTheBatchSizeCanBeConfigured(): void {
 		$this->useStatefulConfig(['importing_onedrive' => '1']);
-		$this->config->method('getAppValue')->willReturnCallback(
-			static fn (string $app, string $key, string $default = '') => $key === 'import_batch_size' ? '100' : $default
+		$this->appConfig->method('getAppValueString')->willReturnCallback(
+			static fn (string $key, string $default = '', bool $lazy = false) => $key === 'import_batch_size' && $lazy ? '100' : $default
 		);
 		// two files of 200 bytes, so a 100 byte batch stops after the first one
 		$this->apiService->method('request')->willReturnCallback(
@@ -703,8 +709,8 @@ class OnedriveStorageAPIServiceTest extends TestCase {
 	public function testTheImportIsResumedFromWhatTheBatchWroteToTheConfig(): void {
 		$this->statefulDriveWithTwoRootPages(200);
 		$this->configStore['importing_onedrive'] = '1';
-		$this->config->method('getAppValue')->willReturnCallback(
-			static fn (string $app, string $key, string $default = '') => $key === 'import_batch_size' ? '100' : $default
+		$this->appConfig->method('getAppValueString')->willReturnCallback(
+			static fn (string $key, string $default = '', bool $lazy = false) => $key === 'import_batch_size' && $lazy ? '100' : $default
 		);
 
 		// the job runs once per cron round and hands its progress over through the config

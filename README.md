@@ -21,7 +21,7 @@ There also is a "Connected accounts" **admin** settings section that you must vi
 A single run of the file import job downloads 500 MB before it lets the next run continue. On a server where that is too much for one job, set another size in bytes:
 
 ```
-occ config:app:set integration_onedrive import_batch_size --value 100000000
+occ config:app:set integration_onedrive import_batch_size --value 100000000 --lazy
 ```
 
 ## **🛠️ State of maintenance**

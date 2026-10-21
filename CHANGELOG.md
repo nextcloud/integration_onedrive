@@ -10,6 +10,11 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
 
+### Changed
+
+- Load the app config values only when the app needs them, they were loaded on every request of the instance
+- Refuse keys the admin settings do not send, and values that are not strings, instead of storing them
+
 ## 3.6.0 - 2026-10-05
 
 ### Added

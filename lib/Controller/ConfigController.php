@@ -18,6 +18,7 @@ use OCP\AppFramework\Http\Attribute\PasswordConfirmationRequired;
 use OCP\AppFramework\Http\DataResponse;
 use OCP\AppFramework\Http\RedirectResponse;
 use OCP\AppFramework\Http\TemplateResponse;
+use OCP\AppFramework\Services\IAppConfig;
 use OCP\AppFramework\Services\IInitialState;
 use OCP\Constants;
 use OCP\Contacts\IManager as IContactManager;
@@ -29,9 +30,20 @@ use OCP\Security\ICrypto;
 
 class ConfigController extends Controller {
 
+	/**
+	 * The app config keys the admin settings send to setAdminConfig
+	 */
+	private const ADMIN_CONFIG_KEYS = ['use_popup'];
+
+	/**
+	 * The app config keys the admin settings send to setSensitiveAdminConfig
+	 */
+	private const SENSITIVE_ADMIN_CONFIG_KEYS = ['client_id', 'client_secret'];
+
 	public function __construct(
 		string $appName,
 		IRequest $request,
+		private IAppConfig $appConfig,
 		private IConfig $config,
 		private IURLGenerator $urlGenerator,
 		private IL10N $l,
@@ -86,29 +98,42 @@ class ConfigController extends Controller {
 	 * @return DataResponse
 	 */
 	public function setAdminConfig(array $values): DataResponse {
+		if (!$this->isAdminConfig($values, self::ADMIN_CONFIG_KEYS)) {
+			return new DataResponse([], Http::STATUS_BAD_REQUEST);
+		}
 		foreach ($values as $key => $value) {
-			if ($key === 'token' && $value === 'dummyToken') {
-				continue;  // Skip writing if 'token' equals 'dummyToken'
-			}
-
-			if (in_array($key, ['token', 'refresh_token']) && $value !== '') {
-				$value = $this->crypto->encrypt($value);
-			}
-			/** @psalm-suppress DeprecatedMethod */
-			$this->config->setAppValue(Application::APP_ID, $key, $value);
+			$this->appConfig->setAppValueString($key, $value, lazy: true);
 		}
 		return new DataResponse(1);
 	}
 
 	#[PasswordConfirmationRequired]
 	public function setSensitiveAdminConfig(array $values): DataResponse {
+		if (!$this->isAdminConfig($values, self::SENSITIVE_ADMIN_CONFIG_KEYS)) {
+			return new DataResponse([], Http::STATUS_BAD_REQUEST);
+		}
 		foreach ($values as $key => $value) {
 			if (in_array($key, ['client_secret'], true) && $value !== '') {
 				$value = $this->crypto->encrypt($value);
 			}
-			$this->config->setAppValue(Application::APP_ID, $key, $value);
+			$this->appConfig->setAppValueString($key, $value, lazy: true);
 		}
 		return new DataResponse([]);
+	}
+
+	/**
+	 * Whether every key of $values is one of $keys and every value a string. Any other key would be
+	 * stored as a lazy value of this app, Nextcloud's own ones like "enabled" included.
+	 *
+	 * @param list<string> $keys
+	 */
+	private function isAdminConfig(array $values, array $keys): bool {
+		foreach ($values as $key => $value) {
+			if (!in_array($key, $keys, true) || !is_string($value)) {
+				return false;
+			}
+		}
+		return true;
 	}
 
 	#[NoAdminRequired]
@@ -127,10 +152,8 @@ class ConfigController extends Controller {
 	#[NoAdminRequired]
 	#[NoCSRFRequired]
 	public function oauthRedirect(string $code = ''): RedirectResponse {
-		/** @psalm-suppress DeprecatedMethod */
-		$clientID = $this->config->getAppValue(Application::APP_ID, 'client_id');
-		/** @psalm-suppress DeprecatedMethod */
-		$clientSecret = $this->config->getAppValue(Application::APP_ID, 'client_secret');
+		$clientID = $this->appConfig->getAppValueString('client_id', lazy: true);
+		$clientSecret = $this->appConfig->getAppValueString('client_secret', lazy: true);
 		$clientSecret = $clientSecret === '' ? '' : $this->crypto->decrypt($clientSecret);
 
 		// anyway, reset state
@@ -164,8 +187,7 @@ class ConfigController extends Controller {
 				$this->config->setUserValue($this->userId, Application::APP_ID, 'user_id', $result['user_id'] ?? '');
 				$info = $this->onedriveAPIService->request($this->userId, 'me');
 				$this->config->setUserValue($this->userId, Application::APP_ID, 'user_name', $info['displayName'] ?? '??');
-				/** @psalm-suppress DeprecatedMethod */
-				$usePopup = $this->config->getAppValue(Application::APP_ID, 'use_popup', '0') === '1';
+				$usePopup = $this->appConfig->getAppValueString('use_popup', '0', lazy: true) === '1';
 				if ($usePopup) {
 					return new RedirectResponse(
 						$this->urlGenerator->linkToRoute(Application::APP_ID . '.config.popupSuccessPage', ['username' => $info['displayName'] ?? '??'])

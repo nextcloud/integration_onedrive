@@ -9,14 +9,14 @@ namespace OCA\Onedrive\Settings;
 
 use OCA\Onedrive\AppInfo\Application;
 use OCP\AppFramework\Http\TemplateResponse;
+use OCP\AppFramework\Services\IAppConfig;
 use OCP\AppFramework\Services\IInitialState;
-use OCP\IConfig;
 use OCP\Settings\ISettings;
 
 class Admin implements ISettings {
 
 	public function __construct(
-		private IConfig $config,
+		private IAppConfig $appConfig,
 		private IInitialState $initialStateService,
 	) {
 	}
@@ -25,12 +25,9 @@ class Admin implements ISettings {
 	 * @return TemplateResponse
 	 */
 	public function getForm(): TemplateResponse {
-		/** @psalm-suppress DeprecatedMethod */
-		$clientID = $this->config->getAppValue(Application::APP_ID, 'client_id');
-		/** @psalm-suppress DeprecatedMethod */
-		$clientSecret = $this->config->getAppValue(Application::APP_ID, 'client_secret');
-		/** @psalm-suppress DeprecatedMethod */
-		$usePopup = $this->config->getAppValue(Application::APP_ID, 'use_popup', '0');
+		$clientID = $this->appConfig->getAppValueString('client_id', lazy: true);
+		$clientSecret = $this->appConfig->getAppValueString('client_secret', lazy: true);
+		$usePopup = $this->appConfig->getAppValueString('use_popup', '0', lazy: true);
 
 		$adminConfig = [
 			'client_id' => $clientID,
