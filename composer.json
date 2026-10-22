@@ -21,12 +21,12 @@
         "nextcloud/coding-standard": "^1",
         "phpunit/phpunit": "^10",
         "psalm/phar": "~6.20.0",
-        "nextcloud/ocp": "dev-master",
+        "nextcloud/ocp": "dev-stable33",
         "sabre/dav": "^4.4.0"
     },
     "config": {
         "platform": {
-            "php": "8.2"
+            "php": "8.2.35"
         },
         "allow-plugins": {
             "php-http/discovery": true,
