@@ -11,7 +11,7 @@
  * Run it as the router of the PHP development server and point the app at it:
  *
  *   php -S 127.0.0.1:8099 tests/integration/graph-stub.php
- *   occ config:app:set integration_onedrive api_base_url --value http://127.0.0.1:8099/v1.0/
+ *   occ config:app:set integration_onedrive api_base_url --value http://127.0.0.1:8099/v1.0/ --lazy
  *
  * It serves a fixed drive that produces every outcome an import has to handle, which a real
  * account cannot be made to produce on demand:

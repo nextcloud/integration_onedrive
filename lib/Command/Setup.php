@@ -7,8 +7,7 @@
 
 namespace OCA\Onedrive\Command;
 
-use OCA\Onedrive\AppInfo\Application;
-use OCP\IConfig;
+use OCP\AppFramework\Services\IAppConfig;
 use OCP\Security\ICrypto;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
@@ -17,7 +16,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 
 class Setup extends Command {
 	public function __construct(
-		private IConfig $config,
+		private IAppConfig $appConfig,
 		private ICrypto $crypto,
 	) {
 		parent::__construct();
@@ -32,11 +31,9 @@ class Setup extends Command {
 
 	protected function execute(InputInterface $input, OutputInterface $output): int {
 		try {
-			/** @psalm-suppress DeprecatedMethod */
-			$this->config->setAppValue(Application::APP_ID, 'client_id', $input->getArgument('client_id'));
+			$this->appConfig->setAppValueString('client_id', $input->getArgument('client_id'), lazy: true);
 			$encryptedSecret = $this->crypto->encrypt($input->getArgument('client_secret'));
-			/** @psalm-suppress DeprecatedMethod */
-			$this->config->setAppValue(Application::APP_ID, 'client_secret', $encryptedSecret);
+			$this->appConfig->setAppValueString('client_secret', $encryptedSecret, lazy: true);
 		} catch (\Exception $ex) {
 			$output->writeln('<error>Failed to setup client credentials</error>');
 			$output->writeln($ex->getMessage());

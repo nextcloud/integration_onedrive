@@ -17,6 +17,7 @@ use Microsoft\Kiota\Http\Middleware\KiotaMiddleware;
 use Microsoft\Kiota\Http\Middleware\RetryHandler;
 use OCA\Onedrive\AppInfo\Application;
 use OCP\App\IAppManager;
+use OCP\AppFramework\Services\IAppConfig;
 use OCP\Http\Client\IClient;
 use OCP\Http\Client\IClientService;
 use OCP\IConfig;
@@ -49,6 +50,7 @@ class OnedriveAPIService {
 		private readonly LoggerInterface $logger,
 		private readonly IL10N $l10n,
 		private readonly IConfig $config,
+		private readonly IAppConfig $appConfig,
 		private readonly ICrypto $crypto,
 		private readonly INotificationManager $notificationManager,
 		private readonly IAppManager $appManager,
@@ -302,7 +304,7 @@ class OnedriveAPIService {
 	 * tests; when it is unset the real Graph endpoint is used.
 	 */
 	private function getApiBaseUrl(): string {
-		$baseUrl = (string)$this->config->getAppValue(Application::APP_ID, 'api_base_url', self::API_BASE_URL);
+		$baseUrl = $this->appConfig->getAppValueString('api_base_url', self::API_BASE_URL, lazy: true);
 		if ($baseUrl === '') {
 			$baseUrl = self::API_BASE_URL;
 		}
@@ -325,10 +327,8 @@ class OnedriveAPIService {
 
 	public function refreshToken(string $userId): array {
 		$this->logger->debug('Trying to REFRESH the access token', ['app' => Application::APP_ID]);
-		/** @psalm-suppress DeprecatedMethod */
-		$clientId = $this->config->getAppValue(Application::APP_ID, 'client_id');
-		/** @psalm-suppress DeprecatedMethod */
-		$clientSecret = $this->config->getAppValue(Application::APP_ID, 'client_secret');
+		$clientId = $this->appConfig->getAppValueString('client_id', lazy: true);
+		$clientSecret = $this->appConfig->getAppValueString('client_secret', lazy: true);
 		$clientSecret = $clientSecret === '' ? '' : $this->crypto->decrypt($clientSecret);
 		$redirectUri = $this->config->getUserValue($userId, Application::APP_ID, 'redirect_uri');
 		$refreshToken = $this->config->getUserValue($userId, Application::APP_ID, 'refresh_token');

@@ -13,7 +13,7 @@ use Closure;
 use OCA\Onedrive\AppInfo\Application;
 use OCP\DB\ISchemaWrapper;
 use OCP\DB\QueryBuilder\IQueryBuilder;
-use OCP\IConfig;
+use OCP\IAppConfig;
 use OCP\IDBConnection;
 use OCP\Migration\IOutput;
 use OCP\Migration\SimpleMigrationStep;
@@ -24,7 +24,7 @@ class Version3300Date202410151354 extends SimpleMigrationStep {
 	public function __construct(
 		private IDBConnection $connection,
 		private ICrypto $crypto,
-		private IConfig $config,
+		private IAppConfig $appConfig,
 	) {
 	}
 
@@ -39,12 +39,10 @@ class Version3300Date202410151354 extends SimpleMigrationStep {
 	 */
 	public function postSchemaChange(IOutput $output, Closure $schemaClosure, array $options) {
 		// encrypt "client_secret" in the appconfig
-		/** @psalm-suppress DeprecatedMethod */
-		$clientSecret = $this->config->getAppValue(Application::APP_ID, 'client_secret');
+		$clientSecret = $this->appConfig->getValueString(Application::APP_ID, 'client_secret', lazy: true);
 		if ($clientSecret !== '') {
 			$clientSecret = $this->crypto->encrypt($clientSecret);
-			/** @psalm-suppress DeprecatedMethod */
-			$this->config->setAppValue(Application::APP_ID, 'client_secret', $clientSecret);
+			$this->appConfig->setValueString(Application::APP_ID, 'client_secret', $clientSecret, lazy: true);
 		}
 
 		// encrypt user tokens

@@ -244,7 +244,7 @@ jobs:
           # setup-user expires the token on purpose so that it gets refreshed; the stub has no token
           # endpoint, so keep the one it stored valid
           php occ user:setting admin ${{ env.APP_NAME }} token_expires_at "$(( $(date +%s) + 86400 ))"
-          php occ config:app:set ${{ env.APP_NAME }} api_base_url --value http://127.0.0.1:8099/v1.0/
+          php occ config:app:set ${{ env.APP_NAME }} api_base_url --value http://127.0.0.1:8099/v1.0/ --lazy
 
       - name: Put one of the files in the target folder beforehand
         working-directory: server/
@@ -350,7 +350,7 @@ jobs:
         run: |
           # 20 bytes runs out on the first file of the second listing page, so the import
           # has to come back to that page in a later batch
-          php occ config:app:set ${{ env.APP_NAME }} import_batch_size --value 20
+          php occ config:app:set ${{ env.APP_NAME }} import_batch_size --value 20 --lazy
           php occ user:setting admin ${{ env.APP_NAME }} onedrive_output_dir "/OneDrive resume"
           # drop the notification of the first import, the one checked below has to be the
           # one this import sends

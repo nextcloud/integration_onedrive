@@ -12,6 +12,7 @@ use Exception;
 use OCA\Onedrive\AppInfo\Application;
 use OCA\Onedrive\BackgroundJob\ImportOnedriveJob;
 use OCA\Onedrive\Exceptions\MaxDownloadSizeReachedException;
+use OCP\AppFramework\Services\IAppConfig;
 use OCP\BackgroundJob\IJobList;
 use OCP\Files\File;
 use OCP\Files\FileInfo;
@@ -73,6 +74,10 @@ class OnedriveStorageAPIService {
 	 */
 	private $config;
 	/**
+	 * @var IAppConfig
+	 */
+	private $appConfig;
+	/**
 	 * @var IJobList
 	 */
 	private $jobList;
@@ -92,6 +97,7 @@ class OnedriveStorageAPIService {
 		LoggerInterface $logger,
 		IRootFolder $root,
 		IConfig $config,
+		IAppConfig $appConfig,
 		IJobList $jobList,
 		UserScopeService $userScopeService,
 		OnedriveAPIService $onedriveApiService) {
@@ -99,6 +105,7 @@ class OnedriveStorageAPIService {
 		$this->logger = $logger;
 		$this->root = $root;
 		$this->config = $config;
+		$this->appConfig = $appConfig;
 		$this->jobList = $jobList;
 		$this->onedriveApiService = $onedriveApiService;
 		$this->userScopeService = $userScopeService;
@@ -206,7 +213,7 @@ class OnedriveStorageAPIService {
 		/** @var array $importTree */
 		$importTree = ($importTreeStr === '[]' || $importTreeStr === '') ? [] : json_decode($importTreeStr, true);
 		// import by batches, 500 MB each unless the admin asked for another size
-		$batchSize = (int)$this->config->getAppValue(Application::APP_ID, 'import_batch_size', (string)Application::IMPORT_BATCH_SIZE);
+		$batchSize = (int)$this->appConfig->getAppValueString('import_batch_size', (string)Application::IMPORT_BATCH_SIZE, lazy: true);
 		if ($batchSize <= 0) {
 			$batchSize = Application::IMPORT_BATCH_SIZE;
 		}
