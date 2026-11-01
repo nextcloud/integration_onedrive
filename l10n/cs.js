@@ -54,6 +54,7 @@ OC.L10N.register(
     "Connect to OneDrive" : "Připojit k OneDrive",
     "Connected as {user}" : "Připojeni jako {user}",
     "Disconnect from OneDrive" : "Odpojit od OneDrive",
+    "OneDrive storage" : "OneDrive úložiště",
     "Import directory" : "Importovat adresář",
     "Contacts" : "Kontakty",
     "{amount} contacts" : "{amount} kontaktů",
