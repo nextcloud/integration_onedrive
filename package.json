@@ -47,7 +47,7 @@
     "@nextcloud/password-confirmation": "^6.0.2",
     "@nextcloud/router": "^3.0.0",
     "@nextcloud/vue": "^9.3.1",
-    "vue": "^3.5.26",
+    "vue": "^3.5.44",
     "vue-material-design-icons": "^5.3.0"
   },
   "devDependencies": {
