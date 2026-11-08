@@ -3,6 +3,7 @@ OC.L10N.register(
     {
     "Error getting OAuth access token" : "Błąd podczas pobierania tokena dostępu OAuth",
     "Error during OAuth exchanges" : "Błąd podczas zamiany OAuth",
+    "OneDrive" : "OneDrive",
     "Bad credentials" : "Złe poświadczenia",
     "Bad HTTP method" : "Zła metoda HTTP",
     "OAuth access token refused" : "Odmowa tokena dostępu OAuth",
