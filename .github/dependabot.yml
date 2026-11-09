@@ -11,6 +11,12 @@ updates:
       time: "03:00"
       timezone: Europe/Paris
     open-pull-requests-limit: 5
+    ignore:
+      # The app's copy is loaded in place of Nextcloud's own, and
+      # Nextcloud's WebAuthn libraries allow brick/math up to 0.12.
+      # This also holds back security updates past 0.12.
+      - dependency-name: "brick/math"
+        versions: [">=0.13"]
   - package-ecosystem: "github-actions"
     directory: "/"
     schedule:
