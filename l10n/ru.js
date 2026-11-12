@@ -72,6 +72,6 @@ OC.L10N.register(
     "Import Contacts in Nextcloud" : "Импортировать контакты в Nextcloud",
     "Calendars" : "Календари",
     "Import calendar" : "Импорт календаря",
-    "_{amount} file imported ({formImported}) ({progress}%)_::_{amount} files imported ({formImported}) ({progress}%)_" : ["Импортирован {amount} файл ({formImported}) ({progress}%)","Импортировано {amount} файла ({formImported}) ({progress}%)","Импортировано {amount} файлов ({formImported}) ({progress}%)","Импортировано {amount} файла ({formImported}) ({progress}%)"]
+    "_{amount} file imported ({formImported}) ({progress}%)_::_{amount} files imported ({formImported}) ({progress}%)_" : ["Импортирован {amount} файл ({formImported}) ({progress} %)","Импортировано {amount} файла ({formImported}) ({progress} %)","Импортировано {amount} файлов ({formImported}) ({progress} %)","Импортировано {amount} файла ({formImported}) ({progress} %)"]
 },
 "nplurals=4; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<12 || n%100>14) ? 1 : n%10==0 || (n%10>=5 && n%10<=9) || (n%100>=11 && n%100<=14)? 2 : 3);");
